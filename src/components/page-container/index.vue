@@ -11,7 +11,7 @@ const props = defineProps<{
 }>()
 const contentCls = computed(() => {
   const cls: string[] = [
-    'flex flex-col flex-1 m-24px',
+    'flex flex-col flex-1 ',
   ]
   if (layoutSetting.value.contentWidth === 'Fluid')
     cls.push('w-full')
