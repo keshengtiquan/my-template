@@ -54,7 +54,7 @@ const contentStyle = computed<CSSProperties>(() => {
 
   const defaultStyle: CSSProperties = {
     background: 'var(--bg-color-container)',
-    // padding: '16px',
+
   }
   if(layoutSetting.value.footer && layoutSetting.value.multiTab){
     defaultStyle.minHeight = `calc(100vh - ${layoutSetting.value.headerHeight}px - 62px - 62px)`

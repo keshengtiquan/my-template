@@ -45,9 +45,10 @@ const contentCls = computed(() => {
         <slot name="content" />
       </div>
     </div>
-
-    <div :class="contentCls">
-      <slot />
+    <div class="mx-24px">
+      <div :class="contentCls">
+        <slot />
+      </div>
     </div>
   </div>
 </template>

@@ -64,23 +64,24 @@ const data = [
         <a-tab-pane key="3" tab="Tab 3"></a-tab-pane>
       </a-tabs>
     </template>
-    <a-table :columns="columns" :data-source="data">
-      <template #headerCell="{ column }">
-        <template v-if="column.key === 'name'">
+    <a-card title="Default size card" >
+      <a-table :columns="columns" :data-source="data">
+        <template #headerCell="{ column }">
+          <template v-if="column.key === 'name'">
         <span>
           <smile-outlined />
           Name
         </span>
+          </template>
         </template>
-      </template>
 
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'name'">
-          <a>
-            {{ record.name }}
-          </a>
-        </template>
-        <template v-else-if="column.key === 'tags'">
+        <template #bodyCell="{ column, record }">
+          <template v-if="column.key === 'name'">
+            <a>
+              {{ record.name }}
+            </a>
+          </template>
+          <template v-else-if="column.key === 'tags'">
         <span>
           <a-tag
               v-for="tag in record.tags"
@@ -90,8 +91,8 @@ const data = [
             {{ tag.toUpperCase() }}
           </a-tag>
         </span>
-        </template>
-        <template v-else-if="column.key === 'action'">
+          </template>
+          <template v-else-if="column.key === 'action'">
         <span>
           <a>Invite 一 {{ record.name }}</a>
           <a-divider type="vertical" />
@@ -102,9 +103,11 @@ const data = [
             <down-outlined />
           </a>
         </span>
+          </template>
         </template>
-      </template>
-    </a-table>
+      </a-table>
+    </a-card>
+
   </PageContainer>
 
 </template>
