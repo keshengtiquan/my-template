@@ -5,6 +5,7 @@ import router from '@/router'
 import 'ant-design-vue/dist/reset.css'
 import store from "@/store"
 import "uno.css";
+import 'animate.css';
 import * as antIcons from '@ant-design/icons-vue'
 // import PageContainer from '@/components/page-container/index.vue'
 

@@ -1,32 +1,32 @@
 <script setup lang="ts">
 import PageContainer from '@/components/page-container/index.vue'
 import {ref} from "vue";
-import { SmileOutlined, DownOutlined } from '@ant-design/icons-vue';
+import ProTable from '@/components/pro-table/index.vue'
 
 const activeKey = ref('1');
 const columns = [
   {
-    name: 'Name',
+    title: '姓名',
     dataIndex: 'name',
     key: 'name',
   },
   {
-    title: 'Age',
+    title: '年龄',
     dataIndex: 'age',
     key: 'age',
   },
   {
-    title: 'Address',
+    title: '地址',
     dataIndex: 'address',
     key: 'address',
   },
   {
-    title: 'Tags',
+    title: '标签',
     key: 'tags',
     dataIndex: 'tags',
   },
   {
-    title: 'Action',
+    title: '操作',
     key: 'action',
   },
 ];
@@ -64,61 +64,25 @@ const data = [
         <a-tab-pane key="3" tab="Tab 3"></a-tab-pane>
       </a-tabs>
     </template>
-    <a-card title="Default size card" >
-      <a-table :columns="columns" :data-source="data">
-        <template #headerCell="{ column }">
-          <template v-if="column.key === 'name'">
-        <span>
-          <smile-outlined />
-          Name
-        </span>
-          </template>
-        </template>
-
-        <template #bodyCell="{ column, record }">
-          <template v-if="column.key === 'name'">
-            <a>
-              {{ record.name }}
-            </a>
-          </template>
-          <template v-else-if="column.key === 'tags'">
-        <span>
-          <a-tag
-              v-for="tag in record.tags"
-              :key="tag"
-              :color="tag === 'loser' ? 'volcano' : tag.length > 5 ? 'geekblue' : 'green'"
-          >
-            {{ tag.toUpperCase() }}
-          </a-tag>
-        </span>
-          </template>
-          <template v-else-if="column.key === 'action'">
-        <span>
-          <a>Invite 一 {{ record.name }}</a>
-          <a-divider type="vertical" />
-          <a>Delete</a>
-          <a-divider type="vertical" />
-          <a class="ant-dropdown-link">
-            More actions
-            <down-outlined />
-          </a>
-        </span>
-          </template>
-        </template>
-      </a-table>
-    </a-card>
-
+    <ProTable :columns="columns" :data-source="data">
+      <template #toolLeft>
+        <h3>测试表格</h3>
+      </template>
+      <template #toolRight>
+        <a-button type="primary">新增</a-button>
+      </template>
+    </ProTable>
   </PageContainer>
 
 </template>
 
 
-
 <style scoped>
-.ant-tabs-top >:deep(.ant-tabs-nav) {
+.ant-tabs-top > :deep(.ant-tabs-nav) {
   margin: 0;
 }
-.ant-tabs-top >:deep(.ant-tabs-nav::before) {
+
+.ant-tabs-top > :deep(.ant-tabs-nav::before) {
   border-bottom: none;
 }
 </style>
