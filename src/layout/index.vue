@@ -10,7 +10,10 @@
         <RouterView>
           <template #default="{ Component, route }">
             <Transition appear :name="layoutSetting.animationName" mode="out-in">
-                <component :is="Component"  :key="route.fullPath" />
+              <KeepAlive v-if="layoutSetting.keepAlive" :include="cacheList">
+                <component :is="Component" :key="route.fullPath" />
+              </KeepAlive>
+              <component :is="Component" v-else :key="route.fullPath" />
             </Transition>
           </template>
         </RouterView>
@@ -22,7 +25,7 @@
 <script lang="ts" setup>
 import SiderMenu from './components/sider-menu/index.vue'
 import Header from './components/header/index.vue'
-import {useAppStore} from '@/store'
+import {useAppStore,useMultiTab} from '@/store'
 import {storeToRefs} from "pinia";
 import {computed, CSSProperties} from "vue";
 import MultiTab from './components/multi-tab/index.vue'
@@ -30,6 +33,8 @@ import Footer from './components/footer/index.vue'
 
 const appStore = useAppStore()
 const {layoutSetting} = storeToRefs(appStore)
+const multiTabStore = useMultiTab()
+const { cacheList } = storeToRefs(multiTabStore)
 
 const layoutStyle = computed<CSSProperties>(() => {
   const defaultStyle: CSSProperties = {

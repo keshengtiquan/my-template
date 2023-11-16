@@ -161,10 +161,13 @@ const otherDisabled = computed(() => {
   </a-tabs>
 </template>
 
-<style lang="scss">
+<style lang="scss" >
 .pro-ant-multi-tab{
   .ant-tabs-nav-operations{
     display: none !important;
   }
+}
+.ant-tabs-top > .ant-tabs-nav {
+  margin: 0;
 }
 </style>

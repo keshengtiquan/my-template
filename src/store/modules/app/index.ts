@@ -112,6 +112,6 @@ const useAppStore = defineStore('app', () => {
     toggleColorPrimary,
   }
   
-})
+}, {persist: true})
 
 export default useAppStore

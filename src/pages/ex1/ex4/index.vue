@@ -1,75 +1,97 @@
 <script setup lang="ts">
 import PageContainer from '@/components/page-container/index.vue'
-import {ref} from "vue";
 import ProTable from '@/components/pro-table/index.vue'
+import {useTable} from '@/composables/useTable.ts'
 
-const activeKey = ref('1');
 const columns = [
   {
-    title: '姓名',
+    title: 'Name',
     dataIndex: 'name',
-    key: 'name',
+    search: true,
+    sorter: true,
   },
   {
-    title: '年龄',
+    title: 'Age',
     dataIndex: 'age',
-    key: 'age',
+    search: true,
+    sorter: true,
   },
   {
-    title: '地址',
+    title: 'Address',
     dataIndex: 'address',
-    key: 'address',
+    search: true,
   },
   {
-    title: '标签',
-    key: 'tags',
-    dataIndex: 'tags',
+    title: 'Address1',
+    dataIndex: 'address1',
+    search: true,
   },
   {
-    title: '操作',
-    key: 'action',
+    title: 'Address2',
+    dataIndex: 'address2',
+    search: true,
+  },
+  {
+    title: 'Address3',
+    dataIndex: 'address3',
+    search: true
   },
 ];
 
-const data = [
-  {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    tags: ['nice', 'developer'],
-  },
-  {
-    key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-    tags: ['loser'],
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-];
+const getData = () => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      const arr = []
+      for (let i = 0; i < 20; i++) {
+        arr.push({
+          key: i,
+          name: `Edward King ${i}`,
+          age: 32,
+          address: `London, Park Lane no. ${i}`,
+        });
+      }
+      resolve({code: 200, data: {results: arr, total: 100, current: 1, pageSize: 20}, message: 'success'})
+    },1000)
+
+  })
+}
+const {loading,getTableData, tableData, pagination} = useTable(getData)
+
+const onChange = (pagination, _, sorter, { currentDataSource }) => {
+  console.log(pagination, sorter,)
+}
+
+
+</script>
+<script lang='ts'>
+export default {
+  name: "Ex4"
+}
 </script>
 <template>
   <PageContainer title="测试">
-    <template #content>
-      <a-tabs v-model:activeKey="activeKey">
-        <a-tab-pane key="1" tab="Tab 1"></a-tab-pane>
-        <a-tab-pane key="2" tab="Tab 2" force-render></a-tab-pane>
-        <a-tab-pane key="3" tab="Tab 3"></a-tab-pane>
-      </a-tabs>
-    </template>
-    <ProTable :columns="columns" :data-source="data">
+    <ProTable :columns="columns" :loading="loading" :pagination="pagination" :data-source="tableData" @refresh="getTableData()"
+              @search="(values) => getTableData(values)"
+              @change="onChange">
+<!--              @change="(pagination: any) => getTableData({current: pagination.current, pageSize: pagination.pageSize})">-->
       <template #toolLeft>
         <h3>测试表格</h3>
       </template>
       <template #toolRight>
         <a-button type="primary">新增</a-button>
+      </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.dataIndex === 'address1'">
+        <span>
+          <a-divider type="vertical"/>
+          <a>Delete</a>
+          <a-divider type="vertical"/>
+          <a class="ant-dropdown-link">
+            More actions
+            <down-outlined/>
+          </a>
+        </span>
+        </template>
       </template>
     </ProTable>
   </PageContainer>

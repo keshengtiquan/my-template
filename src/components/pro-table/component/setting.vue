@@ -2,9 +2,10 @@
 import type {TableColumnType} from "ant-design-vue";
 import {VueDraggableNext as draggable} from 'vue-draggable-next'
 import {onMounted, ref, watch} from "vue";
+import {FixedType} from "ant-design-vue/es/vc-table/interface";
 
 const props = defineProps<{
-  initColumns?: TableColumnType[],
+  initColumns: TableColumnType[],
   tableColumns?: any[]
 }>()
 const emits = defineEmits(['change'])
@@ -13,32 +14,48 @@ const open = ref(false)
 const settingColumns = ref<any[]>([])
 const checkAll = ref(false)
 const isIndeterminate = ref(false)
+
+const fixedLeftColumns = ref<any[]>([])
+const notFixedColumns = ref<any[]>([])
+const fixedRightColumns = ref<any[]>([])
+
+//拖拽完成后
 const onDragChange = () => {
-  emits('change', settingColumns.value.filter(item => !item.hide))
+  emits('change', mergeColumns())
 }
+//全选按钮
 const onCheckAllChange = (e: any) => {
   settingColumns.value.forEach(item => {
     item.hide = !e.target.checked
   })
-  emits('change', settingColumns.value.filter(item => !item.hide))
+  emits('change', mergeColumns())
 }
+//字段显示隐藏
 const onCheckChange = (check: boolean, element: any) => {
   settingColumns.value.forEach(item => {
     if (item.dataIndex === element.dataIndex) {
       item.hide = !check
     }
   })
-  emits('change', settingColumns.value.filter(item => !item.hide))
+  emits('change', mergeColumns())
 }
+//重置
 const onReset = () => {
   init()
-  emits('change', settingColumns.value.filter(item => !item.hide))
+  updateColumns()
+  emits('change', mergeColumns())
 }
-
-const aaa = () => {
-  console.log(39)
+//固定按钮
+const fixedColumn = (pos: string | undefined | null, element: any) => {
+  settingColumns.value.forEach(item => {
+    if(item.dataIndex === element.dataIndex){
+      item.fixed = pos as FixedType
+    }
+  })
+  updateColumns()
+  emits('change', mergeColumns())
 }
-
+//全选半选逻辑
 watch(settingColumns, (newVal: any[]) => {
   const count = newVal.reduce((accumulator, column) => {
     // 当 hide 为 false 时，进行累加
@@ -47,7 +64,6 @@ watch(settingColumns, (newVal: any[]) => {
     }
     return accumulator;
   }, 0);
-  console.log(count, props.initColumns?.length)
   if (count === props.initColumns?.length) {
     isIndeterminate.value = false
     checkAll.value = true
@@ -60,6 +76,22 @@ watch(settingColumns, (newVal: any[]) => {
   }
 }, {deep: true, immediate: true})
 
+const updateColumns = () => {
+  fixedLeftColumns.value = []
+  fixedRightColumns.value = []
+  notFixedColumns.value = []
+
+  settingColumns.value.forEach(item => {
+    if(item.fixed === 'left'){
+      fixedLeftColumns.value.push(item)
+    }else if(item.fixed === 'right'){
+      fixedRightColumns.value.push(item)
+    }else {
+      notFixedColumns.value.push(item)
+    }
+  })
+}
+
 const init = () => {
   settingColumns.value = []
   props.initColumns?.forEach((item, index) => {
@@ -69,8 +101,14 @@ const init = () => {
 }
 onMounted(async () => {
   init()
-  emits('change', settingColumns.value.filter(item => !item.hide))
+  updateColumns()
+  emits('change', mergeColumns())
 })
+
+const mergeColumns = () => {
+  const tableColumns = [...fixedLeftColumns.value,  ...notFixedColumns.value, ...fixedRightColumns.value]
+  return tableColumns.filter(item => !item.hide)
+}
 </script>
 <template>
   <a-popover v-model:open="open" placement="bottomRight" trigger="click">
@@ -82,14 +120,46 @@ onMounted(async () => {
         </a-checkbox>
         <a-button type="link" size="small" @click="onReset">重置</a-button>
       </div>
-      <!--   不固定   -->
+      <!--   固定在左侧   -->
+      <div v-if="fixedLeftColumns.length > 0" class="w-full pl-24px mx-6px font-size-12px text-[var(--text-color-1)]">固定在左侧</div>
       <draggable
-          v-model="settingColumns"
+          v-model="fixedLeftColumns"
           @change="onDragChange"
           class="w-200px"
       >
-        <div class="w-full pl-24px mx-6px font-size-12px text-[var(--text-color-1)]">不固定</div>
-        <div class="flex pt-5px" v-for="element in settingColumns" :key="element.key">
+        <div class="flex pt-5px" v-for="element in fixedLeftColumns" :key="element.key">
+          <HolderOutlined class="pr-8px hover:cursor-grabbing "/>
+          <span class="w-24px" v-if="fixedLeftColumns.length > 1"></span>
+          <a-checkbox class="flex-1 w-full" :checked="!element.hide"
+                      @change="(e: any) => onCheckChange(e.target.checked, element)">
+            <div class="flex justify-between w-full hover:bg-[var(--hover-color)] px-8px rd-6px show-span">
+              {{ element.title }}
+              <span class="text-blue font-600">
+                <a-tooltip placement="top" class="">
+                  <template #title>
+                    <span>取消固定</span>
+                  </template>
+                  <VerticalAlignMiddleOutlined  @click.prevent="fixedColumn(undefined, element)"/>
+                </a-tooltip>
+                <a-tooltip placement="top" class="">
+                  <template #title>
+                    <span>固定在列尾</span>
+                  </template>
+                  <VerticalAlignBottomOutlined @click.prevent="fixedColumn('right', element)"/>
+                </a-tooltip>
+              </span>
+            </div>
+          </a-checkbox>
+        </div>
+      </draggable>
+      <!--   不固定   -->
+      <div v-if="fixedLeftColumns.length > 0 || fixedRightColumns.length > 0" class="w-full pl-24px mx-6px font-size-12px text-[var(--text-color-1)]">不固定</div>
+      <draggable
+          v-model="notFixedColumns"
+          @change="onDragChange"
+          class="w-200px"
+      >
+        <div class="flex pt-5px" v-for="element in notFixedColumns" :key="element.key">
           <HolderOutlined class="pr-8px hover:cursor-grabbing "/>
           <span class="w-24px"></span>
           <a-checkbox class="flex-1 w-full" :checked="!element.hide"
@@ -101,16 +171,47 @@ onMounted(async () => {
                   <template #title>
                     <span>固定在列首</span>
                   </template>
-                  <VerticalAlignTopOutlined @click.stop="aaa"/>
+                  <VerticalAlignTopOutlined @click.prevent="fixedColumn('left', element)"/>
                 </a-tooltip>
                 <a-tooltip placement="top" class="">
                   <template #title>
                     <span>固定在列尾</span>
                   </template>
-                  <VerticalAlignBottomOutlined/>
+                  <VerticalAlignBottomOutlined @click.prevent="fixedColumn('right', element)"/>
                 </a-tooltip>
               </span>
-
+            </div>
+          </a-checkbox>
+        </div>
+      </draggable>
+      <!--   固定在右侧   -->
+      <div v-if="fixedRightColumns.length > 0" class="w-full pl-24px mx-6px font-size-12px text-[var(--text-color-1)]">固定在右侧</div>
+      <draggable
+          v-model="fixedRightColumns"
+          @change="onDragChange"
+          class="w-200px"
+      >
+        <div class="flex pt-5px" v-for="element in fixedRightColumns" :key="element.key">
+          <HolderOutlined class="pr-8px hover:cursor-grabbing "/>
+          <span v-if="fixedRightColumns.length > 1" class="w-24px"></span>
+          <a-checkbox class="flex-1 w-full" :checked="!element.hide"
+                      @change="(e: any) => onCheckChange(e.target.checked, element)">
+            <div class="flex justify-between w-full hover:bg-[var(--hover-color)] px-8px rd-6px show-span">
+              {{ element.title }}
+              <span class="text-blue font-600">
+                <a-tooltip placement="top" class="">
+                  <template #title>
+                    <span>固定在列首</span>
+                  </template>
+                  <VerticalAlignTopOutlined @click.prevent="fixedColumn('left', element)"/>
+                </a-tooltip>
+                <a-tooltip placement="top" class="">
+                  <template #title>
+                    <span>取消固定</span>
+                  </template>
+                  <VerticalAlignMiddleOutlined @click.prevent="fixedColumn(undefined, element)"/>
+                </a-tooltip>
+              </span>
             </div>
           </a-checkbox>
         </div>

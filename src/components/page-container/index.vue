@@ -7,7 +7,7 @@ const appStore = useAppStore()
 const {layoutSetting} = storeToRefs(appStore)
 const route: any = useRoute()
 const props = defineProps<{
-  title: string
+  title?: string
 }>()
 const contentCls = computed(() => {
   const cls: string[] = [
@@ -23,7 +23,7 @@ const contentCls = computed(() => {
 </script>
 <template>
   <div>
-    <div class="bg-[var(--bg-page-container)] px-24px mb-16px">
+    <div class="bg-[var(--bg-page-container)] px-24px mb-16px pt-12px pb-16px">
       <a-breadcrumb v-if="!route.meta.hideInBreadcrumb">
         <template v-if="route.matched?.length">
           <a-breadcrumb-item v-for="item in route.matched" :key="item.path">

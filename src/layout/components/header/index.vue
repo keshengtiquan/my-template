@@ -25,7 +25,7 @@ const headerStyle = computed<CSSProperties>(() => {
     background: 'var(--bg-color)',
     lineHeight: `${layoutSetting.value.headerHeight}px`,
     display: "flex",
-    boxShadow: "var(--box-shadow)",
+    boxShadow: "0 1px 4px rgba(0,21,41,.08)",
     zIndex: 1,
   }
 
