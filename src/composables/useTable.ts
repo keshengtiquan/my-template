@@ -1,17 +1,22 @@
-import {computed, onMounted, reactive, ref} from "vue";
-
+import {computed, onMounted, ref} from "vue";
+import * as _ from 'lodash'
 
 export const useTable = (request: Function, initParams?: Record<string, any>) => {
   const tableData = ref<any[]>()
   const total = ref()
   const current = ref()
   const pageSize = ref()
-  const searchParams = reactive({})
   const loading = ref(false)
   
   const getTableData = async (params?: Record<string, any>) => {
     loading.value = true
-    params = Object.assign(searchParams,params)
+    if(!_.isEmpty(initParams)){
+      if(!_.isEmpty(params)){
+        Object.assign(params, initParams)
+      }else {
+        params = initParams
+      }
+    }
     console.log('params',  params)
     const res = await request(params)
     tableData.value = res.data.results

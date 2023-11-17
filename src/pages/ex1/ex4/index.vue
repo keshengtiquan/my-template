@@ -2,7 +2,8 @@
 import PageContainer from '@/components/page-container/index.vue'
 import ProTable from '@/components/pro-table/index.vue'
 import {useTable} from '@/composables/useTable.ts'
-
+import { ref } from 'vue';
+const activeKey = ref('1');
 const columns = [
   {
     title: 'Name',
@@ -55,12 +56,7 @@ const getData = () => {
 
   })
 }
-const {loading,getTableData, tableData, pagination} = useTable(getData)
-
-const onChange = (pagination, _, sorter, { currentDataSource }) => {
-  console.log(pagination, sorter,)
-}
-
+const {loading,getTableData, tableData, pagination} = useTable(getData, {office: activeKey.value})
 
 </script>
 <script lang='ts'>
@@ -70,17 +66,25 @@ export default {
 </script>
 <template>
   <PageContainer title="测试">
+    <template #content>
+      <a-tabs v-model:activeKey="activeKey">
+        <a-tab-pane key="1" tab="Tab 1">
+
+        </a-tab-pane>
+        <a-tab-pane key="2" tab="Tab 2" force-render></a-tab-pane>
+        <a-tab-pane key="3" tab="Tab 3"></a-tab-pane>
+      </a-tabs>
+    </template>
     <ProTable :columns="columns" :loading="loading" :pagination="pagination" :data-source="tableData" @refresh="getTableData()"
-              @search="(values) => getTableData(values)"
-              @change="onChange">
-<!--              @change="(pagination: any) => getTableData({current: pagination.current, pageSize: pagination.pageSize})">-->
+              @search="(values) => getTableData(values)">
       <template #toolLeft>
         <h3>测试表格</h3>
       </template>
       <template #toolRight>
         <a-button type="primary">新增</a-button>
       </template>
-      <template #bodyCell="{ column, record }">
+
+      <template #bodyCell="{ column }">
         <template v-if="column.dataIndex === 'address1'">
         <span>
           <a-divider type="vertical"/>
@@ -94,6 +98,7 @@ export default {
         </template>
       </template>
     </ProTable>
+
   </PageContainer>
 
 </template>

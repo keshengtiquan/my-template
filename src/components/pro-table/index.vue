@@ -30,8 +30,33 @@ const settingChangeHandle = (setting: any[]) => {
   tableColumns.value = tem
 }
 const onFinish = () => {
-  emits('search',formState)
+  emits('search',_.pickBy(formState, value => {
+    return value !== '' && value !== null && value !== undefined;
+  }))
 };
+const onChange = (pagination: any, filters:any, sorter:any) => {
+  if(!_.isEmpty(pagination)){
+    formState['current'] = pagination.current
+    formState['pageSize'] = pagination.pageSize
+  }
+  if(!_.isEmpty(sorter)){
+
+  }
+  if (!_.isEmpty(sorter)){
+    if(sorter.order){
+      formState['sortField'] = sorter.field
+      formState['sortOrder'] = sorter.order
+    }else {
+      delete formState.sortField
+      delete formState.sortOrder
+    }
+  }
+  console.log(filters)
+  emits('search',_.pickBy(formState, value => {
+    return value !== '' && value !== null && value !== undefined;
+  }))
+
+}
 const onRefresh = () => {
   emits('refresh')
 }
@@ -106,7 +131,7 @@ const handleResizeColumn = (w: number, col: any) => {
         </a-tooltip>
       </div>
     </div>
-    <a-table v-bind="$attrs" @resizeColumn="handleResizeColumn" :columns="tableColumns" :dataSource="dataSource" :scroll="{ x: 1000 }">
+    <a-table v-bind="$attrs" @resizeColumn="handleResizeColumn" @change="onChange" :columns="tableColumns" :dataSource="dataSource" :scroll="{ x: 1000 }">
       <template v-for="(_item, key, index) in $slots" :key="index" v-slot:[key]="_item">
         <slot :name="key" v-bind="_item"></slot>
       </template>
