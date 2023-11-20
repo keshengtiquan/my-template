@@ -1,296 +1,51 @@
 import {defineStore} from "pinia";
-import {computed, reactive, ref} from "vue";
+import {computed, ref, shallowRef} from "vue";
 import {MenuDataItem} from "@/types/gloable";
+import {getUserInfoApi, UserInfo} from "@/api/user";
+import {getMenuDataApi} from "@/api/menu";
+import {rootRoute} from "@/router/static-routes.ts";
+import {generateRoutes} from "@/utils";
 
 
 export const useUserStore = defineStore('user', () => {
-  const menuData = ref<MenuDataItem[]>([
-    {
-      title: 'ex1',
-      icon: 'user-outlined',
-      path: '/ex1',
-      children: [
-        {
-          title: 'ex4',
-          icon: 'user-outlined',
-          path: '/ex1/ex4',
-          hideInMenu: false,
-          parentKeys: [],
-          isIframe: false,
-          hideInBreadcrumb: false,
-          hideChildrenInMenu: false,
-          keepAlive: false,
-          name: 'ex4',
-          url: '',
-          target: '_blank',
-        },
-        {
-          title: 'ex5',
-          icon: 'user-outlined',
-          path: '/ex1/ex5',
-          hideInMenu: false,
-          parentKeys: [],
-          isIframe: false,
-          hideInBreadcrumb: false,
-          hideChildrenInMenu: false,
-          keepAlive: false,
-          name: 'ex5',
-          url: '',
-          target: '_blank',
-        },
-      ],
-      hideInMenu: false,
-      parentKeys: [],
-      isIframe: false,
-      hideInBreadcrumb: false,
-      hideChildrenInMenu: false,
-      keepAlive: false,
-      name: 'ex1',
-      url: '',
-      target: '_blank',
-    },
-    {
-      title: 'ex2',
-      icon: 'user-outlined',
-      path: '/ex2',
-      hideInMenu: false,
-      parentKeys: [],
-      isIframe: false,
-      hideInBreadcrumb: false,
-      hideChildrenInMenu: false,
-      keepAlive: false,
-      name: 'ex2',
-      url: '',
-      target: '_blank',
-      children: [
-        {
-          title: 'ex6',
-          icon: 'user-outlined',
-          path: '/ex2/ex6',
-          hideInMenu: false,
-          parentKeys: [],
-          isIframe: false,
-          hideInBreadcrumb: false,
-          hideChildrenInMenu: false,
-          keepAlive: false,
-          name: 'ex6',
-          url: '',
-          target: '_blank',
-        },
-        {
-          title: 'ex7',
-          icon: 'user-outlined',
-          path: '/ex2/ex7',
-          hideInMenu: false,
-          parentKeys: [],
-          isIframe: false,
-          hideInBreadcrumb: false,
-          hideChildrenInMenu: false,
-          keepAlive: false,
-          name: 'ex7',
-          url: '',
-          target: '_blank',
-        },
-      ],
-    },
-    {
-      title: 'ex3',
-      icon: 'user-outlined',
-      path: '/ex3',
-      hideInMenu: false,
-      parentKeys: [],
-      isIframe: false,
-      hideInBreadcrumb: false,
-      hideChildrenInMenu: false,
-      keepAlive: false,
-      name: 'ex3',
-      url: '',
-      target: '_blank',
-      children: [
-        {
-          title: 'ex8',
-          icon: 'user-outlined',
-          path: '/ex3/ex8',
-          hideInMenu: false,
-          parentKeys: [],
-          isIframe: false,
-          hideInBreadcrumb: false,
-          hideChildrenInMenu: false,
-          keepAlive: false,
-          name: 'ex8',
-          url: '',
-          target: '_blank',
-        },
-        {
-          title: 'ex9',
-          icon: 'user-outlined',
-          path: '/ex3/ex9',
-          hideInMenu: false,
-          parentKeys: [],
-          isIframe: false,
-          hideInBreadcrumb: false,
-          hideChildrenInMenu: false,
-          keepAlive: false,
-          name: 'ex9',
-          url: '',
-          target: '_blank',
-        },
-      ],
-    },
-  ])
-  const routerData = ref([])
-  const userInfo = reactive({
-    avatar: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
-    username: 'admin',
-    nickname: '超级管理员',
-  })
+  const menuData = ref<MenuDataItem[]>([])
+  const routerData = ref<any[]>([])
+  const userInfo = shallowRef<UserInfo>()
+  const avatar = computed(() => userInfo.value?.avatar)
+  const nickname = computed(() => userInfo.value?.nickName ?? userInfo.value?.userName)
+  // const roles = computed(() => userInfo.value?)
   
-  const avatar = computed(() => userInfo.avatar)
-  const nickname = computed(() => userInfo.nickname ?? userInfo.username)
   
-  const getMenuData = () => {
-    menuData.value =  [
-      {
-        title: 'ex1',
-        icon: 'user-outlined',
-        path: '/ex1',
-        children: [
-          {
-            title: 'ex4',
-            icon: 'user-outlined',
-            path: '/ex4',
-            hideInMenu: false,
-            parentKeys: [],
-            isIframe: false,
-            hideInBreadcrumb: false,
-            hideChildrenInMenu: false,
-            keepAlive: false,
-            name: 'ex4',
-            url: '',
-            target: '_blank',
-          },
-          {
-            title: 'ex5',
-            icon: 'user-outlined',
-            path: '/ex5',
-            hideInMenu: false,
-            parentKeys: [],
-            isIframe: false,
-            hideInBreadcrumb: false,
-            hideChildrenInMenu: false,
-            keepAlive: false,
-            name: 'ex5',
-            url: '',
-            target: '_blank',
-          },
-        ],
-        hideInMenu: false,
-        parentKeys: [],
-        isIframe: false,
-        hideInBreadcrumb: false,
-        hideChildrenInMenu: false,
-        keepAlive: false,
-        name: 'ex1',
-        url: '',
-        target: '_blank',
-      },
-      {
-        title: 'ex2',
-        icon: 'user-outlined',
-        path: '/ex2',
-        hideInMenu: false,
-        parentKeys: [],
-        isIframe: false,
-        hideInBreadcrumb: false,
-        hideChildrenInMenu: true,
-        keepAlive: false,
-        name: 'ex2',
-        url: '',
-        target: '_blank',
-        children: [
-          {
-            title: 'ex6',
-            icon: 'user-outlined',
-            path: '/ex6',
-            hideInMenu: false,
-            parentKeys: [],
-            isIframe: false,
-            hideInBreadcrumb: false,
-            hideChildrenInMenu: false,
-            keepAlive: false,
-            name: 'ex6',
-            url: '',
-            target: '_blank',
-          },
-          {
-            title: 'ex7',
-            icon: 'user-outlined',
-            path: '/ex7',
-            hideInMenu: false,
-            parentKeys: [],
-            isIframe: false,
-            hideInBreadcrumb: false,
-            hideChildrenInMenu: false,
-            keepAlive: false,
-            name: 'ex7',
-            url: '',
-            target: '_blank',
-          },
-        ],
-      },
-      {
-        title: 'ex3',
-        icon: 'user-outlined',
-        path: '/ex3',
-        hideInMenu: false,
-        parentKeys: [],
-        isIframe: false,
-        hideInBreadcrumb: false,
-        hideChildrenInMenu: false,
-        keepAlive: false,
-        name: 'ex3',
-        url: '',
-        target: '_blank',
-        children: [
-          {
-            title: 'ex8',
-            icon: 'user-outlined',
-            path: '/ex8',
-            hideInMenu: false,
-            parentKeys: [],
-            isIframe: false,
-            hideInBreadcrumb: false,
-            hideChildrenInMenu: false,
-            keepAlive: false,
-            name: 'ex8',
-            url: '',
-            target: '_blank',
-          },
-          {
-            title: 'ex9',
-            icon: 'user-outlined',
-            path: '/ex9',
-            hideInMenu: false,
-            parentKeys: [],
-            isIframe: false,
-            hideInBreadcrumb: false,
-            hideChildrenInMenu: false,
-            keepAlive: false,
-            name: 'ex9',
-            url: '',
-            target: '_blank',
-          },
-        ],
-      },
-    ]
+  const getMenuData = async () => {
+    const {data} = await getMenuDataApi()
+    menuData.value = data
+    const currentRoute = {
+      ...rootRoute,
+      children: [...generateRoutes(data)],
+    }
+    return currentRoute
   }
   
+  const generateDynamicRoutes = async () => {
+    const routerDatas = await getMenuData()
+    return routerDatas
+  }
+  
+  // 获取用户信息
+  const getUserInfo = async () => {
+    // 获取用户信息
+    const {data} = await getUserInfoApi()
+    userInfo.value = data
+  }
   return {
     routerData,
     menuData,
     userInfo,
     avatar,
     nickname,
-    getMenuData
+    // roles,
+    getMenuData,
+    getUserInfo,
+    generateDynamicRoutes
   }
 })

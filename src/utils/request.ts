@@ -34,6 +34,10 @@ class Http {
   // 请求拦截
   private httpInterceptorsRequest(): void {
     Http.axiosInstance.interceptors.request.use((config) => {
+      let token = localStorage.getItem('token')
+      if (token) {
+        config.headers['Authorization'] = 'Bearer ' + token
+      }
       return config
     }, error => {
       return Promise.reject(error)
@@ -78,7 +82,7 @@ class Http {
     return this.request<P>("post", url, params, config)
   }
   
-  public get<P, T>(url: string, params?: AxiosRequestConfig<T>, config?: AxiosRequestConfig): Promise<P> {
+  public get<P, T=any>(url: string, params?: AxiosRequestConfig<T>, config?: AxiosRequestConfig): Promise<P> {
     return this.request<P>("get", url, params, config)
   }
 }

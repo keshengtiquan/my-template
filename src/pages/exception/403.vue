@@ -81,8 +81,8 @@ const startTimeLoading = () => {
     </a-card>
     <a-card title="hook加载loading" hoverable :bordered="false" mt-3>
       <a-space :size="15">
-        <a-button v-for="(item, index) in loadingList" :key="item" type="primary" @click="startLoading(item)">
-          loading{{ index + 1 }}
+        <a-button v-for="(item, index.ts) in loadingList" :key="item" type="primary" @click="startLoading(item)">
+          loading{{ index.ts + 1 }}
         </a-button>
       </a-space>
     </a-card>

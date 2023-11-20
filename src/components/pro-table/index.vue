@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import type { TableColumnType} from "ant-design-vue";
+import type {TableColumnType} from "ant-design-vue";
 import Setting from './component/setting.vue'
 import {reactive, ref} from "vue";
 import * as _ from 'lodash'
+import {UserOutlined} from "@ant-design/icons-vue";
 
 const props = defineProps<{
   columns: any[],
@@ -14,6 +15,7 @@ const expand = ref(false);
 const formState = reactive<Record<any, any>>({});
 const formRef = ref();
 const searchArray = ref<any[]>([])
+const tableSize = ref('large')
 
 searchArray.value = props.columns.filter(item => item.search)
 
@@ -30,29 +32,30 @@ const settingChangeHandle = (setting: any[]) => {
   tableColumns.value = tem
 }
 const onFinish = () => {
-  emits('search',_.pickBy(formState, value => {
+  emits('search', _.pickBy(formState, value => {
     return value !== '' && value !== null && value !== undefined;
   }))
 };
-const onChange = (pagination: any, filters:any, sorter:any) => {
-  if(!_.isEmpty(pagination)){
+const onChange = (pagination: any, filters: any, sorter: any) => {
+  if (!_.isEmpty(pagination)) {
     formState['current'] = pagination.current
     formState['pageSize'] = pagination.pageSize
   }
-  if(!_.isEmpty(sorter)){
+  if (!_.isEmpty(sorter)) {
 
   }
-  if (!_.isEmpty(sorter)){
-    if(sorter.order){
+  if (!_.isEmpty(sorter)) {
+    if (sorter.order) {
       formState['sortField'] = sorter.field
       formState['sortOrder'] = sorter.order
-    }else {
+    } else {
       delete formState.sortField
       delete formState.sortOrder
     }
   }
   console.log(filters)
-  emits('search',_.pickBy(formState, value => {
+  //除去formState中的空字段
+  emits('search', _.pickBy(formState, value => {
     return value !== '' && value !== null && value !== undefined;
   }))
 
@@ -61,14 +64,18 @@ const onRefresh = () => {
   emits('refresh')
 }
 const handleResizeColumn = (w: number, col: any) => {
-  console.log(w,col)
+  console.log(w, col)
   col.width = w;
+}
+
+const handleClick = ({key}: any) => {
+  tableSize.value = key
 }
 
 </script>
 
 <template>
-  <div class="bg-[var(--bg-page-container)] rd-8px px-24px mb-20px pt-24px">
+  <div v-if="searchArray.length > 0" class="bg-[var(--bg-page-container)] rd-8px px-24px mb-20px pt-24px">
     <a-form
         ref="formRef"
         name="advanced_search"
@@ -87,17 +94,17 @@ const handleResizeColumn = (w: number, col: any) => {
             </a-form-item>
           </a-col>
         </template>
-        <a-col  :span="!expand ? 6 : (4 - (searchArray.length % 4)) * 6 " style="text-align: right">
+        <a-col :span="!expand ? 6 : (4 - (searchArray.length % 4)) * 6 " style="text-align: right">
           <a-button type="primary" html-type="submit">搜索</a-button>
           <a-button style="margin: 0 8px" @click="() => formRef.resetFields()">清除</a-button>
           <a style="font-size: 12px" @click="expand = !expand">
             <template v-if="expand">
-              <UpOutlined />
+              <UpOutlined/>
             </template>
             <template v-else>
-              <DownOutlined />
+              <DownOutlined/>
             </template>
-            {{expand ? '收起' : '展开'}}
+            {{ expand ? '收起' : '展开' }}
           </a>
         </a-col>
       </a-row>
@@ -120,8 +127,26 @@ const handleResizeColumn = (w: number, col: any) => {
           <template #title>
             <span>密度</span>
           </template>
-          <ColumnHeightOutlined/>
-
+          <a-dropdown placement="bottomRight" :trigger="['click']">
+            <ColumnHeightOutlined/>
+          <template #overlay>
+              <a-menu
+                  w-100px
+                  @click="handleClick"
+                  :selectedKeys="[tableSize]"
+              >
+                <a-menu-item key="large">
+                  默认
+                </a-menu-item>
+                <a-menu-item key="middle">
+                  中等
+                </a-menu-item>
+                <a-menu-item key="small">
+                  紧凑
+                </a-menu-item>
+              </a-menu>
+          </template>
+          </a-dropdown>
         </a-tooltip>
         <a-tooltip placement="top" class="w-32px text-center font-size-4 inline-block relative hover:cursor-pointer">
           <template #title>
@@ -131,13 +156,23 @@ const handleResizeColumn = (w: number, col: any) => {
         </a-tooltip>
       </div>
     </div>
-    <a-table v-bind="$attrs" @resizeColumn="handleResizeColumn" @change="onChange" :columns="tableColumns" :dataSource="dataSource" :scroll="{ x: 1000 }">
+    <a-table v-bind="$attrs" :size="tableSize" @resizeColumn="handleResizeColumn" @change="onChange" :columns="tableColumns"
+             :dataSource="dataSource" :scroll="{ x: 1000 }">
       <template v-for="(_item, key, index) in $slots" :key="index" v-slot:[key]="_item">
         <slot :name="key" v-bind="_item"></slot>
       </template>
     </a-table>
   </div>
 </template>
-<style scoped>
-
+<style lang="scss" scoped>
+.ant-popover :deep(.ant-popover-content .ant-popover-inner) {
+  padding: 0 !important;
+}
+.ant-menu-light.ant-menu-root.ant-menu-vertical{
+  border-inline-end: 0;
+}
+.ant-menu-vertical :deep(>.ant-menu-item) {
+  height: 32px;
+  line-height: 32px;
+}
 </style>

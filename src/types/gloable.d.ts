@@ -24,8 +24,6 @@ export interface MenuDataItem {
   hideChildrenInMenu?: boolean
   // 是否保活
   keepAlive?: boolean
-  // 这里包含所有的父级元素
-  matched?: MenuDataItem[]
   // 全连接跳转模式
   target?: '_blank' | '_self' | '_parent'
 }

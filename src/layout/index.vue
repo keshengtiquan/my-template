@@ -62,9 +62,11 @@ const contentStyle = computed<CSSProperties>(() => {
 
   }
   if(layoutSetting.value.footer && layoutSetting.value.multiTab){
-    defaultStyle.minHeight = `calc(100vh - ${layoutSetting.value.headerHeight}px - 62px - 62px)`
-  }else if((layoutSetting.value.footer && !layoutSetting.value.multiTab) || (!layoutSetting.value.footer && layoutSetting.value.multiTab)){
+    defaultStyle.minHeight = `calc(100vh - ${layoutSetting.value.headerHeight}px - 62px - 46px)`
+  }else if(layoutSetting.value.footer && !layoutSetting.value.multiTab){
     defaultStyle.minHeight = `calc(100vh - ${layoutSetting.value.headerHeight}px  - 62px)`
+  }else if(!layoutSetting.value.footer && layoutSetting.value.multiTab){
+    defaultStyle.minHeight = `calc(100vh - ${layoutSetting.value.headerHeight}px  - 46px)`
   }else if(!layoutSetting.value.footer && !layoutSetting.value.multiTab){
     defaultStyle.minHeight = `calc(100vh - ${layoutSetting.value.headerHeight}px)`
   }

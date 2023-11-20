@@ -1,7 +1,7 @@
 import {computed, onMounted, ref} from "vue";
 import * as _ from 'lodash'
 
-export const useTable = (request: Function, initParams?: Record<string, any>) => {
+export const useTable = (request: Function, initParams?: Record<string, any>, hasPagination= true) => {
   const tableData = ref<any[]>()
   const total = ref()
   const current = ref()
@@ -19,10 +19,15 @@ export const useTable = (request: Function, initParams?: Record<string, any>) =>
     }
     console.log('params',  params)
     const res = await request(params)
-    tableData.value = res.data.results
-    total.value = res.data.total
-    current.value = res.data.current
-    pageSize.value = res.data.pageSize
+    if(hasPagination){
+      tableData.value = res.data.results
+      total.value = res.data.total
+      current.value = res.data.current
+      pageSize.value = res.data.pageSize
+    }else {
+      tableData.value = res.data
+    }
+    
     loading.value = false
   }
   const pagination = computed(() => ({

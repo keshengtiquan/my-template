@@ -28,7 +28,7 @@ export default (configEnv: ConfigEnv): UserConfigExport => {
       open: false,
       proxy: {
         "/api": {
-          target: "http://interface.cpolar.top/",
+          target: "http://127.0.0.1:3000",
           ws: true,
           /** 是否允许跨域 */
           changeOrigin: true,

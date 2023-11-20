@@ -1,7 +1,43 @@
+
+let modules = import.meta.glob('../pages/**/*')
+
 export const isUrl = (inputStr: string) => {
   const urlPattern = /^(?:http|https):\/\/\S+/;
   // 使用正则表达式测试输入字符串
   return urlPattern.test(inputStr);
+}
+
+
+export const generateRoutes = (data: any[]) => {
+  return data.map(item => {
+    const obj: any = {
+      path: item.path,
+      name: item.name,
+      redirect: item.redirect,
+      meta: {
+        title: item.title,
+        icon: item.icon,
+        hideInMenu: item.hideInMenu,
+        isIframe: item.isIframe,
+        url: item.url,
+        affix: item.affix,
+        hideInBreadcrumb: item.hideInBreadcrumb,
+        hideChildrenInMenu: item.hideChildrenInMenu,
+        keepAlive: item.keepAlive,
+        target: item.target,
+        menuSort: item.menuSort,
+        permission: item.permission,
+        status: item.status
+      }
+    }
+    if(item.component){
+      obj.component = modules[`../pages${item.component}.vue`]
+    }
+    if(item.children && item.children.length > 0){
+      obj.children = generateRoutes(item.children)
+    }
+    return obj
+  })
 }
 
 /**
