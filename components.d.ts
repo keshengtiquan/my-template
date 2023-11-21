@@ -23,6 +23,7 @@ declare module 'vue' {
     AForm: typeof import('ant-design-vue/es')['Form']
     AFormItem: typeof import('ant-design-vue/es')['FormItem']
     AInput: typeof import('ant-design-vue/es')['Input']
+    AInputNumber: typeof import('ant-design-vue/es')['InputNumber']
     AInputPassword: typeof import('ant-design-vue/es')['InputPassword']
     ALayout: typeof import('ant-design-vue/es')['Layout']
     ALayoutContent: typeof import('ant-design-vue/es')['LayoutContent']
@@ -54,6 +55,8 @@ declare module 'vue' {
     ATag: typeof import('ant-design-vue/es')['Tag']
     ATextarea: typeof import('ant-design-vue/es')['Textarea']
     ATooltip: typeof import('ant-design-vue/es')['Tooltip']
+    ATree: typeof import('ant-design-vue/es')['Tree']
+    ATreeSelect: typeof import('ant-design-vue/es')['TreeSelect']
     IconSelect: typeof import('./src/components/icon-select/index.vue')['default']
     PageContainer: typeof import('./src/components/page-container/index.vue')['default']
     ProTable: typeof import('./src/components/pro-table/index.vue')['default']
@@ -61,5 +64,6 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     Setting: typeof import('./src/components/pro-table/component/setting.vue')['default']
     SettingCb: typeof import('./src/components/pro-table/component/setting-cb.vue')['default']
+    TreeSelect: typeof import('./src/components/tree-select/index.vue')['default']
   }
 }

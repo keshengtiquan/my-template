@@ -5,7 +5,7 @@ import Axios, {
 } from "axios";
 import {stringify} from "qs";
 import {ContentTypeEnum} from "@/enums";
-
+import router from '@/router'
 const defaultConfig: AxiosRequestConfig = {
   baseURL: '/api',
   // 请求超时时间
@@ -58,8 +58,7 @@ class Http {
             
             break;
           case 401:
-            
-            
+            router.replace('/login')
             break;
         }
       }

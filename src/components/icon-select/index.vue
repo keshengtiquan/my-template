@@ -1,56 +1,70 @@
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
+import {onMounted, ref, toRef} from "vue";
 import iconData from './icon-data.ts'
-const selectIcon = ref()
-const current = ref(1)
-const total = ref(iconData.length)
-const iconListData = ref<string[]>([])
-const pageSize = ref(35)
-
-
-const getData = (page: number, pageSize: number) => {
-  iconListData.value = iconData.slice(page * pageSize, page * pageSize + pageSize)
+import { theme } from 'ant-design-vue';
+import * as _ from 'lodash'
+type iconKey = 'directionIcons' | 'suggestionIcons' | 'eidtIcons' | 'dataIcons' | 'brandIcons' | 'websIcons'
+const { useToken } = theme;
+const { token } = useToken();
+const props = defineProps<{
+  modelValue: string
+}>()
+const emit = defineEmits(['update:modelValue']);
+const activeKey = ref<iconKey>('websIcons');
+const inputValue = toRef(props, "modelValue");
+const onChangeSelect = (item: string) => {
+  emit("update:modelValue", item);
 }
-
 onMounted(() => {
-  getData(1, 35)
+  const key = _.findKey(iconData, (icons) => icons.includes(inputValue.value))
+  if(key){
+    activeKey.value = key as iconKey
+  }
 })
 
 </script>
 <template>
-    <a-popover placement="bottom" trigger="click" >
+    <a-popover placement="bottomLeft" trigger="click" >
       <template #content>
-        <ul class="iconList">
+        <a-tabs v-model:activeKey="activeKey" size="small" class="w-400px">
+          <a-tab-pane key="websIcons" tab="通用图标"></a-tab-pane>
+          <a-tab-pane key="directionIcons" tab="方向性图标"></a-tab-pane>
+          <a-tab-pane key="suggestionIcons" tab="建议性图标"></a-tab-pane>
+          <a-tab-pane key="eidtIcons" tab="编辑类图标"></a-tab-pane>
+          <a-tab-pane key="dataIcons" tab="数据类图标"></a-tab-pane>
+          <a-tab-pane key="brandIcons" tab="品牌和标识"></a-tab-pane>
+        </a-tabs>
+        <ul class="flex flex-wrap px-2 ml-2 w-400px h-356px overflow-auto flex-content-start">
           <li
-              v-for="(item, key) in iconListData"
+              v-for="(item, key) in iconData[activeKey]"
               :key="key"
               :title="item"
-              class="icon-item w-full border border-solid cursor-pointer"
+              :style="{borderColor: item === inputValue ? token.colorPrimary : '', color: item === inputValue ? token.colorPrimary : ''}"
+              class="hover-scale flex items-center justify-center h-32px w-32px mt-1 mr-2 border border-solid cursor-pointer"
+              @click="onChangeSelect(item)"
           >
-            <Component :is="item" />
+            <Component :is="item" class="child-component"/>
           </li>
         </ul>
-        <a-pagination v-model:current="current" size="small" :showSizeChanger="false" :page-size="pageSize" @change="(page:number,pageSize:number) => getData(page,pageSize)" :total="total" show-less-items />
       </template>
-      <a-input :value="selectIcon" readOnly>
+      <a-input v-model:value="inputValue" >
         <template #addonBefore>
-          <LogoutOutlined />
+          <Component :is="inputValue" />
         </template>
       </a-input>
     </a-popover>
 </template>
-<style scoped>
-.iconList {
-  margin: 0;
+<style lang="scss" scoped>
+ul {
   padding: 0;
   list-style: none;
-  display: grid;
-  grid-template-columns: repeat(7, 14.2%);
-  grid-template-rows: repeat(5, 20%);
-  grid-row-gap: 5px;
-  grid-column-gap: 5px;
 }
-.icon-item {
-  list-style-type: none;
+.hover-scale:hover {
+  border-color: #1890ff;
+}
+.hover-scale:hover > .child-component {
+  color: #1890ff;
+  transform: scale(1.3);
+  transition: transform 0.3s ease; /* 可以添加过渡效果 */
 }
 </style>
