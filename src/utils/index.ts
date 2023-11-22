@@ -30,7 +30,9 @@ export const generateRoutes = (data: any[]) => {
         status: item.status
       }
     }
-    if(item.component){
+    if(item.isIframe){
+      obj.component = modules['../pages/common/iframe.vue']
+    }else if(item.component){
       obj.component = modules[`../pages${item.component}.vue`]
     }
     if(item.children && item.children.length > 0){

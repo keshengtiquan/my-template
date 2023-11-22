@@ -3,13 +3,12 @@ import type {TableColumnType} from "ant-design-vue";
 import Setting from './component/setting.vue'
 import {reactive, ref} from "vue";
 import * as _ from 'lodash'
-import {UserOutlined} from "@ant-design/icons-vue";
 
 const props = defineProps<{
   columns: any[],
   dataSource?: any[],
 }>()
-const emits = defineEmits(['search', 'refresh'])
+const emits = defineEmits(['search', 'refresh', 'reload'])
 const tableColumns = ref<any[]>([])
 const expand = ref(false);
 const formState = reactive<Record<any, any>>({});
@@ -58,8 +57,14 @@ const onChange = (pagination: any, filters: any, sorter: any) => {
   emits('search', _.pickBy(formState, value => {
     return value !== '' && value !== null && value !== undefined;
   }))
-
 }
+
+const onReload = () => {
+  return _.pickBy(formState, value => {
+    return value !== '' && value !== null && value !== undefined;
+  })
+}
+
 const onRefresh = () => {
   emits('refresh')
 }
@@ -71,6 +76,8 @@ const handleResizeColumn = (w: number, col: any) => {
 const handleClick = ({key}: any) => {
   tableSize.value = key
 }
+
+defineExpose({onReload})
 
 </script>
 

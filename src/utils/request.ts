@@ -77,7 +77,7 @@ class Http {
     })
   }
   
-  public post<P, T>(url: string, params?: AxiosRequestConfig<T>, config?: AxiosRequestConfig): Promise<P> {
+  public post<P, T=any>(url: string, params?: AxiosRequestConfig<T>, config?: AxiosRequestConfig): Promise<P> {
     return this.request<P>("post", url, params, config)
   }
   

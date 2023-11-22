@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref, toRef} from "vue";
+import {onMounted, ref,computed} from "vue";
 import iconData from './icon-data.ts'
 import { theme } from 'ant-design-vue';
 import * as _ from 'lodash'
@@ -9,11 +9,20 @@ const { token } = useToken();
 const props = defineProps<{
   modelValue: string
 }>()
-const emit = defineEmits(['update:modelValue']);
+const emits = defineEmits(['update:modelValue']);
 const activeKey = ref<iconKey>('websIcons');
-const inputValue = toRef(props, "modelValue");
+// const inputValue = toRef(props, "modelValue");
+const inputValue = computed({
+  set(value: string) {
+    emits("update:modelValue", value)
+  },
+  get(): string {
+    return props.modelValue
+  },
+})
 const onChangeSelect = (item: string) => {
-  emit("update:modelValue", item);
+  emits("update:modelValue", item);
+
 }
 onMounted(() => {
   const key = _.findKey(iconData, (icons) => icons.includes(inputValue.value))
@@ -47,7 +56,7 @@ onMounted(() => {
           </li>
         </ul>
       </template>
-      <a-input v-model:value="inputValue" >
+      <a-input v-model:value="inputValue" readOnly allowClear>
         <template #addonBefore>
           <Component :is="inputValue" />
         </template>
