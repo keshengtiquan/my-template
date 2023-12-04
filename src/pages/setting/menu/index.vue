@@ -23,7 +23,7 @@ const columns = [
   {title: '创建时间', dataIndex: 'createTime',width: 180, resizable: true},
   {title: '更新人', dataIndex: 'updateBy',width: 100, resizable: true},
   {title: '更新时间', dataIndex: 'updateTime',width: 180, resizable: true},
-  {title: '操作', dataIndex: 'actions',width: 150,align: 'center', resizable: true, fixed: 'right'},
+  {title: '操作', dataIndex: 'actions',width: 150,align: 'center', fixed: 'right'},
 ]
 const menuModalRef = ref()
 const menuTableRef = ref()
