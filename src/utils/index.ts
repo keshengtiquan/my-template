@@ -64,3 +64,29 @@ export const extractPathList = (tree: any[], uniqueId?: string): any => {
   }
   return expandedPaths;
 };
+
+/**
+ * 获取树形结构的所有叶子节点ID
+ * @param tree
+ */
+export const extractChildrenIdList = (tree: any[]) => {
+  if (!Array.isArray(tree)) {
+    console.warn("tree must be an array");
+    return [];
+  }
+  if (!tree || tree.length === 0) return [];
+  const idList: Array<string> = []
+  const dfs = (nodes: any[]) => {
+    for (const node of nodes) {
+      const hasChildren = node.children && node.children.length > 0;
+      if (hasChildren) {
+        dfs(node.children);
+      } else {
+        idList.push(node["id"]);
+      }
+    }
+  };
+  
+  dfs(tree);
+  return idList
+}

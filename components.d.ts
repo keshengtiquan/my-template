@@ -61,15 +61,18 @@ declare module 'vue' {
     ATooltip: typeof import('ant-design-vue/es')['Tooltip']
     ATree: typeof import('ant-design-vue/es')['Tree']
     ATreeSelect: typeof import('ant-design-vue/es')['TreeSelect']
+    ATypographyParagraph: typeof import('ant-design-vue/es')['TypographyParagraph']
     DescriptionDrawer: typeof import('./src/components/description-drawer/index.vue')['default']
     IconSelect: typeof import('./src/components/icon-select/index.vue')['default']
     PageContainer: typeof import('./src/components/page-container/index.vue')['default']
     ProTable: typeof import('./src/components/pro-table/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Select: typeof import('./src/components/select/index.vue')['default']
     Setting: typeof import('./src/components/pro-table/component/setting.vue')['default']
     SettingCb: typeof import('./src/components/pro-table/component/setting-cb.vue')['default']
     TooltipIcon: typeof import('./src/components/tooltip-icon/index.vue')['default']
+    Tree: typeof import('./src/components/tree/index.vue')['default']
     TreeSelect: typeof import('./src/components/tree-select/index.vue')['default']
   }
 }

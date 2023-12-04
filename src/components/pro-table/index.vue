@@ -7,8 +7,9 @@ import * as _ from 'lodash'
 const props = defineProps<{
   columns: any[],
   dataSource?: any[],
+  title?: string
 }>()
-const emits = defineEmits(['search', 'refresh', 'reload'])
+const emits = defineEmits(['search', 'refresh'])
 const tableColumns = ref<any[]>([])
 const expand = ref(false);
 const formState = reactive<Record<any, any>>({});
@@ -46,7 +47,7 @@ const onChange = (pagination: any, filters: any, sorter: any) => {
   if (!_.isEmpty(sorter)) {
     if (sorter.order) {
       formState['sortField'] = sorter.field
-      formState['sortOrder'] = sorter.order
+      formState['sortOrder'] = sorter.order === 'ascend' ? 'ASC' : 'DESC'
     } else {
       delete formState.sortField
       delete formState.sortOrder
@@ -69,7 +70,6 @@ const onRefresh = () => {
   emits('refresh')
 }
 const handleResizeColumn = (w: number, col: any) => {
-  console.log(w, col)
   col.width = w;
 }
 
@@ -97,14 +97,16 @@ defineExpose({onReload})
                 :name="item.dataIndex"
                 :label="item.title"
             >
-              <a-input v-model:value="formState[item.dataIndex]" :placeholder="`请输入${item.title}`"></a-input>
+              <a-input v-if="item.valueType === 'input'" allowClear v-model:value="formState[item.dataIndex]" :placeholder="`请输入${item.title}`"></a-input>
+              <a-select v-if="item.valueType === 'select'" allowClear :options="item.valueEnum" v-model:value="formState[item.dataIndex]" :placeholder="`请输入${item.title}`">
+              </a-select>
             </a-form-item>
           </a-col>
         </template>
         <a-col :span="!expand ? 6 : (4 - (searchArray.length % 4)) * 6 " style="text-align: right">
           <a-button type="primary" html-type="submit">搜索</a-button>
           <a-button style="margin: 0 8px" @click="() => formRef.resetFields()">清除</a-button>
-          <a style="font-size: 12px" @click="expand = !expand">
+          <a style="font-size: 12px" @click="expand = !expand" v-if="searchArray.length > 3">
             <template v-if="expand">
               <UpOutlined/>
             </template>
@@ -120,7 +122,8 @@ defineExpose({onReload})
   <div class="bg-[var(--bg-page-container)] rd-8px px-24px">
     <div class="flex justify-between bg-[var(--bg-page-container)] py-16px rd-t-8px">
       <div class="h-32px flex items-center">
-        <slot name="toolLeft"></slot>
+        <span v-if="props.title" class="font-600 font-size-16px">{{title}}</span>
+        <slot v-else name="toolLeft"></slot>
       </div>
       <div class="h-32px flex items-center">
         <slot name="toolRight"></slot>
@@ -164,7 +167,7 @@ defineExpose({onReload})
       </div>
     </div>
     <a-table v-bind="$attrs" :size="tableSize" @resizeColumn="handleResizeColumn" @change="onChange" :columns="tableColumns"
-             :dataSource="dataSource" :scroll="{ x: 1000 }">
+             :dataSource="dataSource" >
       <template v-for="(_item, key, index) in $slots" :key="index" v-slot:[key]="_item">
         <slot :name="key" v-bind="_item"></slot>
       </template>

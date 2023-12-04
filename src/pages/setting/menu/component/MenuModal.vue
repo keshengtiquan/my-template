@@ -8,12 +8,14 @@ import {getMenuDataApi} from "@/api/menu";
 import {useCreateMenu} from "@/pages/setting/menu/component/useCreateMenu.ts";
 import {useUpdateMenu} from "@/pages/setting/menu/component/useUpdateMenu.ts";
 import {message} from "ant-design-vue";
-
+import * as _ from 'lodash'
+import {isUrl} from "@/utils";
 const open = ref(false)
 const formRef = ref();
 const title = ref('')
 const currentType = ref<string>('')
 const emits = defineEmits(['submit'])
+const showTarget = ref(false)
 const formState = reactive({
   parentId: 0,
   menuType: 'C',
@@ -50,10 +52,12 @@ const openModal = async(type: ModalType, id?: number | undefined, parentId?: num
   currentType.value = type
   open.value = !open.value;
   if(parentId && type === ModalType.ADD){
+    formState.menuType = 'M'
     formState.parentId = parentId
   }
   if(id && type === ModalType.Edit){
     const data = await getMenuById(id)
+    console.log(data)
     Object.assign(formState, data)
   }
 }
@@ -81,6 +85,10 @@ const close = () => {
   formRef.value.resetFields();
   open.value = false
 }
+const pathChange = _.debounce((e) => {
+  console.log(isUrl(e.target.value))
+  showTarget.value = isUrl(e.target.value)
+}, 150)
 watch(() => formState.menuType, (val: string) => {
   if (val === 'C') {
     formState.parentId = 0
@@ -125,7 +133,7 @@ defineExpose({openModal})
         </a-col>
         <a-col :span="12" v-if="formState.menuType !== 'F'">
           <a-form-item label="路由地址" name="path">
-            <a-input v-model:value="formState.path"/>
+            <a-input v-model:value="formState.path" @change="pathChange"/>
           </a-form-item>
         </a-col>
         <a-col :span="12" v-if="formState.menuType !== 'F'">
@@ -135,7 +143,7 @@ defineExpose({openModal})
         </a-col>
         <a-col :span="12" v-if="formState.menuType === 'M'">
           <a-form-item label="组件地址" name="component">
-            <a-input v-model:value="formState.component"/>
+            <a-input v-model:value="formState.component" />
           </a-form-item>
         </a-col>
         <a-col :span="12" v-if="formState.menuType !== 'F'">
@@ -148,6 +156,15 @@ defineExpose({openModal})
             <a-input v-model:value="formState.permission"/>
           </a-form-item>
         </a-col>
+        <a-col :span="12" v-if="formState.menuType === 'M' && showTarget">
+          <a-form-item label="打开方式" name="target">
+            <a-select v-model:value="formState.target" class="w-full">
+              <a-select-option value="_blank">_blank</a-select-option>
+              <a-select-option value="_self">_self</a-select-option>
+              <a-select-option value="_parent">_parent</a-select-option>
+            </a-select>
+          </a-form-item>
+        </a-col>
         <a-col :span="12" v-if="formState.menuType === 'M'">
           <a-form-item label="是否缓存" name="keepAlive">
             <a-radio-group v-model:value="formState.keepAlive" button-style="solid">
@@ -157,7 +174,7 @@ defineExpose({openModal})
           </a-form-item>
         </a-col>
         <a-col :span="12" v-if="formState.menuType !== 'F'">
-          <a-form-item label="是否外链" name="isIframe">
+          <a-form-item label="是否内链" name="isIframe">
             <a-radio-group v-model:value="formState.isIframe" button-style="solid">
               <a-radio-button :value="true">是</a-radio-button>
               <a-radio-button :value="false">否</a-radio-button>
@@ -165,19 +182,11 @@ defineExpose({openModal})
           </a-form-item>
         </a-col>
         <a-col :span="12" v-if="formState.isIframe">
-          <a-form-item label="外链地址" name="url">
+          <a-form-item label="内链地址" name="url">
             <a-input v-model:value="formState.url"/>
           </a-form-item>
         </a-col>
-        <a-col :span="12" v-if="formState.menuType === 'M'">
-          <a-form-item label="打开方式" name="target">
-            <a-select v-model:value="formState.target" class="w-full">
-              <a-select-option value="_blank">_blank</a-select-option>
-              <a-select-option value="_self">_self</a-select-option>
-              <a-select-option value="_parent">_parent</a-select-option>
-            </a-select>
-          </a-form-item>
-        </a-col>
+
         <a-col :span="12" v-if="formState.menuType !== 'F'">
           <a-form-item label="是否隐藏" name="hideInMenu">
             <a-radio-group v-model:value="formState.hideInMenu" button-style="solid">

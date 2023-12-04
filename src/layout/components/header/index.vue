@@ -109,7 +109,7 @@ const headerStyle = computed<CSSProperties>(() => {
 
 .trigger {
   font-size: 18px;
-  padding: 0 24px;
+  padding: 0 15px;
   cursor: pointer;
   transition: color 0.3s;
   line-height: v-bind(headerHeight) px;

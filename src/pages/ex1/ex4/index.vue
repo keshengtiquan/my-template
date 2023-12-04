@@ -75,7 +75,7 @@ export default {
         <a-tab-pane key="3" tab="Tab 3"></a-tab-pane>
       </a-tabs>
     </template>
-    <ProTable :columns="columns" :loading="loading" :pagination="pagination" :data-source="tableData" @refresh="getTableData()"
+    <ProTable :columns="columns"  :loading="loading" :pagination="pagination" :data-source="tableData" @refresh="getTableData()"
               @search="(values) => getTableData(values)">
       <template #toolLeft>
         <h3>测试表格</h3>

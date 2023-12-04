@@ -2,7 +2,7 @@
 import PageContainer from '@/components/page-container/index.vue'
 import ProTable from '@/components/pro-table/index.vue'
 import {useTable} from "@/composables/useTable.ts";
-import {deleteMenuApi, getMenuListApi} from "@/api/menu";
+import {deleteMenuApi, forbiddenMenuApi, getMenuListApi} from "@/api/menu";
 import MenuModal from "@/pages/setting/menu/component/MenuModal.vue";
 import {createVNode, ref} from "vue";
 import {ModalType} from "@/enums";
@@ -12,17 +12,18 @@ import {message, Modal} from "ant-design-vue";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 
 const columns = [
-  {title: 'id', dataIndex: 'id'},
-  {title: '菜单名称', dataIndex: 'title',},
-  {title: '路由地址', dataIndex: 'path',},
-  {title: '图标', dataIndex: 'icon'},
-  {title: '菜单类型', dataIndex: 'menuType'},
-  {title: '权限标识', dataIndex: 'permission'},
-  {title: '创建人', dataIndex: 'createBy'},
-  {title: '创建时间', dataIndex: 'createTime',width: 180},
-  {title: '更新人', dataIndex: 'updateBy'},
-  {title: '更新时间', dataIndex: 'updateTime',width: 180},
-  {title: '操作', dataIndex: 'actions',width: 180},
+  {title: 'id', dataIndex: 'id', width: 180,align: 'center', resizable: true},
+  {title: '菜单名称', dataIndex: 'title',width: 100, resizable: true},
+  {title: '路由地址', dataIndex: 'path',width: 100, resizable: true},
+  {title: '图标', dataIndex: 'icon',width: 100, resizable: true},
+  {title: '是否禁用', dataIndex: 'status',width: 100, resizable: true},
+  {title: '权限标识', dataIndex: 'permission',width: 100, resizable: true},
+  {title: '排序', dataIndex: 'menuSort',width: 100, resizable: true},
+  {title: '创建人', dataIndex: 'createBy',width: 100, resizable: true},
+  {title: '创建时间', dataIndex: 'createTime',width: 180, resizable: true},
+  {title: '更新人', dataIndex: 'updateBy',width: 100, resizable: true},
+  {title: '更新时间', dataIndex: 'updateTime',width: 180, resizable: true},
+  {title: '操作', dataIndex: 'actions',width: 150,align: 'center', resizable: true, fixed: 'right'},
 ]
 const menuModalRef = ref()
 const menuTableRef = ref()
@@ -33,9 +34,24 @@ const viewHandle = (data: object) => {
   viewDrawerOpen.value = true
   descriptionData.value = data
 }
+/**
+ * 禁用菜单
+ * @param checked 是否禁用 true| false
+ * @param id 菜单id
+ */
+const onStatusChange = async (checked: boolean,id:number) => {
+  const res = await forbiddenMenuApi({id,status:checked?'1':'0'})
+  if(res.code === 200) {
+    message.success(res.message)
+  }
+}
+/**
+ * 删除菜单
+ * @param data record
+ */
 const deleteMenu = (data: any) => {
   Modal.confirm({
-    title: `是否删除${data.title}`,
+    title: `是否删除【${data.title}】`,
     icon: createVNode(ExclamationCircleOutlined),
     content: '删除后不可恢复！',
     onOk() {
@@ -55,9 +71,9 @@ const deleteMenu = (data: any) => {
 </script>
 <template>
   <PageContainer>
-    <ProTable :columns="columns" rowKey="id" ref="menuTableRef" :loading="loading" @refresh="() => getTableData()" :pagination="false" :data-source="tableData">
+    <ProTable :columns="columns" :scroll="{ x: 1500 }" rowKey="id" ref="menuTableRef" :loading="loading" @refresh="() => getTableData()" :pagination="false" :data-source="tableData">
       <template #toolLeft>
-        <h3>菜单表格</h3>
+        <span class="font-600 font-size-16px">菜单表格</span>
       </template>
       <template #toolRight>
         <a-button type="primary" @click="menuModalRef.openModal(ModalType.ADD,undefined,0)">新增</a-button>
@@ -65,6 +81,9 @@ const deleteMenu = (data: any) => {
       <template #bodyCell="{ column,record }">
         <template v-if="column.dataIndex === 'icon'">
           <Component v-if="record.icon" :is="record.icon"/>
+        </template>
+        <template v-else-if="column.dataIndex === 'status'">
+          <a-switch checked-children="禁用" un-checked-children="启用" checkedValue="1" v-model:checked="record.status" @change="(checked: boolean) =>onStatusChange(checked,record.id)" />
         </template>
         <template v-else-if="column.dataIndex === 'actions'">
           <a-space :size="10">

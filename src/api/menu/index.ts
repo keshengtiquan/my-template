@@ -45,3 +45,7 @@ export const updateMenuApi = (data: Object) => {
 export const deleteMenuApi = (data: Object) => {
   return http.post<AxiosResults<any>>('/menu/delete', {data})
 }
+
+export const forbiddenMenuApi = (data: Object) => {
+  return http.post<AxiosResults<any>>('/menu/forbidden', {data})
+}

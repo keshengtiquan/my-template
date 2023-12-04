@@ -6,6 +6,7 @@ import Axios, {
 import {stringify} from "qs";
 import {ContentTypeEnum} from "@/enums";
 import router from '@/router'
+import {notification} from "ant-design-vue";
 const defaultConfig: AxiosRequestConfig = {
   baseURL: '/api',
   // 请求超时时间
@@ -49,16 +50,27 @@ class Http {
     Http.axiosInstance.interceptors.response.use((response) => {
       return response.data
     }, async (error) => {
+      console.log(error)
       if (error.response) {
         switch (error.response.status) {
           case 500:
             
             break;
           case 400:
-            
+            notification.open({
+              message: '400 出错啦!',
+              description: error.response.data.message
+            });
             break;
           case 401:
+            localStorage.removeItem('token')
             router.replace('/login')
+            break;
+          case 403:
+            notification.open({
+              message: '403 出错啦!',
+              description: error.response.data.message
+            });
             break;
         }
       }

@@ -37,6 +37,11 @@ export const useUserStore = defineStore('user', () => {
     const {data} = await getUserInfoApi()
     userInfo.value = data
   }
+  
+  const logout = () => {
+    menuData.value = []
+    localStorage.removeItem('token')
+  }
   return {
     routerData,
     menuData,
@@ -44,6 +49,7 @@ export const useUserStore = defineStore('user', () => {
     avatar,
     nickname,
     // roles,
+    logout,
     getMenuData,
     getUserInfo,
     generateDynamicRoutes

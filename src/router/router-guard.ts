@@ -1,27 +1,31 @@
 import router from '@/router'
 import {useUserStore} from "@/store";
 import {AxiosError} from "axios";
+
 const allowList = ['/login', '/error', '/401', '/404', '/403']
 const loginPath = '/login'
+document.title = import.meta.env.VITE_APP_NAME
 
-router.beforeEach(async (to,_,next) => {
+router.beforeEach(async (to, _, next) => {
   const userStore = useUserStore()
   const token = localStorage.getItem('token')
-  console.log(!allowList.includes(to.path) )
-  if(token){
-    if(!userStore.userInfo && !allowList.includes(to.path) && !to.path.startsWith('/redirect')){
+  document.title = to.meta.title
+    ? `${to.meta.title} - ${import.meta.env.VITE_APP_NAME}`
+    : `${import.meta.env.VITE_APP_NAME}`
+  if (token) {
+    if (!userStore.userInfo && !allowList.includes(to.path) && !to.path.startsWith('/redirect') || userStore.menuData.length === 0) {
       try {
         await userStore.getUserInfo()
+        console.log(19)
         // 获取路由菜单的信息
         const currentRoute = await userStore.generateDynamicRoutes()
         router.addRoute(currentRoute)
-        console.log(router.getRoutes())
         next({
           ...to,
           replace: true,
         })
         return
-      }catch (e){
+      } catch (e) {
         if (e instanceof AxiosError && e?.response?.status === 401) {
           // 跳转到error页面
           next({
@@ -29,10 +33,10 @@ router.beforeEach(async (to,_,next) => {
           })
         }
       }
-    }else {
+    } else {
       next()
     }
-  }else {
+  } else {
     // if (!allowList.includes(to.path) && !to.path.startsWith('/redirect')) {
     //   next({
     //     path: loginPath,

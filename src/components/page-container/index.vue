@@ -3,6 +3,7 @@ import {useRoute} from "vue-router";
 import {computed} from "vue";
 import {useAppStore} from '@/store'
 import {storeToRefs} from "pinia";
+
 const appStore = useAppStore()
 const {layoutSetting} = storeToRefs(appStore)
 const route: any = useRoute()
@@ -23,40 +24,41 @@ const contentCls = computed(() => {
 </script>
 <template>
   <div>
-    <div class="bg-[var(--bg-page-container)] px-24px mb-16px pt-12px pb-16px">
+    <div class="bg-[var(--bg-page-container)] px-24px mb-16px pt-12px pb-5px">
       <a-breadcrumb v-if="!route.meta.hideInBreadcrumb">
         <template v-if="route.matched?.length">
           <a-breadcrumb-item v-for="item in route.matched" :key="item.path">
-            {{ item.meta?.title}}
+            {{ item.meta?.title }}
           </a-breadcrumb-item>
         </template>
       </a-breadcrumb>
-      <div flex  justify-between>
+      <div flex justify-between>
         <div flex items-center my-4px of-hidden>
           <slot name="title">
-            <span text-20px line-height-32px mr-12px mb-0 truncate font-600>{{ title ? title :route.meta?.title }}</span>
+            <span text-20px line-height-32px mr-12px mb-0 truncate font-600>{{
+                title ? title : route.meta?.title
+              }}</span>
           </slot>
         </div>
         <div>
-          <slot name="extra" />
+          <slot name="extra"/>
         </div>
       </div>
-      <div flex w-full>
-        <slot name="content" />
+      <div  w-full>
+        <slot name="content"/>
       </div>
     </div>
     <div class="mx-24px">
       <div :class="contentCls">
-        <slot />
+        <slot/>
       </div>
     </div>
   </div>
 </template>
 
 
-
 <style scoped>
-.ant-tabs-top >:deep(.ant-tabs-nav) {
+.ant-tabs-top > :deep(.ant-tabs-nav) {
   margin: 0;
 }
 </style>

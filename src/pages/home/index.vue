@@ -1,6 +1,6 @@
 <template>
   <div>
-    ex6
+    首页
   </div>
 </template>
 

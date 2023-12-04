@@ -1,7 +1,7 @@
 import type { RouteRecordRaw } from 'vue-router'
 const Layout = () => import('@/layout/index.vue')
 
-export const ROOT_ROUTE_REDIRECT_PATH = '/ex1/ex4'
+export const ROOT_ROUTE_REDIRECT_PATH = '/index'
 
 
 export const rootRoute: RouteRecordRaw = {

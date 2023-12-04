@@ -2,7 +2,7 @@
 import {computed} from 'vue';
 import {useTreeSelect} from "@/composables/useTreeSelect.ts";
 const props = defineProps<{
-  modelValue: undefined  | number,
+  modelValue: any,
   request: Function
 }>()
 const emits = defineEmits(['update:modelValue'])

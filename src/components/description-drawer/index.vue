@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, toRef} from "vue";
+import {computed} from "vue";
 
 const props = withDefaults(defineProps<{
   open: boolean,
@@ -16,7 +16,7 @@ const drawerOpen = computed({
     return props.open
   },
   set(value: boolean){
-    emits('update:open', false)
+    emits('update:open', value)
   }
 })
 

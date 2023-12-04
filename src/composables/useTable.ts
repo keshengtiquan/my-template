@@ -1,6 +1,12 @@
 import {computed, onMounted, ref} from "vue";
 import * as _ from 'lodash'
 
+/**
+ * 查询表格数据
+ * @param request 查询的API
+ * @param initParams 初始参数
+ * @param hasPagination 有没有分页
+ */
 export const useTable = (request: Function, initParams?: Record<string, any>, hasPagination= true) => {
   const tableData = ref<any[]>()
   const total = ref()
@@ -17,7 +23,6 @@ export const useTable = (request: Function, initParams?: Record<string, any>, ha
         params = initParams
       }
     }
-    console.log('params',  params)
     const res = await request(params)
     if(hasPagination){
       tableData.value = res.data.results
@@ -36,7 +41,7 @@ export const useTable = (request: Function, initParams?: Record<string, any>, ha
     pageSize: pageSize.value,
     showQuickJumper: true,
     showTotal: ((total: number) => {
-      return `共 ${total} 条`;
+      return `第 ${current.value}-${current.value * pageSize.value} 条/共 ${total} 条`;
     })
   }));
   onMounted(async () => {
