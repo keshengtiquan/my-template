@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import PageContainer from '@/components/page-container/index.vue'
 import ProTable from '@/components/pro-table/index.vue'
-import {Router, useRouter} from "vue-router";
+import {useRouter} from "vue-router";
 const router = useRouter()
 const columns = [
   {title: '模版名称', dataIndex: 'fileName',},

@@ -7,7 +7,7 @@ import {storeToRefs} from "pinia";
 const appStore = useAppStore()
 const {layoutSetting} = storeToRefs(appStore)
 const route: any = useRoute()
-const props = defineProps<{
+defineProps<{
   title?: string
 }>()
 const contentCls = computed(() => {
@@ -66,7 +66,7 @@ const footerCls = computed<CSSProperties>(() => {
       </div>
     </div>
     <div class="fixed bottom-0 bg-[var(--bg-color)] w-full h-56px shadow flex ">
-      <div class="flex justify-end items-center" :style="footerCls">
+      <div class="flex justify-end items-center px-16px" :style="footerCls">
         <slot name="footer"/>
       </div>
     </div>
