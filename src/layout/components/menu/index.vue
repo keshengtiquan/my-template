@@ -28,6 +28,7 @@ onMounted(() => {
   });
 })
 watch(() =>route.path, (newVal) => {
+  //TODO 激活菜单
   selectedKeys.value = [newVal]
 },{
   immediate: true,

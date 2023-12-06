@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {useRoute} from "vue-router";
-import {computed} from "vue";
+import {computed, CSSProperties} from "vue";
 import {useAppStore} from '@/store'
 import {storeToRefs} from "pinia";
 
@@ -18,8 +18,20 @@ const contentCls = computed(() => {
     cls.push('w-full')
   else if (layoutSetting.value.contentWidth === 'Fixed')
     cls.push(...['max-w-1200px w-1200px', 'mx-auto'])
-
   return cls
+})
+
+const footerCls = computed<CSSProperties>(() => {
+  const defaultStyle: CSSProperties = {
+    transition: 'all 0.2s'
+  }
+  if(layoutSetting.value.layout === "side" || layoutSetting.value.layout === "mix"){
+    defaultStyle.width = `calc(100% - ${layoutSetting.value.collapsed ? 48 : 230}px)`
+  }
+  if(layoutSetting.value.layout === "top") {
+    defaultStyle.width = '100%'
+  }
+  return defaultStyle
 })
 </script>
 <template>
@@ -51,6 +63,11 @@ const contentCls = computed(() => {
     <div class="mx-24px">
       <div :class="contentCls">
         <slot/>
+      </div>
+    </div>
+    <div class="fixed bottom-0 bg-[var(--bg-color)] w-full h-56px shadow flex ">
+      <div class="flex justify-end items-center" :style="footerCls">
+        <slot name="footer"/>
       </div>
     </div>
   </div>
