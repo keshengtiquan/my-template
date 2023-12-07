@@ -6,8 +6,10 @@ export const isUrl = (inputStr: string) => {
   // 使用正则表达式测试输入字符串
   return urlPattern.test(inputStr);
 }
-
-
+/**
+ * 转换菜单
+ * @param data
+ */
 export const generateRoutes = (data: any[]) => {
   return data.map(item => {
     const obj: any = {
@@ -89,4 +91,36 @@ export const extractChildrenIdList = (tree: any[]) => {
   
   dfs(tree);
   return idList
+}
+
+/**
+ * 字节转换方法
+ * @param bytes 字节大小
+ */
+export const formatByte = (bytes: number) => {
+  if (bytes === 0) return '0 Bytes';
+  
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+
+/**
+ *  节流函数
+ * @param fn 节流方法
+ * @param wait 间隔时间
+ */
+export const throttle = (fn: Function, wait: number) => {
+  let timer: any = null
+  return () => {
+    if(timer) return
+    timer = setTimeout(()=> {
+      fn()
+      timer = null
+    },wait)
+  }
 }

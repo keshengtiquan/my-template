@@ -14,3 +14,7 @@ export enum ModalType {
   ADD = 'add',
   Edit = 'edit',
 }
+
+export enum FileType {
+  XLSX = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+}

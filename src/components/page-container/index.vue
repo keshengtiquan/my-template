@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {useRoute} from "vue-router";
-import {computed, CSSProperties} from "vue";
+import {computed, CSSProperties, onMounted} from "vue";
 import {useAppStore} from '@/store'
 import {storeToRefs} from "pinia";
 
@@ -65,9 +65,12 @@ const footerCls = computed<CSSProperties>(() => {
         <slot/>
       </div>
     </div>
-    <div class="fixed bottom-0 bg-[var(--bg-color)] w-full h-56px shadow flex ">
+    <div class="h-56px" v-if="$slots.footer">
+    </div>
+    <div v-if="$slots.footer" class="fixed bottom-0 bg-[var(--bg-color)] w-full h-56px shadow flex ">
       <div class="flex justify-end items-center px-16px" :style="footerCls">
-        <slot name="footer"/>
+        <slot name="footer">
+        </slot>
       </div>
     </div>
   </div>
