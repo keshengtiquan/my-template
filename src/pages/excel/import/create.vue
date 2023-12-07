@@ -22,6 +22,7 @@ const columns = [
 ]
 const dataSource = ref<any[]>([]);
 const open = ref(false)
+const sheetNameOption = ref<any[]>([])
 /**
  * 新增模板字段
  */
@@ -32,6 +33,21 @@ const handleAdd = () => {
     excelFiled: '',
     remarks: ''
   })
+}
+
+/**
+ * 文件上传完成后的返回结果
+ */
+const onSubmit = (values: {sheetNames: any[], fileName: string}[]) => {
+  const option: {value: string, label: string}[] = []
+  console.log(values)
+  values[0].sheetNames.forEach(item => {
+    option.push({
+      value: item,
+      label: item,
+    })
+  })
+  sheetNameOption.value = option
 }
 
 /**
@@ -115,7 +131,7 @@ const checkPlaceholder = (dataIndex: string) => {
         <a-row>
           <a-col :span="8">
             <a-form-item label="解析页签名称" name="sheetName" :rules="[{ required: true, message: '请选择文件名称' }]">
-              <a-input v-model:value="formState.sheetName" placeholder="模板名称"></a-input>
+              <a-select v-model:value="formState.sheetName"   placeholder="Tags Mode" :options="sheetNameOption"></a-select>
             </a-form-item>
           </a-col>
           <a-col :span="8">
@@ -153,7 +169,7 @@ const checkPlaceholder = (dataIndex: string) => {
         新增字段
       </a-button>
     </a-card>
-    <Upload v-model:open="open" :isMultiple="true" :request="uploadExcelTemplateApi" width="70%" :uploadType="['xlsx']"></Upload>
+    <Upload v-model:open="open" @submit="onSubmit" :isMultiple="true" :request="uploadExcelTemplateApi" width="70%" :uploadType="['xlsx']"></Upload>
   </PageContainer>
 </template>
 <style scoped>

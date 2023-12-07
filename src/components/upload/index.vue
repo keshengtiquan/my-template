@@ -1,13 +1,13 @@
 <template>
-  <a-modal v-model:open="visible" destroyOnClose v-bind="$attrs" @ok="handleOk">
-    <div>
+  <a-modal v-model:open="visible" @cancel="handleCancel" destroyOnClose v-bind="$attrs" @ok="handleOk">
+    <div class="mt-25px">
       <div ref="container" class="drag" @dragenter.prevent="onDragenter" @dragover.prevent="onDragOver"
            @drop.prevent="onDrop">
         <div class="inner">
           <inbox-outlined style="font-size: 60px;"></inbox-outlined>
         </div>
         <div class="inner support">
-          拖拽文件或文件夹上传，支持的文件类型：<span v-for="item in props.uploadType">{{ item }}</span>
+          {{ `拖拽文件${isMultiple ? '或文件夹' : ''}上传，支持的文件类型：` }}<span v-for="item in props.uploadType">{{ item }}</span>
         </div>
         <div class="inner">
           每个文件允许的最大尺寸：{{ props.limit }}M
@@ -72,7 +72,7 @@ const columns = [
   {title: '状态', dataIndex: 'status', align: 'center'},
   {title: '操作', dataIndex: 'action', align: 'center', width: 150}
 ]
-const emits = defineEmits(['update:open'])
+const emits = defineEmits(['update:open', 'submit'])
 const props = withDefaults(defineProps<{
   uploadType: Array<string>,
   limit?: number,
@@ -164,6 +164,9 @@ const readBtnFile = (e: any) => {
 
 //开始上传方法
 const beginUpload = async () => {
+  if(fileArray.value.length === 0 || fileList.value.length === 0) {
+    return
+  }
   loading.value = true
   //重新点击上传
   cancelArray.value = []
@@ -178,6 +181,7 @@ const beginUpload = async () => {
 
   fileArray.value.forEach((file, index) => {
     const formdata = new FormData()
+    console.log(file)
     formdata.append('file', file)
     const CancelToken = axios.CancelToken
     const source = CancelToken.source();
@@ -226,7 +230,9 @@ const beginUpload = async () => {
           } else if (finishCount === tasks.length) {
             loading.value = false
           }
-        })
+        }).finally(() =>{
+      loading.value = false
+    })
   }
 }
 
@@ -264,7 +270,7 @@ const onDrop = async (e: any) => {
         status: 0,
         fileName: item.name,
         fileSize: item.size,
-        fileType: item.type,
+        fileType: extractFileType(item.name),
         index: new Date().getTime()
       })
       fileArray.value.push(item)
@@ -282,6 +288,7 @@ const readFile = (entry: any): Promise<Array<File>> => {
         const entryPromises = entries.map((subEntry: any) => readFile(subEntry));
         Promise.all(entryPromises)
             .then((subFiles) => {
+              console.log(subFiles)
               for (const subFileArray of subFiles) {
                 files.push(...subFileArray);
               }
@@ -291,32 +298,38 @@ const readFile = (entry: any): Promise<Array<File>> => {
       });
     } else {
       entry.file((f: any) => {
-        if (!props.uploadType?.includes(f.type)) {
-          if (f.type) {
-            message.error(`所选的文件【${f.name}】格式不正确`)
-          }
+        const extractFileName = extractFileType(f.name)
+        if (!props.uploadType?.includes(extractFileName)) {
+          message.error(`所选的文件【${f.name}】格式不正确`)
         } else if (f.size > props.limit * 1024 * 1024) {
           message.error(`所选的文件【${f.name}】大小超过${props.limit}M`)
         } else {
           files.push(f);
         }
         resolve(files);
-
       });
     }
   });
 };
 
-const onDragenter = (e: any) => {
-  console.log(e)
+const onDragenter = () => {
+
 }
-const onDragOver = (e: any) => {
-  console.log(e)
+const onDragOver = () => {
+
 }
 
 const handleOk = () => {
-  console.log(uploadRes.value)
+  emits('submit', uploadRes.value)
   emits('update:open', false)
+  handleCancel()
+}
+
+const handleCancel = () => {
+  loading.value = false
+  fileList.value = []
+  fileArray.value = []
+  uploadRes.value = []
 }
 
 </script>
@@ -326,7 +339,7 @@ const handleOk = () => {
   width: 100%;
   height: 200px;
   border: 1px dashed #ccc;
-  border-radius: var(--radius-wrap);
+  border-radius: 8px;
   background-color: #fafafa;
   display: flex;
   justify-content: center;
@@ -336,7 +349,7 @@ const handleOk = () => {
   .inner {
     display: flex;
     justify-content: center;
-    color: var(--link-color);
+    color: #1677ff;
   }
 
   .support {
