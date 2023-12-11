@@ -35,7 +35,8 @@ const formState = reactive({
   keepAlive: false,
   target: '',
   permission: '',
-  redirect: ''
+  redirect: '',
+  activeMenu: ''
 });
 const rules: Record<string, Rule[]> = {
   title: [
@@ -195,6 +196,7 @@ defineExpose({openModal})
             </a-radio-group>
           </a-form-item>
         </a-col>
+
         <a-col :span="12" v-if="formState.menuType === 'M'">
           <a-form-item label="页签是否固定" name="affix">
             <a-radio-group v-model:value="formState.affix" button-style="solid">

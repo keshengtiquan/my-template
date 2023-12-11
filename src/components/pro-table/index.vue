@@ -32,6 +32,8 @@ const settingChangeHandle = (setting: any[]) => {
   tableColumns.value = tem
 }
 const onFinish = () => {
+  delete formState.current
+  delete formState.pageSize
   emits('search', _.pickBy(formState, value => {
     return value !== '' && value !== null && value !== undefined;
   }))
@@ -53,7 +55,6 @@ const onChange = (pagination: any, filters: any, sorter: any) => {
       delete formState.sortOrder
     }
   }
-  console.log(filters)
   //除去formState中的空字段
   emits('search', _.pickBy(formState, value => {
     return value !== '' && value !== null && value !== undefined;

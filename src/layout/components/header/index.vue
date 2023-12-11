@@ -33,6 +33,7 @@ const headerStyle = computed<CSSProperties>(() => {
     defaultStyle.padding= 0
     if (layoutSetting.value.fixedHeader) {
       defaultStyle.position = 'fixed'
+      defaultStyle.zIndex = 5
       defaultStyle.width = `calc(100% - ${layoutSetting.value.collapsed ? 48 : 230}px)`
       defaultStyle.transition = 'all 0.2s'
     }
@@ -55,6 +56,8 @@ const headerStyle = computed<CSSProperties>(() => {
     if (layoutSetting.value.fixedHeader) {
       defaultStyle.position = 'fixed'
       defaultStyle.width = '100%'
+      defaultStyle.zIndex = 5
+
     }
     if (layoutSetting.value.theme === "inverted") {
       defaultStyle.background = '#001529'

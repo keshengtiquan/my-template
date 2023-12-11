@@ -12,10 +12,10 @@ import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 
 const columns = [
   {title: '部门名称', dataIndex: 'deptName',},
-  {title: '是否禁用', dataIndex: 'status'},
-  {title: '创建人', dataIndex: 'createBy', width: 120},
+  {title: '状态', dataIndex: 'status'},
+  {title: '创建人', dataIndex: 'createBy', width: 150},
   {title: '创建时间', dataIndex: 'createTime', width: 180},
-  {title: '更新人', dataIndex: 'updateBy', width: 120},
+  {title: '更新人', dataIndex: 'updateBy', width: 150},
   {title: '更新时间', dataIndex: 'updateTime', width: 180},
   {title: '操作', dataIndex: 'actions', width: 180, align: 'center'},
 ]
@@ -53,7 +53,7 @@ const deleteDept = (data: any) => {
  */
 const onStatusChange = async (checked: boolean, id: number) => {
   try {
-    const res = await forbiddenDeptApi({id, status: checked ? '1' : '0'})
+    const res = await forbiddenDeptApi({id, status: checked ? '0' : '1'})
     if (res.code === 200) {
       message.success(res.message)
     }
@@ -80,7 +80,7 @@ const onStatusChange = async (checked: boolean, id: number) => {
           </a-space>
         </template>
         <template v-else-if="column.dataIndex === 'status'">
-          <a-switch checked-children="是" un-checked-children="否" checkedValue="1" :checked="record.status"
+          <a-switch checked-children="启用" un-checked-children="禁用" checkedValue="0" :checked="record.status"
                     @change="(checked: boolean) =>onStatusChange(checked,record.id)"/>
         </template>
       </template>

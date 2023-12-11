@@ -46,12 +46,14 @@
           </template>
         </template>
       </a-table>
-      <div style="margin: 10px 0">
-        <a-tag color="#108ee9">文件数量：{{ fileList.length }}</a-tag>
-        <a-tag color="#2db7f5">成功上传：{{ finishUpload }}</a-tag>
-        <a-tag color="#87d068">总上传：{{ formatByte(finishUploadSize) }}</a-tag>
+      <div style="margin: 10px 0" class="flex justify-between">
+        <div>
+          <a-tag color="#108ee9">文件数量：{{ fileList.length }}</a-tag>
+          <a-tag color="#2db7f5">成功上传：{{ finishUpload }}</a-tag>
+          <a-tag color="#87d068">总上传：{{ formatByte(finishUploadSize) }}</a-tag>
+        </div>
+        <a-button type="primary" :loading="loading" @click="beginUploadThrottle">开始上传</a-button>
       </div>
-      <a-button type="primary" :loading="loading" @click="beginUploadThrottle">开始上传</a-button>
     </div>
   </a-modal>
 
@@ -82,7 +84,7 @@ const props = withDefaults(defineProps<{
 }>(), {
   uploadType: () => [],
   limit: 2,
-  isMultiple: true
+  isMultiple: false
 })
 const visible = computed({
   set(value: boolean) {
@@ -112,10 +114,12 @@ const uploadFiles = () => {
 //选择文件后
 const filesChange = (e: any) => {
   readBtnFile(e)
+  uploadFileRefs.value.value = null
 }
 //选择文件后
 const fileChange = (e: any) => {
   readBtnFile(e)
+  uploadFileRef.value.value = null
 }
 
 //提取文件的扩展名
@@ -133,6 +137,10 @@ const extractFileType = (filename: string) => {
 
 // 按钮选择文件后读取文件
 const readBtnFile = (e: any) => {
+  if(fileList.value.length === 1 && !props.isMultiple){
+    message.info('最多只能上传一个文件')
+    return
+  }
   const files = [...e.target.files]
   for (const filesKey in files) {
     if (Object.prototype.hasOwnProperty.call(files, filesKey)) {
@@ -159,12 +167,14 @@ const readBtnFile = (e: any) => {
       }
     }
   }
+  // beginUpload()
 }
 
 
 //开始上传方法
 const beginUpload = async () => {
   if(fileArray.value.length === 0 || fileList.value.length === 0) {
+    message.info('请先选择文件')
     return
   }
   loading.value = true
@@ -181,7 +191,6 @@ const beginUpload = async () => {
 
   fileArray.value.forEach((file, index) => {
     const formdata = new FormData()
-    console.log(file)
     formdata.append('file', file)
     const CancelToken = axios.CancelToken
     const source = CancelToken.source();
@@ -234,6 +243,7 @@ const beginUpload = async () => {
       loading.value = false
     })
   }
+
 }
 
 const beginUploadThrottle = throttle(beginUpload, 500)
@@ -250,9 +260,9 @@ const finishUploadSize = computed(() => {
 })
 
 const deleteFile = (index: number) => {
-  console.log(index)
   fileList.value.splice(index, 1)
   fileArray.value.splice(index, 1)
+  Array.from(uploadFileRef.value.files).splice(index, 1)
 }
 
 const cancelUpload = (index: number) => {
@@ -262,6 +272,15 @@ const cancelUpload = (index: number) => {
 }
 
 const onDrop = async (e: any) => {
+  if(fileList.value.length === 1 && !props.isMultiple){
+    message.info('最多只能上传一个文件')
+    return
+  }
+  console.log(e.dataTransfer.items.length)
+  if(e.dataTransfer.items.length > 1 && !props.isMultiple) {
+    message.info('一次只能上传一个文件')
+    return
+  }
   for (const item of e.dataTransfer.items) {
     const entry = item.webkitGetAsEntry()
     const files = await readFile(entry)
@@ -281,7 +300,11 @@ const onDrop = async (e: any) => {
 const readFile = (entry: any): Promise<Array<File>> => {
   return new Promise((resolve, reject) => {
     const files: any[] = [];
-    if (entry.isDirectory && props.isMultiple) {
+    if (entry.isDirectory) {
+      if(!props.isMultiple){
+        message.warn('不能上传文件夹')
+        return
+      }
       // 文件夹
       const reader = entry.createReader();
       reader.readEntries((entries: any) => {

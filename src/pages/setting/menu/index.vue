@@ -12,11 +12,11 @@ import {message, Modal} from "ant-design-vue";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 
 const columns = [
-  {title: 'id', dataIndex: 'id', width: 180,align: 'center', resizable: true},
+  {title: 'id', dataIndex: 'id', width: 200,align: 'center', resizable: true},
   {title: '菜单名称', dataIndex: 'title',width: 100, resizable: true},
-  {title: '路由地址', dataIndex: 'path',width: 100, resizable: true},
+  {title: '路由地址', dataIndex: 'path',width: 220, resizable: true},
   {title: '图标', dataIndex: 'icon',width: 100, resizable: true},
-  {title: '是否禁用', dataIndex: 'status',width: 100, resizable: true},
+  {title: '状态', dataIndex: 'status',width: 100, resizable: true},
   {title: '权限标识', dataIndex: 'permission',width: 100, resizable: true},
   {title: '排序', dataIndex: 'menuSort',width: 100, resizable: true},
   {title: '创建人', dataIndex: 'createBy',width: 100, resizable: true},
@@ -40,7 +40,7 @@ const viewHandle = (data: object) => {
  * @param id 菜单id
  */
 const onStatusChange = async (checked: boolean,id:number) => {
-  const res = await forbiddenMenuApi({id,status:checked?'1':'0'})
+  const res = await forbiddenMenuApi({id,status:checked?'0':'1'})
   if(res.code === 200) {
     message.success(res.message)
   }
@@ -83,7 +83,7 @@ const deleteMenu = (data: any) => {
           <Component v-if="record.icon" :is="record.icon"/>
         </template>
         <template v-else-if="column.dataIndex === 'status'">
-          <a-switch checked-children="禁用" un-checked-children="启用" checkedValue="1" v-model:checked="record.status" @change="(checked: boolean) =>onStatusChange(checked,record.id)" />
+          <a-switch checked-children="启用" un-checked-children="禁用" checkedValue="0" v-model:checked="record.status" @change="(checked: boolean) =>onStatusChange(checked,record.id)" />
         </template>
         <template v-else-if="column.dataIndex === 'actions'">
           <a-space :size="10">

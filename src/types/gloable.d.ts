@@ -26,4 +26,5 @@ export interface MenuDataItem {
   keepAlive?: boolean
   // 全连接跳转模式
   target?: '_blank' | '_self' | '_parent'
+  activeMenu: string
 }

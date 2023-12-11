@@ -41,6 +41,7 @@ export const useMultiTab = defineStore('multi-tab', () => {
       }, 500)
     }
     if (list.value.some(item => item.fullPath === route.fullPath)) {
+      console.log(route)
       if (!cacheList.value.includes(route?.name as string) && appStore.layoutSetting.keepAlive) {
         if (route.meta.keepAlive && route.name)
           cacheList.value.push(route.name as string)

@@ -15,7 +15,7 @@ const formRef = ref()
 const formState = reactive({
   parentId: 0,
   deptName: '',
-  leader: '',
+  leader: undefined,
   phone: '',
   email: '',
 })

@@ -39,14 +39,17 @@ dependencies:
     specifier: ^6.11.2
     version: registry.npmmirror.com/qs@6.11.2
   sortablejs:
-    specifier: ^1.15.0
-    version: registry.npmmirror.com/sortablejs@1.15.0
+    specifier: ^1.15.1
+    version: registry.npmmirror.com/sortablejs@1.15.1
   vue:
     specifier: ^3.3.4
     version: registry.npmmirror.com/vue@3.3.4
   vue-draggable-next:
     specifier: ^2.2.1
-    version: registry.npmmirror.com/vue-draggable-next@2.2.1(sortablejs@1.15.0)(vue@3.3.4)
+    version: registry.npmmirror.com/vue-draggable-next@2.2.1(sortablejs@1.15.1)(vue@3.3.4)
+  vue-draggable-plus:
+    specifier: ^0.3.0
+    version: registry.npmmirror.com/vue-draggable-plus@0.3.0(@types/sortablejs@1.15.7)
   vue-router:
     specifier: ^4.2.5
     version: registry.npmmirror.com/vue-router@4.2.5(vue@3.3.4)
@@ -64,6 +67,9 @@ devDependencies:
   '@types/qs':
     specifier: ^6.9.10
     version: registry.npmmirror.com/@types/qs@6.9.10
+  '@types/sortablejs':
+    specifier: ^1.15.7
+    version: registry.npmmirror.com/@types/sortablejs@1.15.7
   '@vitejs/plugin-vue':
     specifier: ^4.2.3
     version: registry.npmmirror.com/@vitejs/plugin-vue@4.2.3(vite@4.4.5)(vue@3.3.4)
@@ -593,6 +599,11 @@ packages:
     name: '@types/qs'
     version: 6.9.10
     dev: true
+
+  registry.npmmirror.com/@types/sortablejs@1.15.7:
+    resolution: {integrity: sha512-PvgWCx1Lbgm88FdQ6S7OGvLIjWS66mudKPlfdrWil0TjsO5zmoZmzoKiiwRShs1dwPgrlkr0N4ewuy0/+QUXYQ==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/sortablejs/-/sortablejs-1.15.7.tgz}
+    name: '@types/sortablejs'
+    version: 1.15.7
 
   registry.npmmirror.com/@types/web-bluetooth@0.0.20:
     resolution: {integrity: sha512-g9gZnnXVq7gM7v3tJCWV/qw7w+KeOlSHAhgF9RytFyifW6AF61hdT2ucrYhPq9hLs5JIryeupHV3qGk95dH9ow==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/web-bluetooth/-/web-bluetooth-0.0.20.tgz}
@@ -2262,10 +2273,10 @@ packages:
       totalist: registry.npmmirror.com/totalist@3.0.1
     dev: true
 
-  registry.npmmirror.com/sortablejs@1.15.0:
-    resolution: {integrity: sha512-bv9qgVMjUMf89wAvM6AxVvS/4MX3sPeN0+agqShejLU5z5GX4C75ow1O2e5k4L6XItUyAK3gH6AxSbXrOM5e8w==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/sortablejs/-/sortablejs-1.15.0.tgz}
+  registry.npmmirror.com/sortablejs@1.15.1:
+    resolution: {integrity: sha512-P5Cjvb0UG1ZVNiDPj/n4V+DinttXG6K8n7vM/HQf0C25K3YKQTQY6fsr/sEGsJGpQ9exmPxluHxKBc0mLKU1lQ==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/sortablejs/-/sortablejs-1.15.1.tgz}
     name: sortablejs
-    version: 1.15.0
+    version: 1.15.1
     dev: false
 
   registry.npmmirror.com/source-map-js@1.0.2:
@@ -2511,7 +2522,7 @@ packages:
       vue: registry.npmmirror.com/vue@3.3.4
     dev: false
 
-  registry.npmmirror.com/vue-draggable-next@2.2.1(sortablejs@1.15.0)(vue@3.3.4):
+  registry.npmmirror.com/vue-draggable-next@2.2.1(sortablejs@1.15.1)(vue@3.3.4):
     resolution: {integrity: sha512-EAMS1IRHF0kZO0o5PMOinsQsXIqsrKT1hKmbICxG3UEtn7zLFkLxlAtajcCcUTisNvQ6TtCB5COjD9a1raNADw==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/vue-draggable-next/-/vue-draggable-next-2.2.1.tgz}
     id: registry.npmmirror.com/vue-draggable-next/2.2.1
     name: vue-draggable-next
@@ -2520,8 +2531,23 @@ packages:
       sortablejs: ^1.14.0
       vue: ^3.2.2
     dependencies:
-      sortablejs: registry.npmmirror.com/sortablejs@1.15.0
+      sortablejs: registry.npmmirror.com/sortablejs@1.15.1
       vue: registry.npmmirror.com/vue@3.3.4
+    dev: false
+
+  registry.npmmirror.com/vue-draggable-plus@0.3.0(@types/sortablejs@1.15.7):
+    resolution: {integrity: sha512-yMmP1LcSOsOI43wfm6x/YkFbmUqUqwULAqEXzINACOstuu2ICUB4aFHCwNfUCok34ZslTvcMckPP5OjbqwYCxA==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/vue-draggable-plus/-/vue-draggable-plus-0.3.0.tgz}
+    id: registry.npmmirror.com/vue-draggable-plus/0.3.0
+    name: vue-draggable-plus
+    version: 0.3.0
+    peerDependencies:
+      '@types/sortablejs': ^1.15.0
+      '@vue/composition-api': '*'
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+    dependencies:
+      '@types/sortablejs': registry.npmmirror.com/@types/sortablejs@1.15.7
     dev: false
 
   registry.npmmirror.com/vue-router@4.2.5(vue@3.3.4):

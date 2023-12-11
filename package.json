@@ -20,9 +20,10 @@
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.0",
     "qs": "^6.11.2",
-    "sortablejs": "^1.15.0",
+    "sortablejs": "^1.15.1",
     "vue": "^3.3.4",
     "vue-draggable-next": "^2.2.1",
+    "vue-draggable-plus": "^0.3.0",
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
@@ -30,6 +31,7 @@
     "@types/lodash": "^4.14.201",
     "@types/node": "^20.9.0",
     "@types/qs": "^6.9.10",
+    "@types/sortablejs": "^1.15.7",
     "@vitejs/plugin-vue": "^4.2.3",
     "sass": "^1.69.5",
     "typescript": "^5.0.2",

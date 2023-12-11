@@ -17,9 +17,9 @@ const columns = [
   {title: '企业名称', dataIndex: 'companyName', search: true, valueType: 'input'},
   {title: '地址', dataIndex: 'address',},
   {
-    title: '是否禁用', dataIndex: 'status', search: true, valueType: 'select', valueEnum: [
-      {value: '1', label: '是',},
-      {value: '0', label: '否',},
+    title: '状态', dataIndex: 'status', search: true, valueType: 'select', valueEnum: [
+      {value: '1', label: '禁用',},
+      {value: '0', label: '启用',},
     ]
   },
   {title: '创建人', dataIndex: 'createBy'},
@@ -38,7 +38,7 @@ const {tableData, loading, getTableData, pagination} = useTable(getTenantListApi
  */
 const onStatusChange = async (checked: boolean, id: number) => {
   try {
-    const res = await forbiddenTenantApi({id, status: checked ? '1' : '0'})
+    const res = await forbiddenTenantApi({id, status: checked ? '0' : '1'})
     if (res.code === 200) {
       message.success(res.message)
     }
@@ -69,7 +69,6 @@ const deleteMenu = (data: any) => {
     onCancel() {
       console.log('Cancel');
     },
-    class: 'test',
   });
 }
 </script>
@@ -94,7 +93,7 @@ const deleteMenu = (data: any) => {
           </a-space>
         </template>
         <template v-else-if="column.dataIndex === 'status'">
-          <a-switch checked-children="是" un-checked-children="否" checkedValue="1" :checked="record.status"
+          <a-switch checked-children="启用" un-checked-children="禁用" checkedValue="0" :checked="record.status"
                     @change="(checked: boolean) =>onStatusChange(checked,record.id)"/>
         </template>
       </template>

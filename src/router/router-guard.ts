@@ -16,7 +16,6 @@ router.beforeEach(async (to, _, next) => {
     if (!userStore.userInfo && !allowList.includes(to.path) && !to.path.startsWith('/redirect') || userStore.menuData.length === 0) {
       try {
         await userStore.getUserInfo()
-        console.log(19)
         // 获取路由菜单的信息
         const currentRoute = await userStore.generateDynamicRoutes()
         router.addRoute(currentRoute)

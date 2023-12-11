@@ -14,7 +14,7 @@ const columns = [
   {title: '角色名称', dataIndex: 'roleName',},
   {title: '角色字符', dataIndex: 'roleKey',},
   {title: '显示顺序', dataIndex: 'roleSort'},
-  {title: '是否禁用', dataIndex: 'status'},
+  {title: '状态', dataIndex: 'status'},
   {title: '创建人', dataIndex: 'createBy'},
   {title: '创建时间', dataIndex: 'createTime', width: 180, sorter: true,},
   {title: '更新人', dataIndex: 'updateBy'},
@@ -55,7 +55,7 @@ const deleteMenu = (data: any) => {
  */
 const onStatusChange = async (checked: boolean, id: number) => {
   try {
-    const res = await forbiddenRoleApi({id, status: checked ? '1' : '0'})
+    const res = await forbiddenRoleApi({id, status: checked ? '0' : '1'})
     if (res.code === 200) {
       message.success(res.message)
     }
@@ -83,7 +83,7 @@ const onStatusChange = async (checked: boolean, id: number) => {
           </a-space>
         </template>
         <template v-else-if="column.dataIndex === 'status'">
-          <a-switch checked-children="是" un-checked-children="否" checkedValue="1" :checked="record.status"
+          <a-switch checked-children="启用" un-checked-children="禁用" checkedValue="0" :checked="record.status"
                     @change="(checked: boolean) =>onStatusChange(checked,record.id)"/>
         </template>
       </template>

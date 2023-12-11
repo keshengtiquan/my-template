@@ -11,6 +11,7 @@ export const isUrl = (inputStr: string) => {
  * @param data
  */
 export const generateRoutes = (data: any[]) => {
+  // console.log(modules)
   return data.map(item => {
     const obj: any = {
       path: item.path,
@@ -29,16 +30,16 @@ export const generateRoutes = (data: any[]) => {
         target: item.target,
         menuSort: item.menuSort,
         permission: item.permission,
-        status: item.status
+        status: item.status,
+        activeMenu: item.activeMenu
       }
-    }
-    if(item.isIframe){
-      obj.component = modules['../pages/common/iframe.vue']
-    }else if(item.component){
-      obj.component = modules[`../pages${item.component}.vue`]
     }
     if(item.children && item.children.length > 0){
       obj.children = generateRoutes(item.children)
+    }else if(item.isIframe){
+      obj.component = modules['../pages/common/iframe.vue']
+    }else if(item.component){
+      obj.component = modules[`../pages${item.component}.vue`]
     }
     return obj
   })
