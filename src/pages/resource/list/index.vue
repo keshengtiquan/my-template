@@ -64,8 +64,16 @@ const deleteList = (data: any) => {
 }
 const exportList = async () => {
   const res: any = await exportListApi()
-  getExcelFile(res, )
-
+  console.log(res)
+  const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' });
+  const url_3 = URL.createObjectURL(blob);
+  const aLink = document.createElement('a');
+  aLink.setAttribute('download', 'bbbb.xlsx');
+  aLink.setAttribute('href', url_3);
+  document.body.appendChild(aLink);
+  aLink.click();
+  document.body.removeChild(aLink);
+  URL.revokeObjectURL(blob);
 }
 </script>
 <script lang='ts'>
