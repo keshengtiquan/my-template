@@ -1,6 +1,7 @@
 import {http} from '@/utils/request.ts'
 import {AxiosRequestConfig} from "axios";
 import {AxiosResults} from "@/api/types.ts";
+import {ContentTypeEnum} from "@/enums";
 
 /**
  * 上传文件
@@ -9,6 +10,13 @@ import {AxiosResults} from "@/api/types.ts";
  */
 export const uploadListApi = (data: object, config: AxiosRequestConfig) => {
   return http.post('/list/upload', {data}, config)
+}
+
+/**
+ * 导出文件
+ */
+export const exportListApi = () => {
+  return http.post('/list/export', {headers: {'Content-Type': ContentTypeEnum.FORM_URLENCODED}, responseType: 'blob'})
 }
 
 /**

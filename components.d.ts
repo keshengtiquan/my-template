@@ -66,6 +66,7 @@ declare module 'vue' {
     AUpload: typeof import('ant-design-vue/es')['Upload']
     DescriptionDrawer: typeof import('./src/components/description-drawer/index.vue')['default']
     FormPage: typeof import('./src/components/form-page/index.vue')['default']
+    FormTable: typeof import('./src/components/form-table/index.vue')['default']
     IconSelect: typeof import('./src/components/icon-select/index.vue')['default']
     PageContainer: typeof import('./src/components/page-container/index.vue')['default']
     ProTable: typeof import('./src/components/pro-table/index.vue')['default']

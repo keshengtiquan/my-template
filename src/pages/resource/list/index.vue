@@ -3,12 +3,13 @@ import PageContainer from '@/components/page-container/index.vue'
 import ProTable from '@/components/pro-table/index.vue'
 import Upload from '@/components/upload/index.vue'
 import {createVNode, ref} from "vue";
-import {deleteListApi, getListApi, uploadListApi} from "@/api/list";
+import {deleteListApi, exportListApi, getListApi, uploadListApi} from "@/api/list";
 import {useTable} from "@/composables/useTable.ts";
 import TooltioIcon from "@/components/tooltip-icon/index.vue";
 import {useRouter} from "vue-router";
 import {message, Modal} from "ant-design-vue";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
+import {getExcelFile} from "@/utils";
 
 const columns = [
   {title: '序号', dataIndex: 'serialNumber', width: 50, align: 'center', sorter: true},
@@ -61,6 +62,11 @@ const deleteList = (data: any) => {
     },
   });
 }
+const exportList = async () => {
+  const res: any = await exportListApi()
+  getExcelFile(res, )
+
+}
 </script>
 <script lang='ts'>
 export default {
@@ -69,12 +75,14 @@ export default {
 </script>
 <template>
   <PageContainer>
-    <pro-table :data-source="tableData" ref="listTableRef" :loading="loading" :scroll="{ x: 2000 }" :pagination="pagination"
+    <pro-table :data-source="tableData" ref="listTableRef" :loading="loading" :scroll="{ x: 2000 }"
+               :pagination="pagination"
                @refresh="() => getTableData()"
                @search="(params) => getTableData(params)" :columns="columns" title="清单列表">
       <template #toolRight>
         <a-space :size="5">
           <a-button @click="() => open = true">导入清单</a-button>
+          <a-button @click="exportList">导出清单</a-button>
           <a-button type="primary" @click="createList">新建清单</a-button>
         </a-space>
       </template>

@@ -50,3 +50,11 @@ export const deleteTemplateApi = (id: string) => {
 export const updateTemplateApi = (data: object) => {
   return http.post<AxiosResults<any>>('/excel/update', {data})
 }
+
+/**
+ * 创建导出模版
+ * @param data
+ */
+export const createExportExcelApi = (data: object) => {
+  return http.post<AxiosResults<any>>('/excel/export/create', {data})
+}

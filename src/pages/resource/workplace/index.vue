@@ -4,10 +4,11 @@ import ProTable from '@/components/pro-table/index.vue'
 import {ref,createVNode} from "vue";
 import {useRouter} from "vue-router";
 import {useTable} from "@/composables/useTable.ts";
-import {deleteWorkPlaceApi, getWorkPlaceListApi} from "@/api/workplace";
+import {deleteWorkPlaceApi, getWorkPlaceListApi, uploadWorkPlaceApi} from "@/api/workplace";
 import TooltioIcon from "@/components/tooltip-icon/index.vue";
 import {message, Modal} from "ant-design-vue";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
+import Upload from '@/components/upload/index.vue'
 
 const router = useRouter()
 const columns = ref([
@@ -27,6 +28,7 @@ const createWorkPlace = () => {
 const updateWorkPlace = (id: string) => {
   router.push({path: '/resource/workplace/update', query: {id}})
 }
+const open = ref(false)
 const {getTableData, tableData, loading, pagination} = useTable(getWorkPlaceListApi)
 const workPlaceTableRef = ref()
 const deleteList = (data: any) => {
@@ -53,7 +55,10 @@ const deleteList = (data: any) => {
     <pro-table :columns="columns" ref="workPlaceTableRef" :data-source="tableData" :loading="loading" :pagination="pagination"
                @refresh="() => getTableData()" @search="(params) => getTableData(params)" title="工点列表">
       <template #toolRight>
-        <a-button type="primary" @click="createWorkPlace">添加工点</a-button>
+        <a-space>
+          <a-button @click="() => open = true">导入工点</a-button>
+          <a-button type="primary" @click="createWorkPlace">添加工点</a-button>
+        </a-space>
       </template>
       <template #bodyCell="{ column,record }">
         <template v-if="column.dataIndex === 'actions'">
@@ -68,6 +73,7 @@ const deleteList = (data: any) => {
         </template>
       </template>
     </pro-table>
+    <Upload v-model:open="open" width="70%" :request="uploadWorkPlaceApi" :upload-type="['xlsx']"></Upload>
   </PageContainer>
 </template>
 

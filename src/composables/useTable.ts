@@ -39,6 +39,7 @@ export const useTable = (request: Function, initParams?: Record<string, any>, ha
     total: total.value,
     current: current.value,
     pageSize: pageSize.value,
+    size: 'small',
     showQuickJumper: true,
     showTotal: ((total: number) => {
       return `第 ${current.value}-${current.value * pageSize.value} 条/共 ${total} 条`;

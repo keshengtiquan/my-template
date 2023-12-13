@@ -1,5 +1,6 @@
 import {http} from '@/utils/request.ts'
 import {AxiosResults} from "@/api/types.ts";
+import {AxiosRequestConfig} from "axios";
 
 /**
  * 创建工点
@@ -37,4 +38,13 @@ export const updateWorkPlaceApi = (data: object) => {
  */
 export const deleteWorkPlaceApi = (id: string) => {
   return http.post<AxiosResults<any>>('/workplace/delete', {data: {id}})
+}
+
+/**
+ * 文件上传
+ * @param data
+ * @param config
+ */
+export const uploadWorkPlaceApi = (data: object, config: AxiosRequestConfig) => {
+  return http.post('/workplace/upload', {data}, config)
 }
