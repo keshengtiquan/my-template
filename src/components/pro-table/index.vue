@@ -4,11 +4,14 @@ import Setting from './component/setting.vue'
 import {reactive, ref} from "vue";
 import * as _ from 'lodash'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   columns: any[],
   dataSource?: any[],
   title?: string
-}>()
+  hideTool?: boolean
+}>(),{
+  hideTool: false
+})
 const emits = defineEmits(['search', 'refresh'])
 const tableColumns = ref<any[]>([])
 const expand = ref(false);
@@ -121,12 +124,12 @@ defineExpose({onReload})
     </a-form>
   </div>
   <div class="bg-[var(--bg-page-container)] rd-8px px-24px">
-    <div class="flex justify-between bg-[var(--bg-page-container)] py-16px rd-t-8px">
+    <div v-if="!hideTool" class="flex justify-between bg-[var(--bg-page-container)] py-16px rd-t-8px">
       <div class="h-32px flex items-center">
         <span v-if="props.title" class="font-600 font-size-16px">{{title}}</span>
         <slot v-else name="toolLeft"></slot>
       </div>
-      <div class="h-32px flex items-center">
+      <div  class="h-32px flex items-center">
         <slot name="toolRight"></slot>
         <a-tooltip placement="top" class="w-32px text-center font-size-4 inline-block">
           <template #title>
