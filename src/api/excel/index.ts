@@ -58,3 +58,25 @@ export const updateTemplateApi = (data: object) => {
 export const createExportExcelApi = (data: object) => {
   return http.post<AxiosResults<any>>('/excel/export/create', {data})
 }
+
+/**
+ *  查询导出模版列表
+ */
+export const getExportExcelListApi = () => {
+  return http.get<AxiosResults<any>>('/excel/export/getlist')
+}
+
+/**
+ * 查询导出模版单条
+ * @param id
+ */
+export const getExportExcelOneApi = (id: string) => {
+  return http.get<AxiosResults<any>>('/excel/export/get', {params: {id}})
+}
+
+/**
+ * 更新导出模版
+ */
+export const updateExportExcelApi = (data: object) => {
+  return http.post<AxiosResults<any>>('/excel/export/update', {data})
+}

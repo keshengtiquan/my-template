@@ -20,6 +20,7 @@
         <a-button v-if="isMultiple" type="primary" @click="uploadFiles">文件夹选择</a-button>
         <input  ref="uploadFileRefs" @change="filesChange" style="display: none" type="file" webkitdirectory mozdirectory
                odirectory>
+        <a>导入模版下载</a>
       </div>
       <a-table :columns="columns" :data-source="fileList" :pagination="false">
         <template #bodyCell="{ column, record,index }">

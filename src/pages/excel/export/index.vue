@@ -3,14 +3,18 @@ import PageContainer from '@/components/page-container/index.vue'
 import ProTable from '@/components/pro-table/index.vue'
 import TooltipIcon from "@/components/tooltip-icon/index.vue";
 import {useRouter} from "vue-router";
+import {useTable} from "@/composables/useTable.ts";
+import {getExportExcelListApi} from "@/api/excel";
+
 const router = useRouter()
 const columns = [
   {title: '模版名称', dataIndex: 'templateName',},
   {title: '导出类型', dataIndex: 'exportType',},
+  {title: '标签名称', dataIndex: 'sheetName',},
   {title: '导出服务', dataIndex: 'exportService',},
   {title: '操作', dataIndex: 'actions', width: 180, align: 'center'},
 ]
-
+const {tableData, pagination, getTableData, loading} = useTable(getExportExcelListApi)
 const createTemplate = () => {
   router.push('/excel/export/create')
 }
@@ -20,7 +24,8 @@ const editTem = (data: any) => {
 </script>
 <template>
   <PageContainer>
-    <pro-table :columns="columns">
+    <pro-table :columns="columns" :data-source="tableData" :pagination="pagination" :loading="loading"
+               @refresh="() => getTableData()" @search="(params) => getTableData(params)">
       <template #toolRight>
         <a-button type="primary" @click="createTemplate">新建模版</a-button>
       </template>
@@ -39,7 +44,6 @@ const editTem = (data: any) => {
     </pro-table>
   </PageContainer>
 </template>
-
 
 
 <style scoped>

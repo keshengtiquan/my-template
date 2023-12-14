@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import PageContainer from '@/components/page-container/index.vue'
 import ProTable from '@/components/pro-table/index.vue'
-import {ref,createVNode} from "vue";
+import {ref, createVNode} from "vue";
 import {useRouter} from "vue-router";
 import {useTable} from "@/composables/useTable.ts";
 import {deleteWorkPlaceApi, getWorkPlaceListApi, uploadWorkPlaceApi} from "@/api/workplace";
@@ -28,31 +28,35 @@ const createWorkPlace = () => {
 const updateWorkPlace = (id: string) => {
   router.push({path: '/resource/workplace/update', query: {id}})
 }
-const open = ref(false)
-const {getTableData, tableData, loading, pagination} = useTable(getWorkPlaceListApi)
-const workPlaceTableRef = ref()
-const deleteList = (data: any) => {
-  Modal.confirm({
-    title: `是否删除【${data.workPlaceName}】`,
-    icon: createVNode(ExclamationCircleOutlined),
-    content: '删除后不可恢复！',
-    onOk() {
-      deleteWorkPlaceApi(data.id).then(res => {
-        if (res.code === 200) {
-          getTableData(workPlaceTableRef.value.onReload())
-          message.success(res.message)
-        }
-      })
-    },
-    onCancel() {
-      console.log('Cancel');
-    },
-  });
+const workPlaceDetail = (record: any) => {
+  router.push({path: '/resource/workplace/detail', query: {id: record.id, workPlaceName: record.workPlaceName}})
 }
+  const open = ref(false)
+  const {getTableData, tableData, loading, pagination} = useTable(getWorkPlaceListApi)
+  const workPlaceTableRef = ref()
+  const deleteList = (data: any) => {
+    Modal.confirm({
+      title: `是否删除【${data.workPlaceName}】`,
+      icon: createVNode(ExclamationCircleOutlined),
+      content: '删除后不可恢复！',
+      onOk() {
+        deleteWorkPlaceApi(data.id).then(res => {
+          if (res.code === 200) {
+            getTableData(workPlaceTableRef.value.onReload())
+            message.success(res.message)
+          }
+        })
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  }
 </script>
 <template>
   <PageContainer>
-    <pro-table :columns="columns" ref="workPlaceTableRef" :data-source="tableData" :loading="loading" :pagination="pagination"
+    <pro-table :columns="columns" ref="workPlaceTableRef" :data-source="tableData" :loading="loading"
+               :pagination="pagination"
                @refresh="() => getTableData()" @search="(params) => getTableData(params)" title="工点列表">
       <template #toolRight>
         <a-space>
@@ -70,6 +74,9 @@ const deleteList = (data: any) => {
               <DeleteOutlined class="text-red" @click="deleteList(record)"/>
             </TooltioIcon>
           </a-space>
+        </template>
+        <template v-else-if="column.dataIndex === 'workPlaceName'">
+          <a-typography-link @click="workPlaceDetail(record)">{{ record.workPlaceName }}</a-typography-link>
         </template>
       </template>
     </pro-table>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref} from "vue";
+import {nextTick, onMounted, ref} from "vue";
 import TooltipIcon from "@/components/tooltip-icon/index.vue";
 import {VueDraggable} from "vue-draggable-plus";
 
@@ -7,9 +7,10 @@ export interface FormState {
   templateName: string;
   exportType: string | undefined;
   exportService: string;
-  exportFields: string
+  exportFields: string;
+  sheetName: string;
 }
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   formState: FormState
 }>(),{})
 
@@ -77,9 +78,15 @@ const columnIndexToColumnLetter = (index: number): string => {
   return columnLetter
 }
 
-// const onEnd = () => {
-//   updateCol()
-// }
+onMounted(async () => {
+  await nextTick(() => {
+    console.log(83)
+    if(props.formState.exportFields){
+      dataSource.value = JSON.parse(props.formState.exportFields)
+    }
+  })
+})
+
 defineExpose({dataSource})
 </script>
 <template>
@@ -103,45 +110,54 @@ defineExpose({dataSource})
           </a-form-item>
         </a-col>
         <a-col :span="8">
+          <a-form-item label="页签名称" name="sheetName" :rules="[{ required: true, message: '请输入页签名称' }]">
+            <a-input v-model:value="formState.sheetName" placeholder="页签名称"></a-input>
+          </a-form-item>
+        </a-col>
+        <a-col :span="8">
           <a-form-item label="导出服务" name="exportService" :rules="[{ required: true, message: '请输入导出服务' }]">
-            <a-input v-model:value="formState.exportService" placeholder="导出服务"></a-input>
+<!--            <a-input v-model:value="formState.exportService" placeholder="导出服务"></a-input>-->
+            {{formState.exportService}}
           </a-form-item>
         </a-col>
       </a-row>
-      <a-row>
-        <a-col :span="24">
-          <VueDraggable v-model="dataSource" :animation="150" handle=".move"  target=".ant-table-tbody">
-            <a-table id="mytb" ref="tableRef" :data-source="dataSource" :pagination="false" :columns="columns">
-              <template #bodyCell="{ column, record, index }">
-                <template v-if="['filed', 'excelFiled'].includes(column.dataIndex)">
-                  <a-input
-                      :name="column.dataIndex"
-                      v-model:value="dataSource[index][column.dataIndex]"
-                      style="margin: -5px 0"
-                  />
-                </template>
-                <template v-else-if="column.dataIndex === 'width'">
-                  <a-input-number
-                      :name="column.dataIndex"
-                      v-model:value="dataSource[index][column.dataIndex]"
-                      style="margin: -5px 0"
-                      class="w-full"
-                  />
-                </template>
-                <template v-else-if="column.dataIndex === 'actions'">
-                  <TooltipIcon title="删除">
-                    <DeleteOutlined style="color: red" @click="deleteRow(record)"/>
-                  </TooltipIcon>
-                </template>
-              </template>
-            </a-table>
-          </VueDraggable>
-          <a-button style="width: 100%; margin-top: 16px; margin-bottom: 8px" type="dashed" @click="handleAdd">
-            新增字段
-          </a-button>
-        </a-col>
-      </a-row>
     </a-form>
+  </a-card>
+  <a-card title="字段设置" class="mt-20px">
+    <a-row>
+      <a-col :span="24">
+        <VueDraggable v-model="dataSource" :animation="150" handle=".move"  target=".ant-table-tbody">
+          <a-table id="mytb" ref="tableRef" :data-source="dataSource" :pagination="false" :columns="columns">
+            <template #bodyCell="{ column, record, index }">
+              <template v-if="['filed', 'excelFiled'].includes(column.dataIndex)">
+                <a-input
+                    :name="column.dataIndex"
+                    v-model:value="dataSource[index][column.dataIndex]"
+                    style="margin: -5px 0"
+                />
+              </template>
+              <template v-else-if="column.dataIndex === 'width'">
+                <a-input-number
+                    :name="column.dataIndex"
+                    v-model:value="dataSource[index][column.dataIndex]"
+                    style="margin: -5px 0"
+                    class="w-full"
+                    :step="10"
+                />
+              </template>
+              <template v-else-if="column.dataIndex === 'actions'">
+                <TooltipIcon title="删除">
+                  <DeleteOutlined style="color: red" @click="deleteRow(record)"/>
+                </TooltipIcon>
+              </template>
+            </template>
+          </a-table>
+        </VueDraggable>
+        <a-button style="width: 100%; margin-top: 16px; margin-bottom: 8px" type="dashed" @click="handleAdd">
+          新增字段
+        </a-button>
+      </a-col>
+    </a-row>
   </a-card>
 </template>
 

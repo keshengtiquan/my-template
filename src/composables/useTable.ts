@@ -1,6 +1,14 @@
 import {computed, onMounted, ref} from "vue";
 import * as _ from 'lodash'
 
+export interface Pagination {
+  total: number,
+  current: number,
+  pageSize: number,
+  size: string,
+  showQuickJumper: boolean,
+  showTotal: Function
+}
 /**
  * 查询表格数据
  * @param request 查询的API

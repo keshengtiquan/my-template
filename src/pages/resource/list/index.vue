@@ -9,7 +9,7 @@ import TooltioIcon from "@/components/tooltip-icon/index.vue";
 import {useRouter} from "vue-router";
 import {message, Modal} from "ant-design-vue";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
-import {getExcelFile} from "@/utils";
+import {exportExcel} from "@/utils/excelExport.ts";
 
 const columns = [
   {title: '序号', dataIndex: 'serialNumber', width: 50, align: 'center', sorter: true},
@@ -62,18 +62,16 @@ const deleteList = (data: any) => {
     },
   });
 }
-const exportList = async () => {
-  const res: any = await exportListApi()
-  console.log(res)
-  const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' });
-  const url_3 = URL.createObjectURL(blob);
-  const aLink = document.createElement('a');
-  aLink.setAttribute('download', 'bbbb.xlsx');
-  aLink.setAttribute('href', url_3);
-  document.body.appendChild(aLink);
-  aLink.click();
-  document.body.removeChild(aLink);
-  URL.revokeObjectURL(blob);
+/**
+ * 导出文件
+ */
+const exportList = async (current: number, pageSize: number) => {
+  let params = {}
+  if (current && pageSize) {
+    params = {current, pageSize}
+  }
+  const data = await exportListApi(params)
+  await exportExcel(data.data, '项目清单')
 }
 </script>
 <script lang='ts'>
@@ -89,12 +87,24 @@ export default {
                @search="(params) => getTableData(params)" :columns="columns" title="清单列表">
       <template #toolRight>
         <a-space :size="5">
-          <a-button @click="() => open = true">导入清单</a-button>
-          <a-button @click="exportList">导出清单</a-button>
           <a-button type="primary" @click="createList">新建清单</a-button>
+          <a-button @click="() => open = true">导入清单</a-button>
+          <a-dropdown placement="bottomLeft">
+            <a-button>导出清单</a-button>
+            <template #overlay>
+              <a-menu>
+                <a-menu-item @click="exportList">
+                  导出所有
+                </a-menu-item>
+                <a-menu-item @click="exportList(pagination.current, pagination.pageSize)">
+                  导出当前页
+                </a-menu-item>
+              </a-menu>
+            </template>
+          </a-dropdown>
         </a-space>
       </template>
-      <template #bodyCell="{ column,record }">
+      <template #bodyCell=" { column,record }">
         <template v-if="column.dataIndex === 'actions'">
           <a-space :size="20">
             <TooltioIcon title="编辑">

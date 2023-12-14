@@ -1,6 +1,7 @@
 import {http} from '@/utils/request.ts'
 import {AxiosRequestConfig} from "axios";
 import {AxiosResults} from "@/api/types.ts";
+import {ExportExcelParamsType} from "@/utils/excelExport.ts";
 
 /**
  * 上传文件
@@ -14,11 +15,8 @@ export const uploadListApi = (data: object, config: AxiosRequestConfig) => {
 /**
  * 导出文件
  */
-export const exportListApi = () => {
-  return http.post('/list/export', {
-    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-    responseType: 'blob',
-  })
+export const exportListApi = (params: object) => {
+  return http.get<AxiosResults<ExportExcelParamsType>>('/list/export', {params} )
 }
 
 /**

@@ -131,13 +131,13 @@ export const throttle = (fn: Function, wait: number) => {
  * @param data
  * @param fileName
  */
-export const getExcelFile = (data: any,fileName?: string) => {
-  let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = fileName + '.xlsx';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  window.URL.revokeObjectURL(a.href);
-}
+// export const getExcelFile = (data: any,fileName?: string) => {
+//   let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+//   const a = document.createElement('a');
+//   a.href = URL.createObjectURL(blob);
+//   a.download = fileName + '.xlsx';
+//   document.body.appendChild(a);
+//   a.click();
+//   document.body.removeChild(a);
+//   window.URL.revokeObjectURL(a.href);
+// }
