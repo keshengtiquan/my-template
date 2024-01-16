@@ -1,9 +1,17 @@
 <script lang="ts" setup>
-import {computed} from 'vue';
+import {computed, nextTick, onMounted, ref} from 'vue';
 import {useTreeSelect} from "@/composables/useTreeSelect.ts";
+
+interface filedType {
+  label: string
+  children: any,
+  value: string | number
+}
+
 const props = defineProps<{
   modelValue: any,
   request: Function
+  fieldNames: filedType
 }>()
 const emits = defineEmits(['update:modelValue'])
 const modelValue = computed({
@@ -14,12 +22,33 @@ const modelValue = computed({
     return props.modelValue
   },
 })
-const {treeData} = useTreeSelect(props.request)
+const treeData = ref<any[]>()
+const init = async () => {
+  const {data} = await props.request()
+  const rootValue: any = {}
+  const oldData = []
+  rootValue[props.fieldNames.label] = '根节点'
+  rootValue[props.fieldNames.value] = '0'
+  rootValue[props.fieldNames.children] = []
+  oldData.unshift(rootValue)
+  oldData[0].children = data
+  treeData.value = oldData
+  console.log(treeData.value)
+}
+onMounted(async () => {
+  await init()
+})
 
+// const rootValue: any = {}
+// rootValue[props.fieldNames.label] = '跟节点'
+// rootValue[props.fieldNames.value] = '0'
+// treeData.value?.unshift(rootValue)
+// console.log(treeData.value)
 </script>
 <template>
   <a-tree-select
       v-model:value="modelValue"
+      :fieldNames="fieldNames"
       v-bind="$attrs"
       :tree-data="treeData"
   >

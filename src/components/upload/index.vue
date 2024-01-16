@@ -277,7 +277,6 @@ const onDrop = async (e: any) => {
     message.info('最多只能上传一个文件')
     return
   }
-  console.log(e.dataTransfer.items.length)
   if(e.dataTransfer.items.length > 1 && !props.isMultiple) {
     message.info('一次只能上传一个文件')
     return

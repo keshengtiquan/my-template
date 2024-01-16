@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import type {TableColumnType} from "ant-design-vue";
 import {VueDraggableNext as draggable} from 'vue-draggable-next'
 import {onMounted, ref, watch} from "vue";
 import {FixedType} from "ant-design-vue/es/vc-table/interface";
 
 const props = defineProps<{
-  initColumns: TableColumnType[],
+  initColumns: any[],
   tableColumns?: any[]
 }>()
 const emits = defineEmits(['change'])
@@ -33,7 +32,7 @@ const onCheckAllChange = (e: any) => {
 //字段显示隐藏
 const onCheckChange = (check: boolean, element: any) => {
   settingColumns.value.forEach(item => {
-    if (item.dataIndex === element.dataIndex) {
+    if (item.title === element.title) {
       item.hide = !check
     }
   })
@@ -94,11 +93,32 @@ const updateColumns = () => {
 
 const init = () => {
   settingColumns.value = []
-  props.initColumns?.forEach((item, index) => {
-    const obj = {title: item.title, fixed: item.fixed, dataIndex: item.dataIndex, key: index, hide: false}
-    settingColumns.value.push(obj)
-  })
+  // props.initColumns?.forEach((item, index) => {
+  //   const obj = {title: item.title, fixed: item.fixed, dataIndex: item.dataIndex, key: index, hide: false}
+  //   console.log(item)
+  //   settingColumns.value.push(obj)
+  // })
+  settingColumns.value = processColumns(props.initColumns)
 }
+
+const processColumns = (columns: any[]) => {
+  const result: any[] = [];
+  columns.forEach((item, index) => {
+    const obj: any = { title: item.title, key: index, hide: item.hide || false };
+    if(item.dataIndex){
+      obj.dataIndex = item.dataIndex
+    }
+
+    if (item.children && Array.isArray(item.children)) {
+      // 如果有子列，递归处理子列
+      obj.children = processColumns(item.children);
+    }
+    result.push(obj);
+  });
+
+  return result;
+}
+
 onMounted(async () => {
   init()
   updateColumns()

@@ -47,3 +47,10 @@ export const updateDeptApi = (data: object) => {
 export const deleteDeptApi = (id: number) => {
   return http.post<AxiosResults<any>>('/dept/delete', {data: {id}})
 }
+
+/**
+ * 获取工区信息
+ */
+export const getWorkArea = () => {
+  return http.get<AxiosResults<any>>('/dept/getWorkArea')
+}

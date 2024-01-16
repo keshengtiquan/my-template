@@ -3,14 +3,17 @@ import type {TableColumnType} from "ant-design-vue";
 import Setting from './component/setting.vue'
 import {reactive, ref} from "vue";
 import * as _ from 'lodash'
+import TreeSelect from '@/components/tree-select/index.vue'
 
 const props = withDefaults(defineProps<{
   columns: any[],
   dataSource?: any[],
   title?: string
   hideTool?: boolean
-}>(),{
-  hideTool: false
+  tableSize?: 'middle' | 'small' | 'large'
+}>(), {
+  hideTool: false,
+  tableSize: 'large'
 })
 const emits = defineEmits(['search', 'refresh'])
 const tableColumns = ref<any[]>([])
@@ -18,14 +21,14 @@ const expand = ref(false);
 const formState = reactive<Record<any, any>>({});
 const formRef = ref();
 const searchArray = ref<any[]>([])
-const tableSize = ref('large')
+const tableSize = ref(props.tableSize)
 
 searchArray.value = props.columns.filter(item => item.search)
 
 const settingChangeHandle = (setting: any[]) => {
   let tem: TableColumnType[] = []
   setting.forEach(item => {
-    const column = _.cloneDeep(props.columns.find(column => column.dataIndex === item.dataIndex))
+    const column = _.cloneDeep(props.columns.find(column => column.title === item.title))
     if (column && item.fixed) {
       column['fixed'] = item.fixed
     }
@@ -94,16 +97,18 @@ defineExpose({onReload})
         :model="formState"
         @finish="onFinish"
     >
-      <a-row :gutter="24">
+      <a-row :gutter="24" class="justify-between">
         <template v-for="(item,index) in searchArray" :key="item.dataIndex">
           <a-col v-show="expand || index <= 2" :span="6">
-            <a-form-item
-                :name="item.dataIndex"
-                :label="item.title"
-            >
-              <a-input v-if="item.valueType === 'input'" allowClear v-model:value="formState[item.dataIndex]" :placeholder="`请输入${item.title}`"></a-input>
-              <a-select v-if="item.valueType === 'select'" allowClear :options="item.valueEnum" v-model:value="formState[item.dataIndex]" :placeholder="`请输入${item.title}`">
-              </a-select>
+            <a-form-item :name="item.dataIndex" :label="item.title">
+              <a-input v-if="item.valueType === 'input'" allowClear v-model:value="formState[item.dataIndex]"
+                       :placeholder="`请输入${item.title}`"></a-input>
+              <a-select v-if="item.valueType === 'select'" allowClear :options="item.valueEnum"
+                        v-model:value="formState[item.dataIndex]" :placeholder="`请输入${item.title}`"></a-select>
+              <tree-select v-if="item.valueType === 'treeSelect'" allowClear treeDefaultExpandAll
+                           :dropdownMatchSelectWidth="false" :field-names="item.fieldNames" :request="item.request"
+                           v-model="formState[item.dataIndex]"
+                           :placeholder="`请选择${item.title}`"></tree-select>
             </a-form-item>
           </a-col>
         </template>
@@ -124,12 +129,12 @@ defineExpose({onReload})
     </a-form>
   </div>
   <div class="bg-[var(--bg-page-container)] rd-8px px-24px">
-    <div v-if="!hideTool" class="flex justify-between bg-[var(--bg-page-container)] py-16px rd-t-8px">
+    <div v-show="!hideTool" class="flex justify-between bg-[var(--bg-page-container)] py-16px rd-t-8px">
       <div class="h-32px flex items-center">
-        <span v-if="props.title" class="font-600 font-size-16px">{{title}}</span>
+        <span v-if="props.title" class="font-600 font-size-16px">{{ title }}</span>
         <slot v-else name="toolLeft"></slot>
       </div>
-      <div  class="h-32px flex items-center">
+      <div class="h-32px flex items-center">
         <slot name="toolRight"></slot>
         <a-tooltip placement="top" class="w-32px text-center font-size-4 inline-block">
           <template #title>
@@ -143,7 +148,7 @@ defineExpose({onReload})
           </template>
           <a-dropdown placement="bottomRight" :trigger="['click']">
             <ColumnHeightOutlined/>
-          <template #overlay>
+            <template #overlay>
               <a-menu
                   w-100px
                   @click="handleClick"
@@ -159,7 +164,7 @@ defineExpose({onReload})
                   紧凑
                 </a-menu-item>
               </a-menu>
-          </template>
+            </template>
           </a-dropdown>
         </a-tooltip>
         <a-tooltip placement="top" class="w-32px text-center font-size-4 inline-block relative hover:cursor-pointer">
@@ -170,8 +175,9 @@ defineExpose({onReload})
         </a-tooltip>
       </div>
     </div>
-    <a-table v-bind="$attrs" :size="tableSize" @resizeColumn="handleResizeColumn" @change="onChange" :columns="tableColumns"
-             :dataSource="dataSource" >
+    <a-table v-bind="$attrs" :size="tableSize" @resizeColumn="handleResizeColumn" @change="onChange"
+             :columns="tableColumns"
+             :dataSource="dataSource">
       <template v-for="(_item, key, index) in $slots" :key="index" v-slot:[key]="_item">
         <slot :name="key" v-bind="_item"></slot>
       </template>
@@ -182,9 +188,11 @@ defineExpose({onReload})
 .ant-popover :deep(.ant-popover-content .ant-popover-inner) {
   padding: 0 !important;
 }
-.ant-menu-light.ant-menu-root.ant-menu-vertical{
+
+.ant-menu-light.ant-menu-root.ant-menu-vertical {
   border-inline-end: 0;
 }
+
 .ant-menu-vertical :deep(>.ant-menu-item) {
   height: 32px;
   line-height: 32px;

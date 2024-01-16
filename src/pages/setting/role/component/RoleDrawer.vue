@@ -3,11 +3,10 @@ import {reactive, ref} from "vue";
 import {ModalType} from "@/enums";
 import {message} from "ant-design-vue";
 import {useTreeSelect} from "@/composables/useTreeSelect.ts";
-import {getMenuDataApi} from "@/api/menu";
+import {getMenuDataApi, getMenuListApi} from "@/api/menu";
 import {createRoleApi} from "@/api/role";
 import {useEdit} from "@/pages/setting/role/component/useEdit.ts";
 import {extractChildrenIdList} from "@/utils";
-
 
 const emits = defineEmits(['submit'])
 const open = ref(false)
@@ -25,7 +24,7 @@ const selectedKeys = ref<string[]>([])
 const expandedKeys = ref<string[]>()
 const allChecked = ref(false)
 const allExpend = ref(false)
-const {treeData} = useTreeSelect(getMenuDataApi)
+const {treeData} = useTreeSelect(getMenuListApi)
 const title = ref('')
 const currentType = ref('')
 const { loading,getRoleById,updateRole } = useEdit()

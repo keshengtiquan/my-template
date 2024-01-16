@@ -1,3 +1,13 @@
+import {TooltipProps} from "ant-design-vue/es/tooltip";
+import {VueNode} from "ant-design-vue/es/_util/type";
+import {Breakpoint} from "ant-design-vue/es/_util/responsiveObserve";
+import {
+  ColumnFilterItem,
+  ColumnTitle,
+  CompareFn,
+  FilterDropdownProps, FilterSearchType, FilterValue,
+  SortOrder
+} from "ant-design-vue/es/table/interface";
 
 export interface MenuDataItem {
   // 标题
@@ -27,4 +37,39 @@ export interface MenuDataItem {
   // 全连接跳转模式
   target?: '_blank' | '_self' | '_parent'
   activeMenu: string
+}
+
+export interface Column {
+  title?: ColumnTitle<RecordType>;
+  sorter?: boolean | CompareFn<RecordType> | {
+    compare?: CompareFn<RecordType>;
+    /** Config multiple sorter order priority */
+    multiple?: number;
+  };
+  sortOrder?: SortOrder;
+  defaultSortOrder?: SortOrder;
+  sortDirections?: SortOrder[];
+  showSorterTooltip?: boolean | TooltipProps;
+  filtered?: boolean;
+  filters?: ColumnFilterItem[];
+  filterDropdown?: VueNode | ((props: FilterDropdownProps<RecordType>) => VueNode);
+  filterMultiple?: boolean;
+  filteredValue?: FilterValue | null;
+  defaultFilteredValue?: FilterValue | null;
+  filterIcon?: VueNode | ((opt: {
+    filtered: boolean;
+    column: ColumnType;
+  }) => VueNode);
+  filterMode?: 'menu' | 'tree';
+  filterSearch?: FilterSearchType<ColumnFilterItem>;
+  onFilter?: (value: string | number | boolean, record: RecordType) => boolean;
+  filterDropdownOpen?: boolean;
+  onFilterDropdownOpenChange?: (visible: boolean) => void;
+  filterResetToDefaultFilteredValue?: boolean;
+  responsive?: Breakpoint[];
+  /** @deprecated Please use `filterDropdownOpen` instead */
+  filterDropdownVisible?: boolean;
+  /** @deprecated Please use `onFilterDropdownOpenChange` instead */
+  onFilterDropdownVisibleChange?: (visible: boolean) => void;
+  children: Column[]
 }

@@ -15,8 +15,8 @@ export interface Pagination {
  * @param initParams 初始参数
  * @param hasPagination 有没有分页
  */
-export const useTable = (request: Function, initParams?: Record<string, any>, hasPagination= true) => {
-  const tableData = ref<any[]>()
+export const useTable = <T = any>(request: Function, initParams?: Record<string, any>, hasPagination= true) => {
+  const tableData = ref<T[]>([])
   const total = ref()
   const current = ref()
   const pageSize = ref()
@@ -26,12 +26,19 @@ export const useTable = (request: Function, initParams?: Record<string, any>, ha
     loading.value = true
     if(!_.isEmpty(initParams)){
       if(!_.isEmpty(params)){
-        Object.assign(params, initParams)
+        for (let key in initParams) {
+          // 检查是否是 initParams 自身的属性而不是原型链上的属性
+          if (initParams.hasOwnProperty(key) && params[key] === undefined) {
+            // 将 initParams 中的属性添加到 params 中
+            params[key] = initParams[key];
+          }
+        }
       }else {
         params = initParams
       }
     }
     const res = await request(params)
+    console.log(hasPagination)
     if(hasPagination){
       tableData.value = res.data.results
       total.value = res.data.total
@@ -40,7 +47,6 @@ export const useTable = (request: Function, initParams?: Record<string, any>, ha
     }else {
       tableData.value = res.data
     }
-    
     loading.value = false
   }
   const pagination = computed(() => ({
@@ -50,13 +56,12 @@ export const useTable = (request: Function, initParams?: Record<string, any>, ha
     size: 'small',
     showQuickJumper: true,
     showTotal: ((total: number) => {
-      return `第 ${current.value}-${current.value * pageSize.value} 条/共 ${total} 条`;
+      return `第 ${(current.value - 1) * pageSize.value + 1 }-${current.value * pageSize.value > total ? total : current.value * pageSize.value} 条/共 ${total} 条`;
     })
   }));
   onMounted(async () => {
     await getTableData(initParams)
   })
-  
   return {
     tableData,
     pagination,

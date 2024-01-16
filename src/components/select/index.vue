@@ -35,7 +35,7 @@ const getOptionData = _.debounce(async (value: string) => {
   if(data){
     optionDate.value = data.results
   }
-}, 500)
+}, 1000)
 onMounted(() => {
   getOptionData('')
 })

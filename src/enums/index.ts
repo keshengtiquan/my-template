@@ -18,3 +18,4 @@ export enum ModalType {
 export enum FileType {
   XLSX = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 }
+

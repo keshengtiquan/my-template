@@ -1,86 +1,63 @@
-<script setup lang="ts">
-import {computed, CSSProperties, ref} from "vue";
-import {getListApi} from "@/api/list";
+<template>
+  <div>
+    <a-transfer v-model:target-keys="targetKeys" :data-source="tableData" :show-select-all="false"
+                :rowKey="(record: any) => record.id" @change="onChange">
+      <template #children="{direction,filteredItems,selectedKeys,onItemSelectAll,onItemSelect}">
+        <a-table :scroll="{y: 400}" :row-selection="getRowSelection({selectedKeys,onItemSelectAll,onItemSelect,})"
+                 :pagination="pagination" row-key="id" :columns="direction === 'left' ? leftColumns : rightColumns"
+                 :data-source="filteredItems" size="small" @change="paginationChange"
+                 :custom-row="(record: any) => ({onClick: () => {onItemSelect(record.id, !selectedKeys.includes(record.id))},
+            })
+          "/>
+      </template>
+    </a-transfer>
+  </div>
+</template>
+<script lang="ts" setup>
+import {ref} from 'vue';
+import {getExcludeListApi} from "@/api/list";
 import {Pagination, useTable} from "@/composables/useTable.ts";
-import { theme } from 'ant-design-vue';
-const { useToken } = theme;
-const { token } = useToken();
-//左侧表格列
-const leftColumns = ref<any[]>([
-  {title: '序号', dataIndex: 'serialNumber', width: 30, align: 'center'},
+
+const emits = defineEmits(['onTransferChange'])
+const props = defineProps<{
+  workPlaceId: string
+}>()
+
+const {tableData, pagination, getTableData} = useTable(getExcludeListApi, {workPlaceId: props.workPlaceId})
+const leftTableColumns = [
+  {title: '序号', dataIndex: 'serialNumber', width: 15, align: 'center'},
   {title: '项目名称', dataIndex: 'listName', width: 80,},
   {title: '项目特征', dataIndex: 'listCharacteristic', width: 120, ellipsis: true}
-]);
-//右侧表格列
-const rightColumns = ref<any[]>([
+];
+const rightTableColumns = [
   {title: '序号', dataIndex: 'serialNumber', width: 50, align: 'center'},
   {title: '项目名称', dataIndex: 'listName', width: 120,},
   {title: '项目特征', dataIndex: 'listCharacteristic', width: 120, ellipsis: true}
-]);
-const {tableData,pagination,getTableData} = useTable(getListApi)
-const hasSelected = computed(() => selectedRowKeys.value.length > 0);
-const selectedRowKeys = ref<string[]>([])
-const selectedRows = ref<any[]>([])
+];
 
-/**
- * 全选方法
- * @param selected
- */
-const onSelectAll = (selected:boolean,allSelectedRows: any[], changeRows: any[]) => {
-  if(selected){
-    const allSelectedKeys = changeRows.map(i => i.id)
-    selectedRowKeys.value = [...selectedRowKeys.value, ...allSelectedKeys]
-  }else {
-    console.log(35)
-    const removeIds = changeRows.map(i => i.id)
-    selectedRowKeys.value = selectedRowKeys.value.filter(i => !removeIds.includes(i))
-  }
-  console.log(selectedRowKeys.value)
-}
-/**
- * 行选择
- * @param record
- * @param selected
- */
-const onSelect = (record: any,selected: boolean) => {
-  if(selected){
-    selectedRowKeys.value.push(record.id)
-    selectedRows.value.push(record)
-  }else {
-    selectedRowKeys.value = selectedRowKeys.value.filter(i => i !== record.id)
-    selectedRows.value = selectedRows.value.filter(i => i.id !== record.id)
-  }
-}
+const targetKeys = ref<string[]>([]);
+const leftColumns = ref<any[]>(leftTableColumns);
+const rightColumns = ref<any[]>(rightTableColumns);
 
-/**
- * 页码更改方法
- */
+const onChange = (nextTargetKeys: string[]) => {
+  emits('onTransferChange', nextTargetKeys)
+};
 const paginationChange = (pagination: Pagination) => {
   getTableData({current: pagination.current, pageSize: pagination.pageSize})
 }
 
+const getRowSelection = ({selectedKeys, onItemSelectAll, onItemSelect,}: Record<string, any>) => {
+  return {
+    onSelectAll(selected: boolean, selectedRows: Record<string, string | boolean>[]) {
+      const treeSelectedKeys = selectedRows.filter(item => !item.disabled).map(({key}) => key);
+      onItemSelectAll(treeSelectedKeys, selected);
+    },
+    onSelect({key}: Record<string, string>, selected: boolean) {
+      onItemSelect(key, selected);
+    },
+    selectedRowKeys: selectedKeys,
+    columnWidth: 10,
+  };
+};
 </script>
-<template>
-  <div class="flex ">
-    <div class="border border-solid b-rd-2 border-gray-3">
-      <div>{{ `${selectedRowKeys.length}/${pagination.total}` }}</div>
-      <a-table @change="paginationChange" :row-selection="{selectedRowKeys,onSelect: onSelect, onSelectAll: onSelectAll  }" row-key="id" :data-source="tableData" size="small" :pagination="pagination" :columns="leftColumns"></a-table>
-    </div>
-    <div class="flex flex-col justify-center px-10px">
-      <div  class="m-b-10px w-30px flex h-30px b-rd-2 justify-center border-gray-3 border border-solid">
-        <RightOutlined />
-      </div>
-      <div class="w-30px flex h-30px b-rd-2 justify-center border-gray-3 border border-solid">
-        <LeftOutlined />
-      </div>
-    </div>
-    <div class="border border-solid b-rd-2 border-gray-3">
-      <a-table size="small" :columns="rightColumns"></a-table>
-    </div>
-  </div>
-</template>
 
-
-<style scoped>
-
-</style>

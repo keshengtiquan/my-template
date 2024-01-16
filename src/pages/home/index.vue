@@ -1,32 +1,82 @@
 <template>
-  <a-form
-      ref="formRef"
-      :model="formState"
-  >
-    <a-form-item label="解析页签名称" name="sheetName" >
-      <a-select v-model:value="formState.sheetName"   placeholder="Tags Mode" >
-        <a-select-option value="shanghai">Zone one</a-select-option>
-        <a-select-option value="beijing">Zone two</a-select-option>
-      </a-select>
-    </a-form-item>
-    <a-form-item label="Activity zone" name="region">
-      <a-select v-model:value="formState.region" placeholder="please select your zone">
-        <a-select-option value="shanghai">Zone one</a-select-option>
-        <a-select-option value="beijing">Zone two</a-select-option>
-      </a-select>
-    </a-form-item>
-  </a-form>
+  <div>
+    <a-transfer
+        v-model:target-keys="targetKeys"
+        :data-source="tableData"
+        :show-select-all="false"
+        :rowKey="record => record.id"
+        @change="onChange"
+    >
+      <template
+          #children="{
+          direction,
+          filteredItems,
+          selectedKeys,
+          onItemSelectAll,
+          onItemSelect,
+        }"
+      >
+        <a-table
+            :row-selection="
+            getRowSelection({
+              selectedKeys,
+              onItemSelectAll,
+              onItemSelect,
+            })
+          "
+            :pagination="pagination"
+            row-key="id"
+            :columns="direction === 'left' ? leftColumns : rightColumns"
+            :data-source="filteredItems"
+            size="small"
+            @change="paginationChange"
+        />
+      </template>
+    </a-transfer>
+  </div>
 </template>
+<script lang="ts" setup>
+import { ref } from 'vue';
+import {getListApi} from "@/api/list";
+import {Pagination, useTable} from "@/composables/useTable.ts";
+const {tableData, pagination, getTableData} = useTable(getListApi)
+const leftTableColumns = [
+  {title: '序号', dataIndex: 'serialNumber', width: 30, align: 'center'},
+  {title: '项目名称', dataIndex: 'listName', width: 80,},
+  {title: '项目特征', dataIndex: 'listCharacteristic', width: 120, ellipsis: true}
+];
+const rightTableColumns = [
+  {title: '序号', dataIndex: 'serialNumber', width: 50, align: 'center'},
+  {title: '项目名称', dataIndex: 'listName', width: 120,},
+  {title: '项目特征', dataIndex: 'listCharacteristic', width: 120, ellipsis: true}
+];
 
-<script setup lang="ts">
-import {reactive} from "vue";
+const targetKeys = ref<string[]>([]);
+const leftColumns = ref<any[]>(leftTableColumns);
+const rightColumns = ref<any[]>(rightTableColumns);
 
-const formState = reactive({
-  sheetName: undefined,
-  region: undefined,
-});
+const onChange = (nextTargetKeys: string[]) => {
+  console.log('nextTargetKeys', nextTargetKeys);
+};
+const paginationChange = (pagination: Pagination) => {
+  getTableData({current: pagination.current, pageSize: pagination.pageSize})
+}
+
+const getRowSelection = ({
+                           selectedKeys,
+                           onItemSelectAll,
+                           onItemSelect,
+                         }: Record<string, any>) => {
+  return {
+    onSelectAll(selected: boolean, selectedRows: Record<string, string | boolean>[]) {
+      const treeSelectedKeys = selectedRows.filter(item => !item.disabled).map(({ key }) => key);
+      onItemSelectAll(treeSelectedKeys, selected);
+    },
+    onSelect({ key }: Record<string, string>, selected: boolean) {
+      onItemSelect(key, selected);
+    },
+    selectedRowKeys: selectedKeys,
+  };
+};
 </script>
 
-<style scoped>
-
-</style>

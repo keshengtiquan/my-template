@@ -10,7 +10,7 @@ const appStore = useAppStore()
 const { layoutSetting } = storeToRefs(appStore)
 const router = useRouter()
 const loginModel = reactive({
-  userName: 'lijianbo',
+  userName: 'test',
   password: '123456',
 })
 const formRef = shallowRef()

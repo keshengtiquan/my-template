@@ -20,9 +20,15 @@ dependencies:
   axios:
     specifier: ^1.6.2
     version: registry.npmmirror.com/axios@1.6.2
+  date-fns:
+    specifier: ^3.2.0
+    version: registry.npmmirror.com/date-fns@3.2.0
   dayjs:
     specifier: ^1.11.10
     version: registry.npmmirror.com/dayjs@1.11.10
+  dhtmlx-gantt:
+    specifier: ^8.0.6
+    version: registry.npmmirror.com/dhtmlx-gantt@8.0.6
   exceljs:
     specifier: ^4.4.0
     version: registry.npmmirror.com/exceljs@4.4.0
@@ -35,6 +41,9 @@ dependencies:
   lodash:
     specifier: ^4.17.21
     version: registry.npmmirror.com/lodash@4.17.21
+  lodash-es:
+    specifier: ^4.17.21
+    version: registry.npmmirror.com/lodash-es@4.17.21
   pinia:
     specifier: ^2.1.7
     version: registry.npmmirror.com/pinia@2.1.7(typescript@5.0.2)(vue@3.3.4)
@@ -70,6 +79,9 @@ devDependencies:
   '@types/lodash':
     specifier: ^4.14.201
     version: registry.npmmirror.com/@types/lodash@4.14.201
+  '@types/lodash-es':
+    specifier: ^4.17.12
+    version: registry.npmmirror.com/@types/lodash-es@4.17.12
   '@types/node':
     specifier: ^20.9.0
     version: registry.npmmirror.com/@types/node@20.9.0
@@ -620,6 +632,14 @@ packages:
     resolution: {integrity: sha512-wkw9yd1kEXOPnvEeEV1Go1MmxtBJL0RR79aOTAApecWFVu7w0NNXNqhcWgvw2YgZDYadliXkl14pa3WXw5jlCQ==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/js-cookie/-/js-cookie-3.0.6.tgz}
     name: '@types/js-cookie'
     version: 3.0.6
+    dev: true
+
+  registry.npmmirror.com/@types/lodash-es@4.17.12:
+    resolution: {integrity: sha512-0NgftHUcV4v34VhXm8QBSftKVXtbkBG3ViCjs6+eJ5a6y6Mi/jiFGPc1sC7QK+9BFhWrURE3EOggmWaSxL9OzQ==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/lodash-es/-/lodash-es-4.17.12.tgz}
+    name: '@types/lodash-es'
+    version: 4.17.12
+    dependencies:
+      '@types/lodash': registry.npmmirror.com/@types/lodash@4.14.201
     dev: true
 
   registry.npmmirror.com/@types/lodash@4.14.201:
@@ -1613,6 +1633,12 @@ packages:
     name: csstype
     version: 3.1.2
 
+  registry.npmmirror.com/date-fns@3.2.0:
+    resolution: {integrity: sha512-E4KWKavANzeuusPi0jUjpuI22SURAznGkx7eZV+4i6x2A+IZxAMcajgkvuDAU1bg40+xuhW1zRdVIIM/4khuIg==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/date-fns/-/date-fns-3.2.0.tgz}
+    name: date-fns
+    version: 3.2.0
+    dev: false
+
   registry.npmmirror.com/dayjs@1.11.10:
     resolution: {integrity: sha512-vjAczensTgRcqDERK0SR2XMwsF/tSvnvlv6VcF2GIhg6Sx4yOIt/irsr1RDJsKiIyBzJDpCoXiWWq28MqH2cnQ==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/dayjs/-/dayjs-1.11.10.tgz}
     name: dayjs
@@ -1668,6 +1694,12 @@ packages:
     name: destr
     version: 2.0.2
     dev: true
+
+  registry.npmmirror.com/dhtmlx-gantt@8.0.6:
+    resolution: {integrity: sha512-GrEQ40/vgV1wDWkv/IvjJEM27Z4lDv76XvE5nlvMtFQTqUuo5VnL1XNDv/uFSJVMRnaN9StYaPxP1ebGamDLFg==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/dhtmlx-gantt/-/dhtmlx-gantt-8.0.6.tgz}
+    name: dhtmlx-gantt
+    version: 8.0.6
+    dev: false
 
   registry.npmmirror.com/dom-align@1.12.4:
     resolution: {integrity: sha512-R8LUSEay/68zE5c8/3BDxiTEvgb4xZTF0RKmAHfiEVN3klfIpXfi2/QCoiWPccVQ0J/ZGdz9OjzL4uJEP/MRAw==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/dom-align/-/dom-align-1.12.4.tgz}

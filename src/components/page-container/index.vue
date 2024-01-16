@@ -36,11 +36,11 @@ const footerCls = computed<CSSProperties>(() => {
 </script>
 <template>
   <div>
-    <div class="bg-[var(--bg-page-container)] px-24px mb-16px pt-12px pb-5px">
+    <div class="bg-[var(--bg-page-container)] px-24px mb-16px pt-12px">
       <a-breadcrumb v-if="!route.meta.hideInBreadcrumb">
         <template v-if="route.matched?.length">
           <a-breadcrumb-item v-for="item in route.matched" :key="item.path">
-            {{ item.meta?.title }}
+            <RouterLink :to="item.path">{{ item.meta?.title }}</RouterLink>
           </a-breadcrumb-item>
         </template>
       </a-breadcrumb>

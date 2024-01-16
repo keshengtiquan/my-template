@@ -28,6 +28,14 @@ export const getListApi = (params: object) => {
 }
 
 /**
+ *  获取排除列表
+ * @param params
+ */
+export const getExcludeListApi = (params: object) => {
+  return http.get<AxiosResults<any>>('/list/getlistExclude', {params})
+}
+
+/**
  * 获取单条数据
  * @param id
  */
@@ -58,4 +66,28 @@ export const updateListApi = (data: object) => {
  */
 export const deleteListApi = (id: string) => {
   return http.post<AxiosResults<any>>('/list/delete', {data: {id}})
+}
+
+/**
+ * 获取除指定清单外的清单列表（分部分项）
+ * @param params
+ */
+export const getlistDivisionExcludeApi = (params: object) => {
+  return http.get<AxiosResults<any>>('/list/getlistDivisionExclude', {params})
+}
+
+/**
+ * 获取除指定清单外的清单列表（甘特图）
+ * @param params
+ */
+export const getGanttExcludeApi = (params: object) => {
+  return http.get<AxiosResults<any>>('/list/getGanttExclude', {params})
+}
+
+/**
+ * 获取除指定清单外的清单列表（计划）
+ * @param params
+ */
+export const getPlanExcludeApi = (params: object) => {
+  return http.get<AxiosResults<any>>('/list/getPlanExclude', {params})
 }
