@@ -2,6 +2,7 @@
 import {nextTick, onMounted, ref} from "vue";
 import TooltipIcon from "@/components/tooltip-icon/index.vue";
 import {VueDraggable} from "vue-draggable-plus";
+import {useRoute} from "vue-router";
 
 export interface FormState {
   templateName: string;
@@ -13,7 +14,7 @@ export interface FormState {
 const props = withDefaults(defineProps<{
   formState: FormState
 }>(),{})
-
+const route = useRoute()
 const formRef = ref();
 const tableRef = ref()
 const dataSource = ref<any[]>([]);
@@ -116,8 +117,8 @@ defineExpose({dataSource})
         </a-col>
         <a-col :span="8">
           <a-form-item label="导出服务" name="exportService" :rules="[{ required: true, message: '请输入导出服务' }]">
-<!--            <a-input v-model:value="formState.exportService" placeholder="导出服务"></a-input>-->
-            {{formState.exportService}}
+            <a-input v-if="!(route.query.id as string)" v-model:value="formState.exportService" placeholder="导出服务"></a-input>
+            <span v-else>{{formState.exportService}}</span>
           </a-form-item>
         </a-col>
       </a-row>

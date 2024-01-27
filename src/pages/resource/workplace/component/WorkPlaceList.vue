@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {deleteWorkPlaceApi, getWorkPlaceListApi, uploadWorkPlaceApi} from "@/api/workplace";
+import {deleteWorkPlaceApi, exportWorkPlaceApi, getWorkPlaceListApi, uploadWorkPlaceApi} from "@/api/workplace";
 import ProTable from "@/components/pro-table/index.vue";
 import TooltipIcon from "@/components/tooltip-icon/index.vue";
 import Upload from "@/components/upload/index.vue";
@@ -9,6 +9,9 @@ import {useTable} from "@/composables/useTable.ts";
 import {message, Modal} from "ant-design-vue";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 import {useRouter} from "vue-router";
+import {downloadExcel, exportExcel} from "@/utils/excelExport.ts";
+import EditOnline from '@/components/edit-online/index.vue'
+import * as dayjs from "dayjs";
 
 const router = useRouter()
 const columns = ref([
@@ -31,7 +34,10 @@ const updateWorkPlace = (id: string) => {
   router.push({path: '/resource/workplace/update', query: {id}})
 }
 const workPlaceDetail = (record: any) => {
-  router.push({path: '/resource/workplace/detail', query: {id: record.id, workPlaceName: record.workPlaceName, workPlaceType: record.workPlaceType}})
+  router.push({
+    path: '/resource/workplace/detail',
+    query: {id: record.id, workPlaceName: record.workPlaceName, workPlaceType: record.workPlaceType}
+  })
 }
 const open = ref(false)
 const {getTableData, tableData, loading, pagination} = useTable(getWorkPlaceListApi)
@@ -54,16 +60,44 @@ const deleteList = (data: any) => {
     },
   });
 }
+
+/**
+ * 导出文件
+ */
+const exportList = async (current: number, pageSize: number) => {
+  let params = {}
+  if (current && pageSize) {
+    params = {current, pageSize}
+  }
+  const data = await exportWorkPlaceApi(params)
+  const buffer = await exportExcel(data.data)
+  downloadExcel(buffer, `工点列表${dayjs(new Date()).format('YYYY-MM-DD')}`)
+}
+
 </script>
 <template>
   <div>
     <pro-table :columns="columns" ref="workPlaceTableRef" :data-source="tableData" :loading="loading"
                :pagination="pagination"
-               @refresh="() => getTableData()" @search="(params) => getTableData(params)" title="工点列表">
-      <template #toolRight>
+               @refresh="() => getTableData()" @search="(params) => getTableData(params)">
+      <template #toolLeft>
         <a-space>
-          <a-button @click="() => open = true">导入工点</a-button>
           <a-button type="primary" @click="createWorkPlace">添加工点</a-button>
+          <a-button @click="() => open = true">导入工点</a-button>
+          <EditOnline :request="exportWorkPlaceApi"></EditOnline>
+          <a-dropdown placement="bottomLeft">
+            <a-button>导出清单</a-button>
+            <template #overlay>
+              <a-menu>
+                <a-menu-item @click="exportList">
+                  导出所有
+                </a-menu-item>
+                <a-menu-item @click="exportList(pagination.current, pagination.pageSize)">
+                  导出当前页
+                </a-menu-item>
+              </a-menu>
+            </template>
+          </a-dropdown>
         </a-space>
       </template>
       <template #bodyCell="{ column,record }">
@@ -82,11 +116,11 @@ const deleteList = (data: any) => {
         </template>
       </template>
     </pro-table>
-    <Upload v-model:open="open" width="70%" :request="uploadWorkPlaceApi" :upload-type="['xlsx']"></Upload>
+    <Upload v-model:open="open" width="70%" service-name="WorkPlaceImport" :request="uploadWorkPlaceApi"
+            :upload-type="['xlsx']"></Upload>
   </div>
 
 </template>
-
 
 
 <style scoped>

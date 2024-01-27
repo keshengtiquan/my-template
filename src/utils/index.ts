@@ -210,3 +210,22 @@ export const getNameFromDateAndType = (date: Date, type: string) => {
     }
   }
 }
+
+
+export const getStartDateAndEndDate = (date: Date) => {
+  const log = format(date, 'yyyy')
+  const yearStartDate = format(startOfYear(new Date(parseInt(log), 0)), 'yyyy-MM-dd')
+  const yearEndDate = format(endOfYear(new Date(parseInt(log), 0)), 'yyyy-MM-dd')
+  const monthStartDate = format(startOfMonth(date), 'yyyy-MM-dd')
+  const monthEndDate = format(endOfMonth(date), 'yyyy-MM-dd')
+  const weekStartDate = format(startOfWeek(date, { weekStartsOn: 1 }), 'yyyy-MM-dd')
+  const weekEndDate = format(endOfWeek(date, { weekStartsOn: 1 }), 'yyyy-MM-dd')
+  return {
+    yearStartDate,
+    yearEndDate,
+    monthStartDate,
+    monthEndDate,
+    weekStartDate,
+    weekEndDate,
+  }
+}

@@ -40,36 +40,10 @@ export interface MenuDataItem {
 }
 
 export interface Column {
-  title?: ColumnTitle<RecordType>;
-  sorter?: boolean | CompareFn<RecordType> | {
-    compare?: CompareFn<RecordType>;
-    /** Config multiple sorter order priority */
-    multiple?: number;
-  };
-  sortOrder?: SortOrder;
-  defaultSortOrder?: SortOrder;
-  sortDirections?: SortOrder[];
-  showSorterTooltip?: boolean | TooltipProps;
-  filtered?: boolean;
-  filters?: ColumnFilterItem[];
-  filterDropdown?: VueNode | ((props: FilterDropdownProps<RecordType>) => VueNode);
-  filterMultiple?: boolean;
-  filteredValue?: FilterValue | null;
-  defaultFilteredValue?: FilterValue | null;
-  filterIcon?: VueNode | ((opt: {
-    filtered: boolean;
-    column: ColumnType;
-  }) => VueNode);
-  filterMode?: 'menu' | 'tree';
-  filterSearch?: FilterSearchType<ColumnFilterItem>;
-  onFilter?: (value: string | number | boolean, record: RecordType) => boolean;
-  filterDropdownOpen?: boolean;
-  onFilterDropdownOpenChange?: (visible: boolean) => void;
-  filterResetToDefaultFilteredValue?: boolean;
-  responsive?: Breakpoint[];
-  /** @deprecated Please use `filterDropdownOpen` instead */
-  filterDropdownVisible?: boolean;
-  /** @deprecated Please use `onFilterDropdownOpenChange` instead */
-  onFilterDropdownVisibleChange?: (visible: boolean) => void;
-  children: Column[]
+  // align?: 'left' | 'right' | 'center'
+  // colSpan?: number
+  // customCell?: Function(record, rowIndex, column)
+  // customFilterDropdown?: boolean
+  // customHeaderCell: Function(column)
+  // customRender: Function({text, record, index, column}) {}
 }

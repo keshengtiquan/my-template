@@ -1,6 +1,7 @@
 import {http} from '@/utils/request.ts'
 import {AxiosRequestConfig} from "axios";
 import {AxiosResults} from "@/api/types.ts";
+import {ExportExcelParamsType} from "@/utils/excelExport.ts";
 
 /**
  * 上传模版
@@ -79,4 +80,12 @@ export const getExportExcelOneApi = (id: string) => {
  */
 export const updateExportExcelApi = (data: object) => {
   return http.post<AxiosResults<any>>('/excel/export/update', {data})
+}
+
+/**
+ * 下载导入模版
+ * @param data
+ */
+export const downloadTemplateApi = (data: object) => {
+  return http.post<ExportExcelParamsType>('/excel/template', {data} )
 }

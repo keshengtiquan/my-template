@@ -5,6 +5,7 @@ const route = useRoute()
 const router = useRouter()
 const params = route.params
 const path = params?.path ? decodeURIComponent(params.path as string) : ''
+console.log(path)
 if (path) router.replace(path)
 else router.replace('/')
 defineOptions({

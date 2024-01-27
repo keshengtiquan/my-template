@@ -6,7 +6,7 @@ import Upload from '@/components/upload/index.vue'
 import {createTemplateApi, getTemplateOneApi, updateTemplateApi, uploadExcelTemplateApi} from "@/api/excel";
 import {VueDraggable} from 'vue-draggable-plus'
 import {message} from "ant-design-vue";
-import { useRoute,useRouter} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 
 const formState = reactive({
   fileName: '',
@@ -159,7 +159,7 @@ const deleteUpdate = () => {
  * 页面的提交方法
  */
 const handleSubmit = async () => {
-  const { id } = route.query
+  const {id} = route.query
   const params: any = {
     importTemplate: templateExcelName.value,
     importTemplateField: currentTableField.value,
@@ -171,24 +171,24 @@ const handleSubmit = async () => {
     serviceName: formState.serviceName,
   }
   let res: any = {}
-  if(id) {
+  if (id) {
     params.id = id
     res = await updateTemplateApi(params)
-  }else {
+  } else {
     res = await createTemplateApi(params)
   }
-  if(res.code === 200) {
+  if (res.code === 200) {
     message.success(res.message)
     router.go(-1)
   }
 }
 
 onMounted(async () => {
-  const { id } = route.query
-  if( id ){
+  const {id} = route.query
+  if (id) {
     title.value = '更新导入模版'
-    const res = await getTemplateOneApi( (id as string) )
-    Object.assign(formState,res.data)
+    const res = await getTemplateOneApi((id as string))
+    Object.assign(formState, res.data)
     //表头数据
     currentTableField.value = res.data.importTemplateField
     //上传表名称
@@ -203,7 +203,7 @@ onMounted(async () => {
   <PageContainer :title="title">
     <template #footer>
       <a-space>
-        <a-button  @click="() => router.go(-1)">取消</a-button>
+        <a-button @click="() => router.go(-1)">取消</a-button>
         <a-button type="primary" @click="handleSubmit">提交</a-button>
       </a-space>
     </template>
@@ -252,8 +252,9 @@ onMounted(async () => {
           </a-col>
           <a-col :span="8">
             <a-form-item label="服务名称" name="serviceName" :rules="[{ required: true, message: '请输入服务名称' }]">
-              <a-input class="w-full" v-model:value="formState.serviceName"
-                              placeholder="服务名称"></a-input>
+              <a-input v-if="!(route.query.id as string)" class="w-full" v-model:value="formState.serviceName"
+                       placeholder="服务名称"></a-input>
+              <span v-else>{{ formState.serviceName }}</span>
             </a-form-item>
           </a-col>
         </a-row>

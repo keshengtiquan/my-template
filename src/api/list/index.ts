@@ -91,3 +91,19 @@ export const getGanttExcludeApi = (params: object) => {
 export const getPlanExcludeApi = (params: object) => {
   return http.get<AxiosResults<any>>('/list/getPlanExclude', {params})
 }
+
+/**
+ * 获取除指定清单外的清单列表（日志）
+ * @param params
+ */
+export const getLogExcludeApi = (params: object) => {
+  return http.get<AxiosResults<any>>('/list/getLogExclude', {params})
+}
+
+/**
+ * 切换清单是否重点关注
+ * @param data
+ */
+export const setFocusApi = (data: {id: string, isFocusList: boolean}) => {
+  return http.post<AxiosResults<any>>('/list/setFocus', {data})
+}

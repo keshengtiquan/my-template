@@ -29,7 +29,7 @@ class Http {
   }
   
   /** 保存当前Axios实例对象 */
-  private static axiosInstance: AxiosInstance = Axios.create(defaultConfig);
+  static axiosInstance: AxiosInstance = Axios.create(defaultConfig);
   
   
   // 请求拦截
@@ -54,7 +54,6 @@ class Http {
       if (error.response) {
         switch (error.response.status) {
           case 500:
-            
             break;
           case 400:
             notification.open({
@@ -99,3 +98,4 @@ class Http {
 }
 
 export const http = new Http()
+

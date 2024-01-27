@@ -71,6 +71,14 @@ export const uploadWorkPlaceApi = (data: object, config: AxiosRequestConfig) => 
 }
 
 /**
+ * 导出工点
+ * @param data
+ */
+export const exportWorkPlaceApi = (data: object) => {
+  return http.post<AxiosResults<any>>('/workplace/export', {data})
+}
+
+/**
  * 工点关联清单
  * @param data
  */
@@ -107,4 +115,12 @@ export const getWorkPlaceRelevanceCollectList = (params: object) => {
  */
 export const deleteWorkPlaceRelevanceListApi = (data: object) => {
   return http.post<AxiosResults<any>>('/workplace/deleteWorkPlace/relevanceList', {data})
+}
+
+/**
+ * 根据清单获取工点
+ * @param params
+ */
+export const getWorkPlaceByListIdApi = (params: object) => {
+  return http.get<AxiosResults<any>>('/workplace/getWorkPlaceByListId', {params})
 }

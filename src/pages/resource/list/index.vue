@@ -3,19 +3,21 @@ import PageContainer from '@/components/page-container/index.vue'
 import ProTable from '@/components/pro-table/index.vue'
 import Upload from '@/components/upload/index.vue'
 import {createVNode, ref} from "vue";
-import {deleteListApi, exportListApi, getListApi, uploadListApi} from "@/api/list";
+import {deleteListApi, exportListApi, getListApi, setFocusApi, uploadListApi} from "@/api/list";
 import {useTable} from "@/composables/useTable.ts";
 import TooltioIcon from "@/components/tooltip-icon/index.vue";
 import {useRouter} from "vue-router";
 import {message, Modal} from "ant-design-vue";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
-import {exportExcel} from "@/utils/excelExport.ts";
+import {downloadExcel, exportExcel} from "@/utils/excelExport.ts";
+import EditOnline from '@/components/edit-online/index.vue'
+import * as dayjs from "dayjs";
 
 const columns = [
   {title: '序号', dataIndex: 'serialNumber', width: 50, align: 'center', sorter: true},
   {title: '项目编码', dataIndex: 'listCode', width: 100, search: true, valueType: 'input', align: 'center'},
   {title: '项目名称', dataIndex: 'listName', width: 120, search: true, valueType: 'input', align: 'center'},
-  {title: '项目特征', dataIndex: 'listCharacteristic', width: 120, search: true, valueType: 'input', ellipsis: true},
+  {title: '项目特征', dataIndex: 'listCharacteristic', width: 120,resizable: true, search: true, valueType: 'input', ellipsis: true},
   {title: '单位', dataIndex: 'unit', width: 50, align: 'center'},
   {title: '工程量', dataIndex: 'quantities', width: 80, align: 'center'},
   {title: '单价', dataIndex: 'unitPrice', width: 100, align: 'center'},
@@ -71,8 +73,18 @@ const exportList = async (current: number, pageSize: number) => {
     params = {current, pageSize}
   }
   const data = await exportListApi(params)
-  await exportExcel(data.data, '项目清单')
+  const buffer = await exportExcel(data.data)
+  downloadExcel(buffer, `项目清单${dayjs(new Date()).format('YYYY-MM-DD')}`)
 }
+
+const focusList = async (record: any) => {
+  const res = await setFocusApi({id: record.id, isFocusList: !record.isFocusList})
+  if (res.code === 200) {
+    await getTableData(listTableRef.value.onReload())
+    message.success(res.message)
+  }
+}
+
 </script>
 <script lang='ts'>
 export default {
@@ -84,11 +96,12 @@ export default {
     <pro-table :data-source="tableData" ref="listTableRef" :loading="loading" :scroll="{ x: 2000 }"
                :pagination="pagination"
                @refresh="() => getTableData()"
-               @search="(params) => getTableData(params)" :columns="columns" title="清单列表">
-      <template #toolRight>
-        <a-space :size="5">
+               @search="(params) => getTableData(params)" :columns="columns">
+      <template #toolLeft>
+        <a-space>
           <a-button type="primary" @click="createList">新建清单</a-button>
           <a-button @click="() => open = true">导入清单</a-button>
+          <EditOnline :request="exportListApi"/>
           <a-dropdown placement="bottomLeft">
             <a-button>导出清单</a-button>
             <template #overlay>
@@ -110,15 +123,21 @@ export default {
             <TooltioIcon title="编辑">
               <EditOutlined class="text-blue" @click="editList(record.id)"/>
             </TooltioIcon>
+            <TooltioIcon :title="`${record.isFocusList ?  '取消关注' : '关注清单'}`">
+              <AimOutlined class="text-blue" @click="focusList(record)"/>
+            </TooltioIcon>
             <TooltioIcon title="删除">
               <DeleteOutlined class="text-red" @click="deleteList(record)"/>
             </TooltioIcon>
           </a-space>
         </template>
+        <template v-else-if="column.dataIndex === 'listName'">
+          <StarFilled v-if="record.isFocusList" style="color: #d7ee19; margin-right: 5px"/>{{record.listName}}
+        </template>
       </template>
     </pro-table>
     <Upload v-model:open="open" width="70%" :is-multiple="false" :request="uploadListApi"
-            :upload-type="['xlsx']"></Upload>
+            :upload-type="['xlsx']" service-name="projectListImport"></Upload>
   </PageContainer>
 </template>
 

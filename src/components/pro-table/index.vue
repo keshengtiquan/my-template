@@ -35,11 +35,12 @@ const settingChangeHandle = (setting: any[]) => {
     if (column)
       tem.push(column)
   })
-  tableColumns.value = tem
+  tableColumns.value = tem.length === 0 ? [{title: '', dataIndex: ''}] : tem
 }
 const onFinish = () => {
   delete formState.current
   delete formState.pageSize
+
   emits('search', _.pickBy(formState, value => {
     return value !== '' && value !== null && value !== undefined;
   }))
@@ -97,7 +98,7 @@ defineExpose({onReload})
         :model="formState"
         @finish="onFinish"
     >
-      <a-row :gutter="24" class="justify-between">
+      <a-row :gutter="32" :class="{aa: searchArray.length === 1}">
         <template v-for="(item,index) in searchArray" :key="item.dataIndex">
           <a-col v-show="expand || index <= 2" :span="6">
             <a-form-item :name="item.dataIndex" :label="item.title">
@@ -109,6 +110,10 @@ defineExpose({onReload})
                            :dropdownMatchSelectWidth="false" :field-names="item.fieldNames" :request="item.request"
                            v-model="formState[item.dataIndex]"
                            :placeholder="`请选择${item.title}`"></tree-select>
+              <a-date-picker v-if="item.valueType === 'date'" class="w-full" valueFormat="YYYY-MM-DD" v-model:value="formState[item.dataIndex]" />
+              <a-input-number v-if="item.valueType === 'number'" v-model:value="formState[item.dataIndex]" :min="0"  />
+              <Select v-if="item.valueType === 'querySelect'" :placeholder="`请选择${item.title}`" v-model="formState[item.dataIndex]" :limit="50"
+                      :fieldNames="item.fieldNames" :request="item.request"></Select>
             </a-form-item>
           </a-col>
         </template>
@@ -175,6 +180,7 @@ defineExpose({onReload})
         </a-tooltip>
       </div>
     </div>
+
     <a-table v-bind="$attrs" :size="tableSize" @resizeColumn="handleResizeColumn" @change="onChange"
              :columns="tableColumns"
              :dataSource="dataSource">
@@ -185,6 +191,9 @@ defineExpose({onReload})
   </div>
 </template>
 <style lang="scss" scoped>
+.aa {
+  justify-content: space-between;
+}
 .ant-popover :deep(.ant-popover-content .ant-popover-inner) {
   padding: 0 !important;
 }

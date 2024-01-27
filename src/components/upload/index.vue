@@ -20,7 +20,7 @@
         <a-button v-if="isMultiple" type="primary" @click="uploadFiles">文件夹选择</a-button>
         <input  ref="uploadFileRefs" @change="filesChange" style="display: none" type="file" webkitdirectory mozdirectory
                odirectory>
-        <a>导入模版下载</a>
+        <a @click="exportTemplate">导入模版下载</a>
       </div>
       <a-table :columns="columns" :data-source="fileList" :pagination="false">
         <template #bodyCell="{ column, record,index }">
@@ -66,6 +66,8 @@ import {InboxOutlined, DeleteOutlined, CloseOutlined} from '@ant-design/icons-vu
 import {formatByte, throttle} from '@/utils'
 import axios from "axios";
 import {message} from "ant-design-vue";
+import {downloadTemplateApi} from "@/api/excel";
+import {exportExcel, ExportExcelParamsType} from "@/utils/excelExport.ts";
 
 const columns = [
   {title: '序号', dataIndex: 'index', align: 'center', width: 80},
@@ -80,6 +82,7 @@ const props = withDefaults(defineProps<{
   uploadType: Array<string>,
   limit?: number,
   request: Function,
+  serviceName?: string,
   open: boolean,
   isMultiple?: boolean
 }>(), {
@@ -354,7 +357,10 @@ const handleCancel = () => {
   fileArray.value = []
   uploadRes.value = []
 }
-
+const exportTemplate = async () => {
+  const data = await downloadTemplateApi({serviceName: props.serviceName})
+  exportExcel(data, String(new Date().getTime()))
+}
 </script>
 
 <style lang="scss" scoped>

@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import ProTable from '@/components/pro-table/index.vue'
 import {generatePlanApi, getPlanListApi, getReportPlanApi} from "@/api/issued";
-import {createVNode, toRefs, watch} from "vue";
+import {createVNode, ref, toRefs, watch} from "vue";
 import {message, Modal} from "ant-design-vue";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 import {getNameFromDateAndType} from "@/utils";
 import {useTable} from "@/composables/useTable.ts";
 import TooltipIcon from "@/components/tooltip-icon/index.vue";
 import {useRouter} from "vue-router";
+import DataMoadl from "@/pages/plan/issued/component/dataMoadl.vue";
 
 const props = defineProps<{
   planType: string
@@ -18,7 +19,9 @@ const planTypeMap: Record<string, string> = {
   month: '月度计划',
   week: '周计划',
 }
+
 const { planType } = toRefs(props);
+const modalRef = ref()
 const router = useRouter()
 const columns = [
   {title: '计划类型', dataIndex: 'planType', width: 110,},
@@ -28,11 +31,15 @@ const columns = [
   {title: '计划结束时间', dataIndex: 'endDate', width: 110,},
   {title: '操作', dataIndex: 'actions', width: 100, align: 'center', fixed: 'right'},
 ]
-const generatePlan = async () => {
-  const planTime = getNameFromDateAndType(new Date(), props.planType)
+const handleSubmit = (date: string) => {
+  generatePlan(date)
+}
+const generatePlan = async (date: string) => {
+  const planTime = getNameFromDateAndType(new Date(date), props.planType)
+  console.log(planTime)
   const {data} = await getReportPlanApi({
     planType: props.planType,
-    currentDate: new Date()
+    currentDate: new Date(date)
   })
   if (data) {
     Modal.confirm({
@@ -43,7 +50,7 @@ const generatePlan = async () => {
       async onOk() {
         const res = await generatePlanApi({
           planType: props.planType,
-          currentDate: new Date()
+          currentDate: new Date(date)
         })
         if (res.code === 200) {
           if (res.data.length > 0) {
@@ -63,7 +70,7 @@ const generatePlan = async () => {
   } else {
     const res = await generatePlanApi({
       planType: props.planType,
-      currentDate: new Date()
+      currentDate: new Date(date)
     })
     if (res.code === 200) {
       if (res.data.length > 0) {
@@ -94,7 +101,7 @@ export default {
   <pro-table :data-source="tableData" :loading="loading" :pagination="pagination" @refresh="() => getTableData({planType})"
              @search="(params) => getTableData({...params, ...{planType}})" :columns="columns">
     <template #toolLeft>
-      <a-button type="primary" @click="generatePlan">生成计划</a-button>
+      <a-button type="primary" @click="modalRef.showModal()">生成计划</a-button>
     </template>
     <template #bodyCell=" { column,record }">
       <template v-if="column.dataIndex === 'planType'">
@@ -112,6 +119,7 @@ export default {
       </template>
     </template>
   </pro-table>
+  <DataMoadl ref="modalRef" :plan-type="planType" @submit="handleSubmit"></DataMoadl>
 </template>
 <style scoped>
 

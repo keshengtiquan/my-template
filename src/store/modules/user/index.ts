@@ -14,7 +14,7 @@ export const useUserStore = defineStore('user', () => {
   const avatar = computed(() => userInfo.value?.avatar)
   const nickname = computed(() => userInfo.value?.nickName ?? userInfo.value?.userName)
   // const roles = computed(() => userInfo.value?)
-  
+  const request = ref<Function>()
   
   const getMenuData = async () => {
     const {data} = await getMenuDataApi()
@@ -42,6 +42,10 @@ export const useUserStore = defineStore('user', () => {
     menuData.value = []
     localStorage.removeItem('token')
   }
+  
+  const setRequest = (value: Function) => {
+    request.value = value
+  }
   return {
     routerData,
     menuData,
@@ -49,9 +53,11 @@ export const useUserStore = defineStore('user', () => {
     avatar,
     nickname,
     // roles,
+    request,
     logout,
     getMenuData,
     getUserInfo,
-    generateDynamicRoutes
+    generateDynamicRoutes,
+    setRequest
   }
 })

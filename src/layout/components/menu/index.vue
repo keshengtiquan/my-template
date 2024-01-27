@@ -31,7 +31,8 @@ onMounted(() => {
   setOpenKey(menuData.value)
 })
 watch(() => route.path, () => {
-  selectedKeys.value = JSON.parse((route.meta.activeMenu as string))
+  if(!route.path.startsWith('/redirect/'))
+    selectedKeys.value = JSON.parse((route.meta.activeMenu as string))
 }, {
   immediate: true,
   deep: true

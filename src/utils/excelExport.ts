@@ -2,10 +2,10 @@ import * as Exceljs from 'exceljs'
 export interface ExportExcelParamsType {
   style: Record<string, any> //excel表的样式配置
   tableData: any[] //表的数据内容
-  headerColumns: { width: number; excelFiled: string; filed: string }[] //表头配置
+  headerColumns: { col?: string,width: number;remarks?: string, excelFiled: string; filed: string }[] //表头配置
   sheetName: string //工作表名
 }
-export const  exportExcel = async (options: ExportExcelParamsType, fileName: string) => {
+export const  exportExcel = async (options: ExportExcelParamsType) => {
   const { sheetName, style, headerColumns, tableData } = options
   // 创建工作簿
   const workbook = new Exceljs.Workbook()
@@ -17,6 +17,9 @@ export const  exportExcel = async (options: ExportExcelParamsType, fileName: str
     // 设置列头
     const columnsData = headerColumns.map((column) => {
       const width = column.width
+      if(column.remarks){
+        worksheet.getCell(`${column.col}1`).note = column.remarks
+      }
       return {
         header: column.excelFiled,
         key: column.filed,
@@ -58,7 +61,12 @@ export const  exportExcel = async (options: ExportExcelParamsType, fileName: str
     })
   }
   const buffer =  await workbook.xlsx.writeBuffer()
+  console.log(buffer)
+  return buffer
   
+}
+
+export const downloadExcel = (buffer: any, fileName: string) => {
   let blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
