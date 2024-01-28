@@ -20,6 +20,10 @@ export default [
     component: () => import('@/pages/luckysheet/index.vue')
   },
   {
+    path: '/onlyoffice',
+    component: () => import('@/pages/onlyoffice/index.vue')
+  },
+  {
     path: "/redirect",
     component: Layout,
     children: [

@@ -1,14 +1,8 @@
 <script setup lang="ts">
-import {useLuckySheetStore} from "@/store";
 import {useRouter} from "vue-router";
 const router = useRouter()
-const luckySheetStore = useLuckySheetStore()
-const props = defineProps<{
-  request: Function
-}>()
 const editOnline = () => {
-  luckySheetStore.setRequest(props.request)
-  router.push({path: '/luckysheet'})
+  router.push({path: '/onlyoffice'})
 }
 </script>
 <template>
