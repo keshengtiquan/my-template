@@ -16,6 +16,10 @@ export const rootRoute: RouteRecordRaw = {
 }
 export default [
   {
+    path: '/luckysheet',
+    component: () => import('@/pages/luckysheet/index.vue')
+  },
+  {
     path: "/redirect",
     component: Layout,
     children: [
