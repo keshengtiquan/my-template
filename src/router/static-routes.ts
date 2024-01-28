@@ -17,7 +17,7 @@ export const rootRoute: RouteRecordRaw = {
 export default [
   {
     path: '/onlyoffice',
-    component: () => import('@/pages/luckysheet/index.vue')
+    component: () => import('@/pages/onlyoffice/index.vue')
   },
   {
     path: "/redirect",

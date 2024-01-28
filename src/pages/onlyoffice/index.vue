@@ -11,8 +11,8 @@ onMounted(async () => {
 </script>
 
 <template>
-    <DocumentEditor  id="docEditor" documentServerUrl="http://keshengtiquan.work:9500/" :config="config"
-    />
+  <DocumentEditor  id="docEditor" documentServerUrl="http://keshengtiquan.work:9500/" :config="config"
+  />
 
 </template>
 
