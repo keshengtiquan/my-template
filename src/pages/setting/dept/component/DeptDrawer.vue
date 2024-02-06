@@ -91,9 +91,9 @@ defineExpose({openDrawer})
       </a-form-item>
       <a-form-item label="部门类型" name="deptType" :rules="[{ required: true, message: '请输入部门名称' }]">
         <a-select class="w-full" v-model:value="formState.deptType" placeholder="部门类型">
-          <a-select-option value="0">公司</a-select-option>
+          <a-select-option value="0">项目部</a-select-option>
           <a-select-option value="1">部门</a-select-option>
-          <a-select-option value="2">工区</a-select-option>
+          <a-select-option value="2">作业队</a-select-option>
         </a-select>
       </a-form-item>
       <a-form-item label="部门领导人" name="leader" :rules="[{ required: true, message: '请输入部门领导人' }]">

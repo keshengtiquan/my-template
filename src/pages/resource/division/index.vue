@@ -3,13 +3,15 @@ import PageContainer from '@/components/page-container/index.vue'
 import ProTable from '@/components/pro-table/index.vue'
 import {useRouter} from "vue-router";
 import {useTable} from "@/composables/useTable.ts";
-import {deleteDivisionApi, getDivisionTree} from "@/api/division";
+import {deleteDivisionApi, getDivisionTree, uploadDivisionApi} from "@/api/division";
 import TooltipIcon from "@/components/tooltip-icon/index.vue";
-import {ref, createVNode, onMounted, nextTick} from "vue";
+import {ref, createVNode, onMounted} from "vue";
 import {message, Modal} from "ant-design-vue";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
+import Upload from '@/components/upload/index.vue'
 
 const router = useRouter()
+const open = ref<boolean>(false)
 const columns = ref<any[]>([
   {title: '分部分项名称', dataIndex: 'divisionName',},
   {title: '产值(元)', dataIndex: 'outputValue',},
@@ -59,7 +61,7 @@ const deleteDivision = (record: any) => {
       })
     },
     onCancel() {
-      console.log('Cancel');
+      message.info('取消删除');
     },
   });
 }
@@ -86,6 +88,7 @@ onMounted(async () => {
       <template #toolLeft>
         <a-space>
           <a-button type="primary" @click="createDivision">新增</a-button>
+          <a-button @click="() => open = true">导入数据</a-button>
         </a-space>
       </template>
       <template #bodyCell=" { column,record }">
@@ -94,7 +97,7 @@ onMounted(async () => {
             <TooltipIcon title="编辑">
               <EditOutlined class="text-blue" @click="editDivision(record.id)"/>
             </TooltipIcon>
-            <TooltipIcon v-if="record.divisionType == '分项工程'" title="添加清单">
+            <TooltipIcon v-if="!record.isTreeLeaf" title="添加清单">
               <ControlOutlined class="text-green" @click="addProjectlist(record)"/>
             </TooltipIcon>
             <TooltipIcon title="添加下级">
@@ -106,12 +109,19 @@ onMounted(async () => {
           </a-space>
         </template>
         <template v-else-if="column.dataIndex === 'divisionName'">
-          <a-typography-link @click="viewProjectList(record)">{{ record.divisionName }}</a-typography-link>
+          <a-typography-paragraph @click="viewProjectList(record)" :copyable="{ onCopy: onCopy, tooltip: false, }">
+           <a>{{ record.divisionName }}</a>
+          </a-typography-paragraph>
         </template>
       </template>
     </ProTable>
+    <Upload v-model:open="open" width="70%" :is-multiple="false" :request="uploadDivisionApi"
+            :upload-type="['xlsx']" service-name="DivisionImport"></Upload>
+
   </PageContainer>
 </template>
 <style scoped>
-
+.ant-typography {
+  margin-bottom: 0px;
+}
 </style>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type {TableColumnType} from "ant-design-vue";
 import Setting from './component/setting.vue'
-import {reactive, ref} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import * as _ from 'lodash'
 import TreeSelect from '@/components/tree-select/index.vue'
 
@@ -86,7 +86,9 @@ const handleClick = ({key}: any) => {
 }
 
 defineExpose({onReload})
+onMounted(() => {
 
+})
 </script>
 
 <template>

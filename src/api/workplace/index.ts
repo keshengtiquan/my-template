@@ -124,3 +124,30 @@ export const deleteWorkPlaceRelevanceListApi = (data: object) => {
 export const getWorkPlaceByListIdApi = (params: object) => {
   return http.get<AxiosResults<any>>('/workplace/getWorkPlaceByListId', {params})
 }
+
+/**
+ * 导入工点关联清单
+ * @param data
+ */
+export const uploadRelevanceApi = (data: object, config: AxiosRequestConfig) => {
+  return http.post<AxiosResults<any>>('/workplace/uploadRelevance', {data}, config)
+}
+
+/**
+ * 导出工点清单汇总表
+ */
+export const exportWorkPlaceRelevanceCollectListApi = (data: object) => {
+  return http.post('/workplace/exportMultilevelHeader', {data},{
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+}
+
+/**
+ * 导入工点关联清单（汇总）
+ * @param data
+ */
+export const uploadRelevanceListApi = (data: object,config: AxiosRequestConfig) => {
+  return http.post<AxiosResults<any>>('/workplace/uploadRelevanceList',{data}, config)
+}

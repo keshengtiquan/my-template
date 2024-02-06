@@ -107,3 +107,11 @@ export const getLogExcludeApi = (params: object) => {
 export const setFocusApi = (data: {id: string, isFocusList: boolean}) => {
   return http.post<AxiosResults<any>>('/list/setFocus', {data})
 }
+
+/**
+ * 批量删除清单
+ * @param data
+ */
+export const batchDeleteApi = (data: object) => {
+  return http.post<AxiosResults<any>>('/list/batchDelete', {data})
+}

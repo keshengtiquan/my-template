@@ -17,7 +17,6 @@ const cls = computed(() => {
     [`${prefixCls.value}-theme-item-${props.theme}`]: props.isDark,
   }
 })
-console.log(cls)
 const {token} = theme.useToken()
 </script>
 

@@ -48,7 +48,6 @@ const props = withDefaults(defineProps<{
 const prefixCls = shallowRef('ant-pro-drawer-setting')
 const emit = defineEmits(['update:open', 'settingChange'])
 const handleVisible = (open: boolean) => {
-  console.log(open)
   emit('update:open', open)
 }
 //改主题

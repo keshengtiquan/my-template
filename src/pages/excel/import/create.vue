@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import PageContainer from '@/components/page-container/index.vue'
 import TooltipIcon from '@/components/tooltip-icon/index.vue'
-import {onMounted, reactive, ref} from "vue";
+import {nextTick, onMounted, reactive, ref} from "vue";
 import Upload from '@/components/upload/index.vue'
 import {createTemplateApi, getTemplateOneApi, updateTemplateApi, uploadExcelTemplateApi} from "@/api/excel";
 import {VueDraggable} from 'vue-draggable-plus'
@@ -46,12 +46,16 @@ const title = ref('创建导入模版')
  * 新增模板字段
  */
 const handleAdd = () => {
-  dataSource.value.push({
-    col: columnIndexToColumnLetter(dataSource.value.length + 1),
-    filed: '',
-    excelFiled: '',
-    remarks: ''
+  console.log(dataSource.value)
+  nextTick(() => {
+    dataSource.value.push({
+      col: columnIndexToColumnLetter(dataSource.value.length + 1),
+      filed: '',
+      excelFiled: '',
+      remarks: ''
+    })
   })
+
 }
 
 /**
@@ -80,7 +84,7 @@ const onSelectChange = (value: string) => {
 }
 
 /**
- * 选择页签后设置table
+ * 选择页签后设置table数据
  */
 const setTableField = () => {
   dataSource.value = []
@@ -183,6 +187,14 @@ const handleSubmit = async () => {
   }
 }
 
+const onEnd = () => {
+  console.log(dataSource.value)
+  dataSource.value.forEach((item,index) => {
+    item.col = columnIndexToColumnLetter(index + 1)
+  })
+  currentTableField.value = dataSource.value.map(item => item.excelFiled)
+}
+
 onMounted(async () => {
   const {id} = route.query
   if (id) {
@@ -261,7 +273,7 @@ onMounted(async () => {
       </a-form>
     </a-card>
     <a-card title="模板字段" class="mt-20px">
-      <VueDraggable v-model="dataSource" :animation="150" handle=".move" target=".ant-table-tbody">
+      <VueDraggable v-model="dataSource" @end="onEnd" :animation="150" handle=".move" target=".ant-table-tbody">
         <a-table id="mytb" ref="tableRef" :data-source="dataSource" :pagination="false" :columns="columns">
           <template #bodyCell="{ column, record, index }">
             <template v-if="['filed', 'excelFiled', 'remarks'].includes(column.dataIndex)">
@@ -284,8 +296,8 @@ onMounted(async () => {
         新增字段
       </a-button>
     </a-card>
-    <Upload v-model:open="open" @submit="onSubmit" :isMultiple="false" :request="uploadExcelTemplateApi" width="70%"
-            :uploadType="['xlsx']"></Upload>
+    <Upload v-model:open="open" :show-results="false" @submit="onSubmit" :isMultiple="false" :request="uploadExcelTemplateApi" width="70%"
+            :uploadType="['xlsx']" :showTemplate="false"></Upload>
   </PageContainer>
 </template>
 <style scoped>

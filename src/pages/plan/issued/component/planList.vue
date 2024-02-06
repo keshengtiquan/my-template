@@ -92,11 +92,7 @@ const toDetail = (record: any) => {
   router.push({path: '/plan/issued/detail', query: {planName: record.planName}})
 }
 </script>
-<script lang='ts'>
-export default {
-  name: "IssuedIndex"
-}
-</script>
+
 <template>
   <pro-table :data-source="tableData" :loading="loading" :pagination="pagination" @refresh="() => getTableData({planType})"
              @search="(params) => getTableData({...params, ...{planType}})" :columns="columns">

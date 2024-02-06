@@ -8,12 +8,13 @@ import {useTable} from "@/composables/useTable.ts";
 import {
   deleteWorkPlaceRelevanceListApi,
   getWorkPlaceRelevanceListApi,
-  updateWorkPlaceListQuantitiesApi
+  updateWorkPlaceListQuantitiesApi, uploadRelevanceApi, uploadWorkPlaceApi
 } from "@/api/workplace";
 import TooltipIcon from "@/components/tooltip-icon/index.vue";
 import {message, Modal} from "ant-design-vue";
 import {cloneDeep} from 'lodash-es';
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
+import Upload from "@/components/upload/index.vue";
 
 interface DataItem {
   id: string
@@ -37,7 +38,8 @@ const selectedRowKeys = ref<any[]>([])
 const onSelectChange = (selectedRowKey: any[]) => {
   selectedRowKeys.value = selectedRowKey
 }
-
+const open = ref(false)
+const removeField = ref<string[]>(['leftQuantities', 'rightQuantities'])
 const columns = ref([
   {title: '序号', dataIndex: 'serialNumber', width: 50, align: 'center', sorter: true},
   {title: '项目编码', dataIndex: 'listCode', width: 110, search: true, valueType: 'input', align: 'center'},
@@ -148,18 +150,20 @@ const batchDelete = () => {
 if (workPlaceType === '区间') {
   columns.value.splice(6, 0 ,{title: '左线工程量', dataIndex: 'leftQuantities', width: 90, align: 'center'} )
   columns.value.splice(7, 0 ,{title: '右线工程量', dataIndex: 'rightQuantities', width: 90, align: 'center'} )
+  removeField.value = []
 }
 </script>
 <template>
-  <PageContainer>
+  <PageContainer :title="`${title}清单`">
     <pro-table :columns="columns" ref="tableRef" :scroll="{x: 1500}" :data-source="tableData" @refresh="() => getTableData()"
                @search="(params) => getTableData(params)" :loading="loading" :pagination="pagination"
                :row-selection="{ selectedRowKeys: selectedRowKeys, preserveSelectedRowKeys: true, onChange: onSelectChange  }"
-               rowKey="id" :title="`${title}清单`">
-      <template #toolRight>
+               rowKey="id" >
+      <template #toolLeft>
         <a-space>
           <a-button type="primary" @click="transferDrawerRef.openDrawer(id)">添加清单</a-button>
           <a-button type="primary" :disabled="!(selectedRowKeys.length > 0)" danger @click="batchDelete">批量删除</a-button>
+          <a-button @click="() => open = true">导入数据</a-button>
         </a-space>
       </template>
       <template #headerCell="{ column }">
@@ -223,6 +227,8 @@ if (workPlaceType === '区间') {
       </template>
     </pro-table>
     <TransferDrawer ref="transferDrawerRef" @submit="() => getTableData(tableRef.onReload())"></TransferDrawer>
+    <Upload  v-model:open="open" width="70%" :is-multiple="false" service-name="WorkPlaceListRelevanceService" :request="uploadRelevanceApi"
+             :upload-type="['xlsx']" :removeField="removeField"></Upload>
   </PageContainer>
 </template>
 

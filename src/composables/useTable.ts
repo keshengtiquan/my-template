@@ -37,6 +37,7 @@ export const useTable = <T = any>(request: Function, initParams?: Record<string,
         params = initParams
       }
     }
+    console.log(initParams)
     const res = await request(params)
     if(hasPagination){
       tableData.value = res.data.results
@@ -52,6 +53,7 @@ export const useTable = <T = any>(request: Function, initParams?: Record<string,
     total: total.value,
     current: current.value,
     pageSize: pageSize.value,
+    showSizeChanger: true,
     size: 'small',
     showQuickJumper: true,
     showTotal: ((total: number) => {

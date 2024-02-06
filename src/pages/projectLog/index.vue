@@ -9,9 +9,11 @@ import {useRouter} from "vue-router";
 import {useUserStore} from "@/store";
 import {onMounted, ref} from "vue";
 import {getWorkArea} from "@/api/dept";
+import {theme} from "ant-design-vue";
 
 const router = useRouter()
 const userStore = useUserStore()
+const {token} = theme.useToken()
 const columns = ref<any[]>([
   {
     title: '序号',
@@ -24,7 +26,16 @@ const columns = ref<any[]>([
     title: '填报人', dataIndex: 'fillUser', width: 200, search: true, valueType: 'querySelect', align: 'center',
     request: getUserListApi, fieldNames: {label: 'nickName', value: 'nickName'}
   },
-  {title: '完成产值(元)', dataIndex: 'outPutValue', width: 150, align: 'center'},
+  {title: '完成产值(元)', dataIndex: 'outPutValue', width: 150, align: 'center',
+    customCell: () => {
+      return {
+        style: {
+          'font-weight': 'bold',
+          color: token.value.colorPrimaryText
+        }
+      }
+    }
+  },
   {title: '创建人', dataIndex: 'createBy', width: 120},
   {title: '创建时间', dataIndex: 'createTime', width: 200},
   {title: '更新人', dataIndex: 'updateBy', width: 120},

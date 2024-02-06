@@ -4,6 +4,11 @@ import {ref} from "vue";
 import PlanList from './component/planList.vue'
 const activeKey = ref('year');
 </script>
+<script lang='ts'>
+export default {
+  name: "IssuedIndex"
+}
+</script>
 <template>
   <PageContainer>
     <template #content>

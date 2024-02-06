@@ -1,5 +1,6 @@
 <template>
   <a-modal v-model:open="visible" @cancel="handleCancel" destroyOnClose v-bind="$attrs" @ok="handleOk">
+
     <div class="mt-25px">
       <div ref="container" class="drag" @dragenter.prevent="onDragenter" @dragover.prevent="onDragOver"
            @drop.prevent="onDrop">
@@ -7,7 +8,8 @@
           <inbox-outlined style="font-size: 60px;"></inbox-outlined>
         </div>
         <div class="inner support">
-          {{ `拖拽文件${isMultiple ? '或文件夹' : ''}上传，支持的文件类型：` }}<span v-for="item in props.uploadType">{{ item }}</span>
+          {{ `拖拽文件${isMultiple ? '或文件夹' : ''}上传，支持的文件类型：` }}<span
+            v-for="item in props.uploadType">{{ item }}</span>
         </div>
         <div class="inner">
           每个文件允许的最大尺寸：{{ props.limit }}M
@@ -16,11 +18,10 @@
       <div class="btns">
         <a-button type="primary" @click="uploadFile">文件选择</a-button>
         <input ref="uploadFileRef" @change="fileChange" style="display: none" type="file" :multiple="isMultiple">
-
         <a-button v-if="isMultiple" type="primary" @click="uploadFiles">文件夹选择</a-button>
-        <input  ref="uploadFileRefs" @change="filesChange" style="display: none" type="file" webkitdirectory mozdirectory
+        <input ref="uploadFileRefs" @change="filesChange" style="display: none" type="file" webkitdirectory mozdirectory
                odirectory>
-        <a @click="exportTemplate">导入模版下载</a>
+        <a v-if="showTemplate" @click="exportTemplate">导入模版下载</a>
       </div>
       <a-table :columns="columns" :data-source="fileList" :pagination="false">
         <template #bodyCell="{ column, record,index }">
@@ -56,8 +57,25 @@
         <a-button type="primary" :loading="loading" @click="beginUploadThrottle">开始上传</a-button>
       </div>
     </div>
+    <a-modal centered :afterClose="resultClose" @ok="resultClose" v-model:open="resultVisible" width="50%" title="上传结果">
+      <a-table :columns="resultColumns" :data-source="uploadRes" :pagination="false">
+        <template #bodyCell="{ column, record }">
+          <template v-if="column.dataIndex === 'action'">
+            <a @click="openResultsDetail(record)">查看详情</a>
+          </template>
+        </template>
+      </a-table>
+      <a-modal centered  v-model:open="resultDetailVisible" @ok="() => {resultDetailVisible = false}" width="50%" title="上传详情" >
+        <a-table :pagination="{size: 'small'}" size="small" :columns="resultDetailColumns" :data-source="resultDetailData" bordered>
+          <template #bodyCell="{ column, record }">
+            <template v-if="column.dataIndex === 'data'">
+              {{ JSON.stringify(record.data) }}
+            </template>
+          </template>
+        </a-table>
+      </a-modal>
+    </a-modal>
   </a-modal>
-
 </template>
 
 <script setup lang="ts">
@@ -67,8 +85,11 @@ import {formatByte, throttle} from '@/utils'
 import axios from "axios";
 import {message} from "ant-design-vue";
 import {downloadTemplateApi} from "@/api/excel";
-import {exportExcel, ExportExcelParamsType} from "@/utils/excelExport.ts";
+import {downloadExcel, exportExcel} from "@/utils/excelExport.ts";
+import * as dayjs from "dayjs";
 
+const resultVisible = ref(false)
+const resultDetailVisible = ref(false)
 const columns = [
   {title: '序号', dataIndex: 'index', align: 'center', width: 80},
   {title: '文件名', dataIndex: 'fileName', align: 'center', width: 350},
@@ -77,6 +98,18 @@ const columns = [
   {title: '状态', dataIndex: 'status', align: 'center'},
   {title: '操作', dataIndex: 'action', align: 'center', width: 150}
 ]
+const resultColumns = [
+  {title: '文件名称', dataIndex: 'fileName', align: 'center'},
+  {title: '成功', dataIndex: 'success', align: 'center'},
+  {title: '失败', dataIndex: 'failed', align: 'center'},
+  {title: '操作', dataIndex: 'action', align: 'center'}
+]
+const resultDetailColumns = [
+  {title: '行号', dataIndex: 'row',width: 60, align: 'center'},
+  {title: '错误信息', dataIndex: 'error', align: 'center'},
+  {title: '错误数据', dataIndex: 'data', align: 'center',ellipsis: true},
+]
+
 const emits = defineEmits(['update:open', 'submit'])
 const props = withDefaults(defineProps<{
   uploadType: Array<string>,
@@ -84,11 +117,16 @@ const props = withDefaults(defineProps<{
   request: Function,
   serviceName?: string,
   open: boolean,
-  isMultiple?: boolean
+  isMultiple?: boolean,
+  showTemplate?: boolean,
+  removeField?: string[],
+  showResults?: boolean
 }>(), {
   uploadType: () => [],
   limit: 2,
-  isMultiple: false
+  isMultiple: false,
+  showTemplate: true,
+  showResults: true
 })
 const visible = computed({
   set(value: boolean) {
@@ -106,6 +144,7 @@ const uploadFileRefs = ref()
 const cancelArray = ref<any[]>([])
 const loading = ref<boolean>(false)
 const uploadRes = ref<any[]>([])
+const resultDetailData = ref<any[]>()
 
 //文件选择按钮事件
 const uploadFile = () => {
@@ -141,7 +180,7 @@ const extractFileType = (filename: string) => {
 
 // 按钮选择文件后读取文件
 const readBtnFile = (e: any) => {
-  if(fileList.value.length === 1 && !props.isMultiple){
+  if (fileList.value.length === 1 && !props.isMultiple) {
     message.info('最多只能上传一个文件')
     return
   }
@@ -177,7 +216,7 @@ const readBtnFile = (e: any) => {
 
 //开始上传方法
 const beginUpload = async () => {
-  if(fileArray.value.length === 0 || fileList.value.length === 0) {
+  if (fileArray.value.length === 0 || fileList.value.length === 0) {
     message.info('请先选择文件')
     return
   }
@@ -228,7 +267,9 @@ const beginUpload = async () => {
           uploadRes.value.push(res)
           if (nextIndex < tasks.length) {
             _run()
-          } else if (finishCount === tasks.length) {
+          } else if (finishCount === tasks.length && props.showResults) {
+            message.success('上传完成')
+            resultVisible.value = true
             loading.value = false
           }
         })
@@ -243,7 +284,7 @@ const beginUpload = async () => {
           } else if (finishCount === tasks.length) {
             loading.value = false
           }
-        }).finally(() =>{
+        }).finally(() => {
       loading.value = false
     })
   }
@@ -276,11 +317,11 @@ const cancelUpload = (index: number) => {
 }
 
 const onDrop = async (e: any) => {
-  if(fileList.value.length === 1 && !props.isMultiple){
+  if (fileList.value.length === 1 && !props.isMultiple) {
     message.info('最多只能上传一个文件')
     return
   }
-  if(e.dataTransfer.items.length > 1 && !props.isMultiple) {
+  if (e.dataTransfer.items.length > 1 && !props.isMultiple) {
     message.info('一次只能上传一个文件')
     return
   }
@@ -304,7 +345,7 @@ const readFile = (entry: any): Promise<Array<File>> => {
   return new Promise((resolve, reject) => {
     const files: any[] = [];
     if (entry.isDirectory) {
-      if(!props.isMultiple){
+      if (!props.isMultiple) {
         message.warn('不能上传文件夹')
         return
       }
@@ -351,15 +392,29 @@ const handleOk = () => {
   handleCancel()
 }
 
+const resultClose = () => {
+  uploadRes.value = []
+  resultVisible.value = false
+}
+const openResultsDetail = (record: any) => {
+  console.log(record)
+  resultDetailVisible.value = true
+  resultDetailData.value = record.failedList
+}
+
 const handleCancel = () => {
   loading.value = false
   fileList.value = []
   fileArray.value = []
   uploadRes.value = []
 }
+/**
+ * 下载模版
+ */
 const exportTemplate = async () => {
-  const data = await downloadTemplateApi({serviceName: props.serviceName})
-  exportExcel(data, String(new Date().getTime()))
+  const data = await downloadTemplateApi({serviceName: props.serviceName, removeField: props.removeField})
+  const buffer = await exportExcel(data)
+  downloadExcel(buffer, `导入模版${dayjs(new Date()).format('YYYY-MM-DD')}`)
 }
 </script>
 

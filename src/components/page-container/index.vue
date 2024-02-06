@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {useRoute} from "vue-router";
-import {computed, CSSProperties, onMounted} from "vue";
+import {computed, CSSProperties} from "vue";
 import {useAppStore} from '@/store'
 import {storeToRefs} from "pinia";
 

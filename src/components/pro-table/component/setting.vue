@@ -131,7 +131,7 @@ const mergeColumns = () => {
 }
 </script>
 <template>
-  <a-popover v-model:open="open" placement="bottomRight" trigger="click">
+  <a-popover v-model:open="open"  placement="bottomRight"  trigger="click">
     <template #content>
       <div class="flex justify-between">
         <a-checkbox ref="checkAllRef" :indeterminate="isIndeterminate" v-model:checked="checkAll"
@@ -140,21 +140,22 @@ const mergeColumns = () => {
         </a-checkbox>
         <a-button type="link" size="small" @click="onReset">重置</a-button>
       </div>
-      <!--   固定在左侧   -->
-      <div v-if="fixedLeftColumns.length > 0" class="w-full pl-24px mx-6px font-size-12px text-[var(--text-color-1)]">固定在左侧</div>
-      <draggable
-          v-model="fixedLeftColumns"
-          @change="onDragChange"
-          class="w-200px"
-      >
-        <div class="flex pt-5px" v-for="element in fixedLeftColumns" :key="element.key">
-          <HolderOutlined class="pr-8px hover:cursor-grabbing "/>
-          <span class="w-24px" v-if="fixedLeftColumns.length > 1"></span>
-          <a-checkbox class="flex-1 w-full" :checked="!element.hide"
-                      @change="(e: any) => onCheckChange(e.target.checked, element)">
-            <div class="flex justify-between w-full hover:bg-[var(--hover-color)] px-8px rd-6px show-span">
-              {{ element.title }}
-              <span class="text-blue font-600">
+      <div class="popover">
+        <!--   固定在左侧   -->
+        <div v-if="fixedLeftColumns.length > 0" class="w-full pl-24px mx-6px font-size-12px text-[var(--text-color-1)]">固定在左侧</div>
+        <draggable
+            v-model="fixedLeftColumns"
+            @change="onDragChange"
+            class="w-200px"
+        >
+          <div class="flex pt-5px" v-for="element in fixedLeftColumns" :key="element.key">
+            <HolderOutlined class="pr-8px hover:cursor-grabbing "/>
+            <span class="w-24px" v-if="fixedLeftColumns.length > 1"></span>
+            <a-checkbox class="flex-1 w-full" :checked="!element.hide"
+                        @change="(e: any) => onCheckChange(e.target.checked, element)">
+              <div class="flex justify-between w-full hover:bg-[var(--hover-color)] px-8px rd-6px show-span">
+                {{ element.title }}
+                <span class="text-blue font-600">
                 <a-tooltip placement="top" class="">
                   <template #title>
                     <span>取消固定</span>
@@ -168,25 +169,25 @@ const mergeColumns = () => {
                   <VerticalAlignBottomOutlined @click.prevent="fixedColumn('right', element)"/>
                 </a-tooltip>
               </span>
-            </div>
-          </a-checkbox>
-        </div>
-      </draggable>
-      <!--   不固定   -->
-      <div v-if="fixedLeftColumns.length > 0 || fixedRightColumns.length > 0" class="w-full pl-24px mx-6px font-size-12px text-[var(--text-color-1)]">不固定</div>
-      <draggable
-          v-model="notFixedColumns"
-          @change="onDragChange"
-          class="w-200px"
-      >
-        <div class="flex pt-5px" v-for="element in notFixedColumns" :key="element.key">
-          <HolderOutlined class="pr-8px hover:cursor-grabbing "/>
-          <span class="w-24px"></span>
-          <a-checkbox class="flex-1 w-full" :checked="!element.hide"
-                      @change="(e: any) => onCheckChange(e.target.checked, element)">
-            <div class="flex justify-between w-full hover:bg-[var(--hover-color)] px-8px rd-6px show-span">
-              {{ element.title }}
-              <span class="text-blue font-600">
+              </div>
+            </a-checkbox>
+          </div>
+        </draggable>
+        <!--   不固定   -->
+        <div v-if="fixedLeftColumns.length > 0 || fixedRightColumns.length > 0" class="w-full pl-24px mx-6px font-size-12px text-[var(--text-color-1)]">不固定</div>
+        <draggable
+            v-model="notFixedColumns"
+            @change="onDragChange"
+            class="w-200px"
+        >
+          <div class="flex pt-5px" v-for="element in notFixedColumns" :key="element.key">
+            <HolderOutlined class="pr-8px hover:cursor-grabbing "/>
+            <span class="w-24px"></span>
+            <a-checkbox class="flex-1 w-full" :checked="!element.hide"
+                        @change="(e: any) => onCheckChange(e.target.checked, element)">
+              <div class="flex justify-between w-full hover:bg-[var(--hover-color)] px-8px rd-6px show-span">
+                {{ element.title }}
+                <span class="text-blue font-600">
                 <a-tooltip placement="top" class="">
                   <template #title>
                     <span>固定在列首</span>
@@ -200,25 +201,25 @@ const mergeColumns = () => {
                   <VerticalAlignBottomOutlined @click.prevent="fixedColumn('right', element)"/>
                 </a-tooltip>
               </span>
-            </div>
-          </a-checkbox>
-        </div>
-      </draggable>
-      <!--   固定在右侧   -->
-      <div v-if="fixedRightColumns.length > 0" class="w-full pl-24px mx-6px font-size-12px text-[var(--text-color-1)]">固定在右侧</div>
-      <draggable
-          v-model="fixedRightColumns"
-          @change="onDragChange"
-          class="w-200px"
-      >
-        <div class="flex pt-5px" v-for="element in fixedRightColumns" :key="element.key">
-          <HolderOutlined class="pr-8px hover:cursor-grabbing "/>
-          <span v-if="fixedRightColumns.length > 1" class="w-24px"></span>
-          <a-checkbox class="flex-1 w-full" :checked="!element.hide"
-                      @change="(e: any) => onCheckChange(e.target.checked, element)">
-            <div class="flex justify-between w-full hover:bg-[var(--hover-color)] px-8px rd-6px show-span">
-              {{ element.title }}
-              <span class="text-blue font-600">
+              </div>
+            </a-checkbox>
+          </div>
+        </draggable>
+        <!--   固定在右侧   -->
+        <div v-if="fixedRightColumns.length > 0" class="w-full pl-24px mx-6px font-size-12px text-[var(--text-color-1)]">固定在右侧</div>
+        <draggable
+            v-model="fixedRightColumns"
+            @change="onDragChange"
+            class="w-200px"
+        >
+          <div class="flex pt-5px" v-for="element in fixedRightColumns" :key="element.key">
+            <HolderOutlined class="pr-8px hover:cursor-grabbing "/>
+            <span v-if="fixedRightColumns.length > 1" class="w-24px"></span>
+            <a-checkbox class="flex-1 w-full" :checked="!element.hide"
+                        @change="(e: any) => onCheckChange(e.target.checked, element)">
+              <div class="flex justify-between w-full hover:bg-[var(--hover-color)] px-8px rd-6px show-span">
+                {{ element.title }}
+                <span class="text-blue font-600">
                 <a-tooltip placement="top" class="">
                   <template #title>
                     <span>固定在列首</span>
@@ -232,10 +233,12 @@ const mergeColumns = () => {
                   <VerticalAlignMiddleOutlined @click.prevent="fixedColumn(undefined, element)"/>
                 </a-tooltip>
               </span>
-            </div>
-          </a-checkbox>
-        </div>
-      </draggable>
+              </div>
+            </a-checkbox>
+          </div>
+        </draggable>
+      </div>
+
     </template>
     <SettingOutlined/>
   </a-popover>
@@ -258,10 +261,16 @@ const mergeColumns = () => {
 
 .show-span > span {
   display: none;
+
 }
 
 /* hover div 时显示 span */
 .show-span:hover > span {
   display: inline-block;
+}
+
+.popover {
+  max-height: 488px;
+  overflow: scroll;
 }
 </style>

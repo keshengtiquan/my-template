@@ -19,3 +19,7 @@ export enum FileType {
   XLSX = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 }
 
+export enum WorkPlaceTypeEnum {
+  STATION = 'station',
+  SECTION = 'section',
+}

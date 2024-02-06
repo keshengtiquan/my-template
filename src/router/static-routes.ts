@@ -15,10 +15,10 @@ export const rootRoute: RouteRecordRaw = {
   children: [],
 }
 export default [
-  {
-    path: '/luckysheet',
-    component: () => import('@/pages/luckysheet/index.vue')
-  },
+  // {
+  //   path: '/luckysheet',
+  //   component: () => import('@/pages/luckysheet/index.vue')
+  // },
   {
     path: '/onlyoffice',
     component: () => import('@/pages/onlyoffice/index.vue')

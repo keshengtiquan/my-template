@@ -61,7 +61,6 @@ export const  exportExcel = async (options: ExportExcelParamsType) => {
     })
   }
   const buffer =  await workbook.xlsx.writeBuffer()
-  console.log(buffer)
   return buffer
   
 }
@@ -75,4 +74,14 @@ export const downloadExcel = (buffer: any, fileName: string) => {
   a.click();
   document.body.removeChild(a);
   window.URL.revokeObjectURL(a.href);
+}
+
+export const columnIndexToColumnLetter = (index: number): string => {
+  let columnLetter = ''
+  while (index > 0) {
+    const remainder = (index - 1) % 26
+    columnLetter = String.fromCharCode(65 + remainder) + columnLetter
+    index = Math.floor((index - 1) / 26)
+  }
+  return columnLetter
 }

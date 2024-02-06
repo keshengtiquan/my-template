@@ -2,19 +2,18 @@
 import PageContainer from '@/components/page-container/index.vue'
 import ProTable from '@/components/pro-table/index.vue'
 import Upload from '@/components/upload/index.vue'
-import {createVNode, ref} from "vue";
-import {deleteListApi, exportListApi, getListApi, setFocusApi, uploadListApi} from "@/api/list";
+import {createVNode, watch, ref} from "vue";
+import {batchDeleteApi, deleteListApi, exportListApi, getListApi, setFocusApi, uploadListApi} from "@/api/list";
 import {useTable} from "@/composables/useTable.ts";
-import TooltioIcon from "@/components/tooltip-icon/index.vue";
+import TooltipIcon from "@/components/tooltip-icon/index.vue";
 import {useRouter} from "vue-router";
 import {message, Modal} from "ant-design-vue";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
-import {downloadExcel, exportExcel} from "@/utils/excelExport.ts";
-import EditOnline from '@/components/edit-online/index.vue'
-import * as dayjs from "dayjs";
+import {getSectionalApi} from "@/api/division";
+import ExportButton from '@/components/exportButton/index.vue'
 
 const columns = [
-  {title: '序号', dataIndex: 'serialNumber', width: 50, align: 'center', sorter: true},
+  {title: '序号', dataIndex: 'serialNumber', width: 50, align: 'center'},
   {title: '项目编码', dataIndex: 'listCode', width: 100, search: true, valueType: 'input', align: 'center'},
   {title: '项目名称', dataIndex: 'listName', width: 120, search: true, valueType: 'input', align: 'center'},
   {title: '项目特征', dataIndex: 'listCharacteristic', width: 120,resizable: true, search: true, valueType: 'input', ellipsis: true},
@@ -30,8 +29,10 @@ const columns = [
 ]
 const router = useRouter()
 const open = ref(false)
-const {tableData, loading, getTableData, pagination} = useTable(getListApi)
 const listTableRef = ref()
+const segmentData = ref<any[]>([])
+const activeKey = ref('');
+
 /**
  * 创建
  */
@@ -44,6 +45,10 @@ const createList = () => {
  */
 const editList = (id: string) => {
   router.push({path: '/resource/list/update', query: {id}})
+}
+const selectedRowKeys = ref<any[]>([])
+const onSelectChange = (selectedRowKey: any[]) => {
+  selectedRowKeys.value = selectedRowKey
 }
 
 const deleteList = (data: any) => {
@@ -64,18 +69,6 @@ const deleteList = (data: any) => {
     },
   });
 }
-/**
- * 导出文件
- */
-const exportList = async (current: number, pageSize: number) => {
-  let params = {}
-  if (current && pageSize) {
-    params = {current, pageSize}
-  }
-  const data = await exportListApi(params)
-  const buffer = await exportExcel(data.data)
-  downloadExcel(buffer, `项目清单${dayjs(new Date()).format('YYYY-MM-DD')}`)
-}
 
 const focusList = async (record: any) => {
   const res = await setFocusApi({id: record.id, isFocusList: !record.isFocusList})
@@ -84,6 +77,36 @@ const focusList = async (record: any) => {
     message.success(res.message)
   }
 }
+const batchDelete = async () => {
+  Modal.confirm({
+    title: `是否删除所选的${selectedRowKeys.value.length}项`,
+    icon: createVNode(ExclamationCircleOutlined),
+    content: '删除后不可恢复！',
+    onOk() {
+      batchDeleteApi({ids: selectedRowKeys.value}).then(res => {
+        if (res.code === 200) {
+          getTableData(listTableRef.value.onReload())
+          message.success(res.message)
+          selectedRowKeys.value = []
+        }
+      })
+    },
+    onCancel() {
+      message.info('取消删除')
+    },
+  });
+}
+
+getSectionalApi({divisionType: '分部工程'}).then(res => {
+  if(res.code === 200){
+    segmentData.value = res.data
+  }
+})
+const {tableData, loading, getTableData, pagination} = useTable(getListApi, {sectionalEntry: activeKey.value})
+
+watch(activeKey, () => {
+  getTableData({sectionalEntry: activeKey.value})
+})
 
 </script>
 <script lang='ts'>
@@ -92,43 +115,38 @@ export default {
 }
 </script>
 <template>
-  <PageContainer>
+  <PageContainer >
+    <template #content>
+      <a-tabs v-if="segmentData.length > 1" v-model:activeKey="activeKey">
+        <a-tab-pane key="" tab="全部"></a-tab-pane>
+        <a-tab-pane v-for="item in segmentData" :key="item.id" :tab="item.divisionName"></a-tab-pane>
+      </a-tabs>
+    </template>
     <pro-table :data-source="tableData" ref="listTableRef" :loading="loading" :scroll="{ x: 2000 }"
-               :pagination="pagination"
-               @refresh="() => getTableData()"
-               @search="(params) => getTableData(params)" :columns="columns">
+               :pagination="pagination" rowKey="id"
+               :row-selection="{ selectedRowKeys: selectedRowKeys, preserveSelectedRowKeys: true, onChange: onSelectChange  }"
+               @refresh="() => getTableData({sectionalEntry: activeKey})"
+               @search="(params) => getTableData({...params, ...{sectionalEntry: activeKey}})" :columns="columns">
       <template #toolLeft>
         <a-space>
           <a-button type="primary" @click="createList">新建清单</a-button>
+          <a-button type="primary" :disabled="!(selectedRowKeys.length > 0)" danger @click="batchDelete">批量删除</a-button>
           <a-button @click="() => open = true">导入清单</a-button>
-          <EditOnline :request="exportListApi"/>
-          <a-dropdown placement="bottomLeft">
-            <a-button>导出清单</a-button>
-            <template #overlay>
-              <a-menu>
-                <a-menu-item @click="exportList">
-                  导出所有
-                </a-menu-item>
-                <a-menu-item @click="exportList(pagination.current, pagination.pageSize)">
-                  导出当前页
-                </a-menu-item>
-              </a-menu>
-            </template>
-          </a-dropdown>
+          <ExportButton :request="exportListApi" :init-params="{'sectionalEntry': activeKey}" file-name="项目清单"></ExportButton>
         </a-space>
       </template>
       <template #bodyCell=" { column,record }">
         <template v-if="column.dataIndex === 'actions'">
           <a-space :size="20">
-            <TooltioIcon title="编辑">
+            <TooltipIcon title="编辑">
               <EditOutlined class="text-blue" @click="editList(record.id)"/>
-            </TooltioIcon>
-            <TooltioIcon :title="`${record.isFocusList ?  '取消关注' : '关注清单'}`">
+            </TooltipIcon>
+            <TooltipIcon :title="`${record.isFocusList ?  '取消关注' : '关注清单'}`">
               <AimOutlined class="text-blue" @click="focusList(record)"/>
-            </TooltioIcon>
-            <TooltioIcon title="删除">
+            </TooltipIcon>
+            <TooltipIcon title="删除">
               <DeleteOutlined class="text-red" @click="deleteList(record)"/>
-            </TooltioIcon>
+            </TooltipIcon>
           </a-space>
         </template>
         <template v-else-if="column.dataIndex === 'listName'">
@@ -136,7 +154,7 @@ export default {
         </template>
       </template>
     </pro-table>
-    <Upload v-model:open="open" width="70%" :is-multiple="false" :request="uploadListApi"
+    <Upload v-model:open="open" width="70%" :is-multiple="true" :request="uploadListApi"
             :upload-type="['xlsx']" service-name="projectListImport"></Upload>
   </PageContainer>
 </template>

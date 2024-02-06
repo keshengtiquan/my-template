@@ -10,8 +10,8 @@ import {message, Modal} from "ant-design-vue";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 import {useRouter} from "vue-router";
 import {downloadExcel, exportExcel} from "@/utils/excelExport.ts";
-import EditOnline from '@/components/edit-online/index.vue'
 import * as dayjs from "dayjs";
+import ExportButton from '@/components/exportButton/index.vue'
 
 const router = useRouter()
 const columns = ref([
@@ -61,18 +61,6 @@ const deleteList = (data: any) => {
   });
 }
 
-/**
- * 导出文件
- */
-const exportList = async (current: number, pageSize: number) => {
-  let params = {}
-  if (current && pageSize) {
-    params = {current, pageSize}
-  }
-  const data = await exportWorkPlaceApi(params)
-  const buffer = await exportExcel(data.data)
-  downloadExcel(buffer, `工点列表${dayjs(new Date()).format('YYYY-MM-DD')}`)
-}
 
 </script>
 <template>
@@ -84,20 +72,7 @@ const exportList = async (current: number, pageSize: number) => {
         <a-space>
           <a-button type="primary" @click="createWorkPlace">添加工点</a-button>
           <a-button @click="() => open = true">导入工点</a-button>
-          <EditOnline :request="exportWorkPlaceApi"></EditOnline>
-          <a-dropdown placement="bottomLeft">
-            <a-button>导出清单</a-button>
-            <template #overlay>
-              <a-menu>
-                <a-menu-item @click="exportList">
-                  导出所有
-                </a-menu-item>
-                <a-menu-item @click="exportList(pagination.current, pagination.pageSize)">
-                  导出当前页
-                </a-menu-item>
-              </a-menu>
-            </template>
-          </a-dropdown>
+          <ExportButton :request="exportWorkPlaceApi" file-name="工点列表"></ExportButton>
         </a-space>
       </template>
       <template #bodyCell="{ column,record }">
@@ -116,7 +91,7 @@ const exportList = async (current: number, pageSize: number) => {
         </template>
       </template>
     </pro-table>
-    <Upload v-model:open="open" width="70%" service-name="WorkPlaceImport" :request="uploadWorkPlaceApi"
+    <Upload  v-model:open="open" width="70%" :is-multiple="false" service-name="WorkPlaceImport" :request="uploadWorkPlaceApi"
             :upload-type="['xlsx']"></Upload>
   </div>
 

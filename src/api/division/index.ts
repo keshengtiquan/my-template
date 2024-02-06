@@ -1,5 +1,6 @@
 import {http} from '@/utils/request.ts'
 import {AxiosResults} from "@/api/types.ts";
+import {AxiosRequestConfig} from "axios";
 
 /**
  * 获取分部分项树
@@ -62,5 +63,22 @@ export const getDivisionListApi = (params: Object) => {
  */
 export const deleteDivisionListApi = (data: object) => {
   return http.post<AxiosResults<any>>('/division/deleteDivisionList', {data})
+}
+
+/**
+ * 根据类型获取分部分项
+ * @param params
+ */
+export const getSectionalApi = (params: object) => {
+  return http.get<AxiosResults<any>>('/division/getSectional', {params})
+}
+
+/**
+ * 上传文件
+ * @param data
+ * @param config
+ */
+export const uploadDivisionApi = (data: object, config: AxiosRequestConfig) => {
+  return http.post('/division/upload', {data}, config)
 }
 
