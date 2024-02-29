@@ -3,9 +3,9 @@ import {gantt} from "dhtmlx-gantt";
 import "dhtmlx-gantt/codebase/skins/dhtmlxgantt_material.css";
 import {onMounted, ref} from "vue";
 import {zoomLevels, originColumns} from './config.ts'
-import * as dayjs from "dayjs";
+// import * as _dayjs from "dayjs";
 import {getGanttListApi} from "@/api/gantt";
-
+const dayjs = require('dayjs');
 const ganttContainer = ref()
 const curZoom = ref('day')
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import IntroduceCard from "@/pages/home/component/introduce-card.vue";
-import * as dayjs from "dayjs";
+// import * as _dayjs from "dayjs";
 import Trend from './component/trend.vue'
 import Field from './component/field.vue'
 import { onBeforeUnmount, onMounted, ref} from "vue";
@@ -8,6 +8,7 @@ import {Area, Progress, Column} from '@antv/g2plot';
 import {getIntroduceApi} from "@/api/analyse";
 import {Introduce} from "@/api/analyse/types.ts";
 import {convertOutpuValue} from '@/utils'
+const dayjs = require('dayjs');
 const monthlyChart = ref()
 const yearChart = ref()
 const progressChart = ref()

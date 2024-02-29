@@ -33,7 +33,7 @@ const { loading,getRoleById,updateRole } = useEdit()
  * @param type ModalType.ADD TypeModel.Edit
  * @param id 编辑的ID
  */
-const openDrawer = async (type: string, id?: number) => {
+const openDrawer = async (type: string, id?: string) => {
   open.value = !open.value
   type === ModalType.ADD ? title.value = '添加角色' : title.value = '编辑角色'
   currentType.value = type

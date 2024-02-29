@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {LogoutOutlined, ProfileOutlined, UserOutlined} from '@ant-design/icons-vue'
+import {LogoutOutlined} from '@ant-design/icons-vue'
 import {useRouter} from "vue-router";
 import {message} from 'ant-design-vue';
 import {useUserStore} from "@/store";

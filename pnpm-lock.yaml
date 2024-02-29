@@ -409,10 +409,10 @@ packages:
       tslib: registry.npmmirror.com/tslib@2.6.2
     dev: false
 
-  registry.npmmirror.com/@babel/helper-string-parser@7.22.5:
-    resolution: {integrity: sha512-mM4COjgZox8U+JcXQwPijIZLElkgEpO5rsERVDJTc2qfCDfERyob6k5WegS14SX18IIjv+XD+GrqNumY5JRCDw==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@babel/helper-string-parser/-/helper-string-parser-7.22.5.tgz}
+  registry.npmmirror.com/@babel/helper-string-parser@7.23.4:
+    resolution: {integrity: sha512-803gmbQdqwdf4olxrX4AJyFBV/RTr3rSmOj0rKwesmzlfhYNDEs+/iOcznzpNWlJlIlTJC2QfPFcHB6DlzdVLQ==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@babel/helper-string-parser/-/helper-string-parser-7.23.4.tgz}
     name: '@babel/helper-string-parser'
-    version: 7.22.5
+    version: 7.23.4
     engines: {node: '>=6.9.0'}
 
   registry.npmmirror.com/@babel/helper-validator-identifier@7.22.20:
@@ -428,7 +428,17 @@ packages:
     engines: {node: '>=6.0.0'}
     hasBin: true
     dependencies:
-      '@babel/types': registry.npmmirror.com/@babel/types@7.23.3
+      '@babel/types': registry.npmmirror.com/@babel/types@7.24.0
+    dev: true
+
+  registry.npmmirror.com/@babel/parser@7.24.0:
+    resolution: {integrity: sha512-QuP/FxEAzMSjXygs8v4N9dvdXzEHN4W1oF3PxuWAtPo08UdM17u89RDMgjLn/mlc56iM0HlLmVkO/wgR+rDgHg==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@babel/parser/-/parser-7.24.0.tgz}
+    name: '@babel/parser'
+    version: 7.24.0
+    engines: {node: '>=6.0.0'}
+    hasBin: true
+    dependencies:
+      '@babel/types': registry.npmmirror.com/@babel/types@7.24.0
 
   registry.npmmirror.com/@babel/runtime@7.23.2:
     resolution: {integrity: sha512-mM8eg4yl5D6i3lu2QKPuPH4FArvJ8KhTofbE7jwMUv9KX5mBvwPAqnV3MlyBNqdp9RyRKP6Yck8TrfYrPvX3bg==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@babel/runtime/-/runtime-7.23.2.tgz}
@@ -445,7 +455,18 @@ packages:
     version: 7.23.3
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/helper-string-parser': registry.npmmirror.com/@babel/helper-string-parser@7.22.5
+      '@babel/helper-string-parser': registry.npmmirror.com/@babel/helper-string-parser@7.23.4
+      '@babel/helper-validator-identifier': registry.npmmirror.com/@babel/helper-validator-identifier@7.22.20
+      to-fast-properties: registry.npmmirror.com/to-fast-properties@2.0.0
+    dev: true
+
+  registry.npmmirror.com/@babel/types@7.24.0:
+    resolution: {integrity: sha512-+j7a5c253RfKh8iABBhywc8NSfP5LURe7Uh4qpsh6jc+aLJguvmIUBdjSdEMQv2bENrCR5MfRdjGo7vzS/ob7w==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@babel/types/-/types-7.24.0.tgz}
+    name: '@babel/types'
+    version: 7.24.0
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      '@babel/helper-string-parser': registry.npmmirror.com/@babel/helper-string-parser@7.23.4
       '@babel/helper-validator-identifier': registry.npmmirror.com/@babel/helper-validator-identifier@7.22.20
       to-fast-properties: registry.npmmirror.com/to-fast-properties@2.0.0
 
@@ -1283,7 +1304,7 @@ packages:
     name: '@vue/compiler-core'
     version: 3.3.4
     dependencies:
-      '@babel/parser': registry.npmmirror.com/@babel/parser@7.23.3
+      '@babel/parser': registry.npmmirror.com/@babel/parser@7.24.0
       '@vue/shared': registry.npmmirror.com/@vue/shared@3.3.4
       estree-walker: registry.npmmirror.com/estree-walker@2.0.2
       source-map-js: registry.npmmirror.com/source-map-js@1.0.2
@@ -1293,7 +1314,7 @@ packages:
     name: '@vue/compiler-core'
     version: 3.3.8
     dependencies:
-      '@babel/parser': registry.npmmirror.com/@babel/parser@7.23.3
+      '@babel/parser': registry.npmmirror.com/@babel/parser@7.24.0
       '@vue/shared': registry.npmmirror.com/@vue/shared@3.3.8
       estree-walker: registry.npmmirror.com/estree-walker@2.0.2
       source-map-js: registry.npmmirror.com/source-map-js@1.0.2
@@ -1321,7 +1342,7 @@ packages:
     name: '@vue/compiler-sfc'
     version: 3.3.4
     dependencies:
-      '@babel/parser': registry.npmmirror.com/@babel/parser@7.23.3
+      '@babel/parser': registry.npmmirror.com/@babel/parser@7.24.0
       '@vue/compiler-core': registry.npmmirror.com/@vue/compiler-core@3.3.4
       '@vue/compiler-dom': registry.npmmirror.com/@vue/compiler-dom@3.3.4
       '@vue/compiler-ssr': registry.npmmirror.com/@vue/compiler-ssr@3.3.4
@@ -1373,7 +1394,7 @@ packages:
     name: '@vue/reactivity-transform'
     version: 3.3.4
     dependencies:
-      '@babel/parser': registry.npmmirror.com/@babel/parser@7.23.3
+      '@babel/parser': registry.npmmirror.com/@babel/parser@7.24.0
       '@vue/compiler-core': registry.npmmirror.com/@vue/compiler-core@3.3.4
       '@vue/shared': registry.npmmirror.com/@vue/shared@3.3.4
       estree-walker: registry.npmmirror.com/estree-walker@2.0.2
@@ -1655,7 +1676,7 @@ packages:
     version: 0.11.2
     engines: {node: '>=16.14.0'}
     dependencies:
-      '@babel/parser': registry.npmmirror.com/@babel/parser@7.23.3
+      '@babel/parser': registry.npmmirror.com/@babel/parser@7.24.0
       '@rollup/pluginutils': registry.npmmirror.com/@rollup/pluginutils@5.0.5
       pathe: registry.npmmirror.com/pathe@1.1.1
     transitivePeerDependencies:
@@ -1668,7 +1689,7 @@ packages:
     version: 0.9.5
     engines: {node: '>=16.14.0'}
     dependencies:
-      '@babel/parser': registry.npmmirror.com/@babel/parser@7.23.3
+      '@babel/parser': registry.npmmirror.com/@babel/parser@7.24.0
       '@rollup/pluginutils': registry.npmmirror.com/@rollup/pluginutils@5.0.5
       pathe: registry.npmmirror.com/pathe@1.1.1
     transitivePeerDependencies:

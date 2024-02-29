@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import {downloadExcel} from "@/utils/excelExport.ts";
-import * as dayjs from "dayjs";
+// import * as _dayjs from "dayjs";
 import {ref} from "vue";
+const dayjs = require('dayjs');
 const props = defineProps<{
   request: Function,
   initParams?: object,

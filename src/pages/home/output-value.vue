@@ -3,8 +3,8 @@ import { onBeforeUnmount, onMounted, reactive, ref, shallowRef } from "vue";
 import { Column } from '@antv/g2plot'
 import { getWorkAreaOutPutValueApi, getWorkPlaceOutputValueApi } from "@/api/analyse";
 import { convertOutpuValue, getStartDateAndEndDate } from "@/utils";
-import * as dayjs from "dayjs";
-
+// import * as _dayjs from "dayjs";
+const dayjs = require('dayjs');
 const today = dayjs(new Date()).format('YYYY-MM-DD')
 const segmentedData = reactive(['今日', '本周', '本月', '本年']);
 const segmentedValue = ref(segmentedData[0]);

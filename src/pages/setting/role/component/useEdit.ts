@@ -3,7 +3,7 @@ import {getRoleByIdAPi, updateRoleApi} from "@/api/role";
 
 export const useEdit = () => {
   const loading = ref(false)
-  const getRoleById = async (id: number) => {
+  const getRoleById = async (id: string) => {
     loading.value = true
     const {data} = await getRoleByIdAPi(id)
     loading.value = false

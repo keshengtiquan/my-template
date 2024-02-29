@@ -3,8 +3,8 @@ import Form from './form.vue'
 import {onMounted, reactive, ref} from "vue";
 import {createGanttApi} from "@/api/gantt";
 import {message} from "ant-design-vue";
-import * as dayjs from "dayjs";
-
+// import * as _dayjs from "dayjs";
+const dayjs = require('dayjs');
 const open = ref<boolean>(false);
 
 interface FormStateType {
