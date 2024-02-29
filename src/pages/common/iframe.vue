@@ -3,7 +3,7 @@ import {useRoute} from "vue-router";
 import {computed, ref} from "vue";
 
 const route = useRoute()
-const url = computed(() => route?.meta?.url)
+const url = computed(() => route?.meta?.url as string)
 const loading = ref(true)
 function finishLoading() {
   loading.value = false

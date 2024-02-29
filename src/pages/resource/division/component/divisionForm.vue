@@ -41,7 +41,7 @@ const onSubmit = () => {
       .then(() => {
         emits('submit')
       })
-      .catch(error => {
+      .catch((error: any) => {
         console.log('error', error);
       });
 };

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref, computed, nextTick} from "vue";
+import {onMounted, ref} from "vue";
 import {getWorkPlaceListNoPageApi} from "@/api/workplace";
 
 interface ListType {
@@ -36,9 +36,9 @@ const handleClick = (item: ListType, activeList: any, list: any) => {
     return;
   }
   if (activeList.value.includes(item.key)) {
-    activeList.value = activeList.value.filter((v) => v !== item.key);
+    activeList.value = activeList.value.filter((v: any) => v !== item.key);
     if (activeList.value.includes("all")) {
-      activeList.value = activeList.value.filter((v) => v !== "all");
+      activeList.value = activeList.value.filter((v: any) => v !== "all");
     }
   } else {
     activeList.value = [...activeList.value, item.key];
@@ -62,10 +62,10 @@ onMounted(async () => {
   const {data} = await getWorkPlaceListNoPageApi();
   stationList.value.push(...createWorkPlaceList(data, "station"));
   sectionList.value.push(...createWorkPlaceList(data, "section"));
-  if(stationList.value.length - 1 === props.stationActive.length) {
+  if (stationList.value.length - 1 === props.stationActive.length) {
     handleStationClick({name: "全部", key: "all"})
   }
-  if(sectionList.value.length - 1 === props.sectionActive.length) {
+  if (sectionList.value.length - 1 === props.sectionActive.length) {
     handleSectionClick({name: "全部", key: "all"})
   }
 });

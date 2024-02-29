@@ -7,7 +7,6 @@ import {getUserListApi} from "@/api/user";
 import Select from '@/components/select/index.vue'
 import TreeSelect from "@/components/tree-select/index.vue";
 import {useEdit} from "@/pages/setting/dept/component/useEdit.ts";
-import {getRoleListApi} from "@/api/role";
 
 const emits = defineEmits(['submit'])
 const open = ref(false)

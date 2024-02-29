@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Form from './form.vue'
 import {onMounted, reactive, ref} from "vue";
-import {createGanttApi, getGanttById, updateGanttApi} from "@/api/gantt";
+import { getGanttById, updateGanttApi} from "@/api/gantt";
 import {message} from "ant-design-vue";
 import * as dayjs from "dayjs";
 

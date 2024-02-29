@@ -15,7 +15,7 @@ const showModal = () => {
   open.value = true;
 };
 
-const handleOk = (e: MouseEvent) => {
+const handleOk = () => {
   switch (props.planType) {
     case 'week':
       emits('submit', week.value);

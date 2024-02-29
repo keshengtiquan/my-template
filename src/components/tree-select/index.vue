@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import {computed, nextTick, onMounted, ref} from 'vue';
-import {useTreeSelect} from "@/composables/useTreeSelect.ts";
+import {computed, onMounted, ref} from 'vue';
 
 interface filedType {
   label: string
@@ -33,7 +32,6 @@ const init = async () => {
   oldData.unshift(rootValue)
   oldData[0].children = data
   treeData.value = oldData
-  console.log(treeData.value)
 }
 onMounted(async () => {
   await init()

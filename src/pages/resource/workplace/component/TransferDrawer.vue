@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref} from 'vue';
+import {ref} from 'vue';
 import TableTransfer from '@/components/table-transfer/index.vue'
 import {relevanceListIdApi} from "@/api/workplace";
 import {message} from "ant-design-vue";

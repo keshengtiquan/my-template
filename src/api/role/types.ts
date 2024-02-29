@@ -13,8 +13,17 @@ export interface Role {
   createTime: string
   updateTime: string
   menus: Menu[]
+  permissions: permission[]
 }
 
 export interface Menu {
   menuId: number
+}
+
+export interface permission {
+  id: string
+  name: string
+  key: string
+  desc: string
+  sort: number
 }

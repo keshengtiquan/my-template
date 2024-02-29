@@ -33,9 +33,6 @@ const onSubmit = () => {
       .then(() => {
         emits('submit', toRaw(props.formState))
       })
-      .catch(error => {
-        console.log('error', error);
-      });
 };
 const resetForm = () => {
   formRef.value.resetFields();

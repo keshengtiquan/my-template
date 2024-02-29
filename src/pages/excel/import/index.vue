@@ -25,7 +25,7 @@ const createTemplate = () => {
   router.push('/excel/import/create')
 }
 const {tableData, loading, getTableData, pagination} = useTable(getTemplateListApi)
-const editTem = (record: object) => {
+const editTem = (record: any) => {
   router.push(`/excel/import/create?id=${record.id}`)
 }
 const deleteList = (data: any) => {

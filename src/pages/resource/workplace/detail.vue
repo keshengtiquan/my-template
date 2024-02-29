@@ -8,13 +8,14 @@ import {useTable} from "@/composables/useTable.ts";
 import {
   deleteWorkPlaceRelevanceListApi,
   getWorkPlaceRelevanceListApi,
-  updateWorkPlaceListQuantitiesApi, uploadRelevanceApi, uploadWorkPlaceApi
+  updateWorkPlaceListQuantitiesApi, uploadRelevanceApi
 } from "@/api/workplace";
 import TooltipIcon from "@/components/tooltip-icon/index.vue";
 import {message, Modal} from "ant-design-vue";
 import {cloneDeep} from 'lodash-es';
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 import Upload from "@/components/upload/index.vue";
+import { useAccess } from '@/composables/useAccess';
 
 interface DataItem {
   id: string
@@ -51,7 +52,7 @@ const columns = ref([
   {title: '合价', dataIndex: 'combinedPrice', width: 100, align: 'center'},
   {title: '操作', dataIndex: 'actions', width: 100, align: 'center', fixed: 'right'},
 ])
-
+const {hasAccess} = useAccess()
 const tableRef = ref()
 const transferDrawerRef = ref()
 const {tableData, getTableData, pagination, loading} = useTable<DataItem>(getWorkPlaceRelevanceListApi, {id: id})
@@ -161,9 +162,9 @@ if (workPlaceType === '区间') {
                rowKey="id" >
       <template #toolLeft>
         <a-space>
-          <a-button type="primary" @click="transferDrawerRef.openDrawer(id)">添加清单</a-button>
-          <a-button type="primary" :disabled="!(selectedRowKeys.length > 0)" danger @click="batchDelete">批量删除</a-button>
-          <a-button @click="() => open = true">导入数据</a-button>
+          <a-button v-if="hasAccess(['sys:workplaceList:add'])" type="primary" @click="transferDrawerRef.openDrawer(id)">添加清单</a-button>
+          <a-button v-if="hasAccess(['sys:workplaceList:batchDelete'])" type="primary" :disabled="!(selectedRowKeys.length > 0)" danger @click="batchDelete">批量删除</a-button>
+          <a-button v-if="hasAccess(['sys:workplaceList:upload'])" @click="() => open = true">导入数据</a-button>
         </a-space>
       </template>
       <template #headerCell="{ column }">
@@ -176,7 +177,7 @@ if (workPlaceType === '区间') {
       <template #bodyCell="{ column,record }">
         <template v-if="column.dataIndex === 'actions'">
           <a-space :size="20">
-            <TooltioIcon title="删除">
+            <TooltioIcon v-if="hasAccess(['sys:workplaceList:delete'])" title="删除">
               <DeleteOutlined class="text-red" @click="deleteList(record)"/>
             </TooltioIcon>
           </a-space>
@@ -196,7 +197,7 @@ if (workPlaceType === '区间') {
             </div>
             <div class="h-30px leading-30px" v-else>
               <span>{{ record.allQuantities || '0' }}</span>
-              <edit-outlined class="text-blue mx-10px" @click="edit(record.id)"/>
+              <edit-outlined v-if="hasAccess(['sys:workplaceList:edit'])" class="text-blue mx-10px" @click="edit(record.id)"/>
             </div>
           </div>
         </template>

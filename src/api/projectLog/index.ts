@@ -41,3 +41,27 @@ export const addListApi = (data: object) => {
 export const deleteLogApi = (data: object) => {
   return http.post<AxiosResults<any>>('/project-log/deleteList', {data})
 }
+
+/**
+ * 手动生成日志
+ * @param data {date: string}
+ * @returns 
+ */
+export const generateLogApi = (data: object) => {
+  return http.post<AxiosResults<any>>('/project-log/generateLog', {data})
+}
+ /**
+   * @description 查询同一清单的完成列表
+   */
+export const getLogListApi = (params: object) => {
+  return http.get<AxiosResults<any>>('/project-log/getByListId',{params})
+}
+
+/**
+ * 
+ * @param data {id: string}
+ * @returns 删除的条数
+ */
+export const deleteById = (data: object) => {
+  return http.post<AxiosResults<any>>('/project-log/deleteById', {data})
+}

@@ -1,21 +1,23 @@
 <script lang="ts" setup>
-import {reactive, ref, watch} from "vue";
-import {Rule} from "ant-design-vue/es/form";
-import {ModalType} from "@/enums";
+import { reactive, ref, watch } from "vue";
+import { Rule } from "ant-design-vue/es/form";
+import { ModalType } from "@/enums";
 import IconSelect from '@/components/icon-select/index.vue'
 import TreeSelect from '@/components/tree-select/index.vue'
-import {getMenuDataApi} from "@/api/menu";
-import {useCreateMenu} from "@/pages/setting/menu/component/useCreateMenu.ts";
-import {useUpdateMenu} from "@/pages/setting/menu/component/useUpdateMenu.ts";
-import {message} from "ant-design-vue";
+import { getMenuDataApi } from "@/api/menu";
+import { useCreateMenu } from "@/pages/setting/menu/component/useCreateMenu.ts";
+import { useUpdateMenu } from "@/pages/setting/menu/component/useUpdateMenu.ts";
+import { message } from "ant-design-vue";
 import * as _ from 'lodash'
-import {isUrl} from "@/utils";
+import { isUrl } from "@/utils";
+import { useDragModal } from '@/composables/useDragModal.ts'
 const open = ref(false)
 const formRef = ref();
 const title = ref('')
 const currentType = ref<string>('')
 const emits = defineEmits(['submit'])
 const showTarget = ref(false)
+const modalTitleRef = ref()
 const formState = reactive({
   parentId: 0,
   menuType: 'C',
@@ -40,23 +42,23 @@ const formState = reactive({
 });
 const rules: Record<string, Rule[]> = {
   title: [
-    {required: true, message: '请输入菜单名称', trigger: 'change'},
+    { required: true, message: '请输入菜单名称', trigger: 'change' },
   ],
   menuSort: [
-    {required: true, message: '请输入排序', trigger: 'change'},
+    { required: true, message: '请输入排序', trigger: 'change' },
   ],
 };
-const {createMenu} = useCreateMenu()
-const { loading,getMenuById,updateMenu } = useUpdateMenu()
-const openModal = async(type: ModalType, id?: number | undefined, parentId?: number) => {
+const { createMenu } = useCreateMenu()
+const { loading, getMenuById, updateMenu } = useUpdateMenu()
+const openModal = async (type: ModalType, id?: number | undefined, parentId?: number) => {
   title.value = type === ModalType.ADD ? '新增菜单' : '编辑菜单';
   currentType.value = type
   open.value = !open.value;
-  if(parentId && type === ModalType.ADD){
+  if (parentId && type === ModalType.ADD) {
     formState.menuType = 'M'
     formState.parentId = parentId
   }
-  if(id && type === ModalType.Edit){
+  if (id && type === ModalType.Edit) {
     const data = await getMenuById(id)
     console.log(data)
     Object.assign(formState, data)
@@ -66,12 +68,12 @@ const handleOk = async () => {
   try {
     const values = await formRef.value?.validateFields()
     let res = null
-    if(currentType.value === ModalType.ADD){
+    if (currentType.value === ModalType.ADD) {
       res = await createMenu(values)
-    }else {
+    } else {
       res = await updateMenu(formState)
     }
-    if(res.code === 200){
+    if (res.code === 200) {
       message.success(res.message)
       emits('submit')
       close()
@@ -81,7 +83,6 @@ const handleOk = async () => {
     console.log('Failed:', errorInfo)
   }
 }
-
 const close = () => {
   formRef.value.resetFields();
   open.value = false
@@ -90,25 +91,29 @@ const pathChange = _.debounce((e) => {
   console.log(isUrl(e.target.value))
   showTarget.value = isUrl(e.target.value)
 }, 150)
+const { transformStyle } = useDragModal(modalTitleRef)
 watch(() => formState.menuType, (val: string) => {
   if (val === 'C') {
     formState.parentId = 0
   }
 })
-defineExpose({openModal})
+defineExpose({ openModal, open })
 </script>
 <template>
-  <a-modal v-model:open="open" width="40%" :title="title" @ok="handleOk" @cancel="close">
+  <a-modal v-model:open="open" width="40%" @ok="handleOk" @cancel="close">
+    <template #title>
+      <div ref="modalTitleRef" style="width: 100%; cursor: move">{{ title }}</div>
+    </template>
+    <template #modalRender="{ originVNode }">
+      <div :style="transformStyle">
+        <component :is="originVNode" />
+      </div>
+    </template>
     <a-skeleton v-if="loading" active :paragraph="{ rows: 8 }" />
-    <a-form
-        v-else
-        ref="formRef"
-        :model="formState"
-        :rules="rules"
-    >
+    <a-form v-else ref="formRef" :model="formState" :rules="rules">
       <a-form-item label="上级菜单" name="parentId">
-        <TreeSelect :field-names="{children: 'children',label: 'title',value: 'id',}" v-model="formState.parentId"
-                    :request="getMenuDataApi" allowClear/>
+        <TreeSelect :field-names="{ children: 'children', label: 'title', value: 'id', }" v-model="formState.parentId"
+          :request="getMenuDataApi" allowClear />
       </a-form-item>
       <a-form-item label="菜单类型" name="menuType">
         <a-radio-group v-model:value="formState.menuType" button-style="solid">
@@ -124,22 +129,22 @@ defineExpose({openModal})
 
         <a-col :span="12">
           <a-form-item label="菜单名称" name="title">
-            <a-input v-model:value="formState.title"/>
+            <a-input v-model:value="formState.title" />
           </a-form-item>
         </a-col>
         <a-col :span="12">
           <a-form-item label="菜单排序" name="menuSort">
-            <a-input-number v-model:value="formState.menuSort" class="w-full" :min="1" :step="10"/>
+            <a-input-number v-model:value="formState.menuSort" class="w-full" :min="1" :step="10" />
           </a-form-item>
         </a-col>
         <a-col :span="12" v-if="formState.menuType !== 'F'">
           <a-form-item label="路由地址" name="path">
-            <a-input v-model:value="formState.path" @change="pathChange"/>
+            <a-input v-model:value="formState.path" @change="pathChange" />
           </a-form-item>
         </a-col>
         <a-col :span="12" v-if="formState.menuType !== 'F'">
           <a-form-item label="路由名称" name="name">
-            <a-input v-model:value="formState.name"/>
+            <a-input v-model:value="formState.name" />
           </a-form-item>
         </a-col>
         <a-col :span="12" v-if="formState.menuType === 'M'">
@@ -149,12 +154,12 @@ defineExpose({openModal})
         </a-col>
         <a-col :span="12" v-if="formState.menuType !== 'F'">
           <a-form-item label="重定向地址" name="redirect">
-            <a-input v-model:value="formState.redirect"/>
+            <a-input v-model:value="formState.redirect" />
           </a-form-item>
         </a-col>
         <a-col :span="12" v-if="formState.menuType === 'F'">
           <a-form-item label="权限标识" name="permission">
-            <a-input v-model:value="formState.permission"/>
+            <a-input v-model:value="formState.permission" />
           </a-form-item>
         </a-col>
         <a-col :span="12" v-if="formState.menuType === 'M' && showTarget">
@@ -184,7 +189,7 @@ defineExpose({openModal})
         </a-col>
         <a-col :span="12" v-if="formState.isIframe">
           <a-form-item label="内链地址" name="url">
-            <a-input v-model:value="formState.url"/>
+            <a-input v-model:value="formState.url" />
           </a-form-item>
         </a-col>
 

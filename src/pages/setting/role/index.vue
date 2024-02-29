@@ -9,6 +9,7 @@ import {deleteRoleApi, forbiddenRoleApi, getRoleListApi} from "@/api/role";
 import TooltioIcon from "@/components/tooltip-icon/index.vue";
 import {message, Modal} from "ant-design-vue";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
+import ButtonRole from './component/ButtonRole.vue';
 
 const columns = [
   {title: '角色名称', dataIndex: 'roleName',},
@@ -23,6 +24,7 @@ const columns = [
 ]
 const roleDrawerRef = ref()
 const roleTableRef = ref()
+const buttonRoleRef = ref()
 const {loading, getTableData, tableData, pagination} = useTable(getRoleListApi)
 
 /**
@@ -77,6 +79,9 @@ const onStatusChange = async (checked: boolean, id: number) => {
             <TooltioIcon title="编辑">
               <EditOutlined class="text-blue" @click="roleDrawerRef.openDrawer(ModalType.Edit, record.id)"/>
             </TooltioIcon>
+            <TooltioIcon title="按钮权限">
+              <ContainerOutlined class="text-blue" @click="buttonRoleRef.openModal(record.roleName, record.id)"/>
+            </TooltioIcon>
             <TooltioIcon title="删除">
               <DeleteOutlined class="text-red" @click="deleteMenu(record)"/>
             </TooltioIcon>
@@ -89,6 +94,7 @@ const onStatusChange = async (checked: boolean, id: number) => {
       </template>
     </ProTable>
     <RoleDrawer ref="roleDrawerRef" @submit="getTableData(roleTableRef.onReload())"></RoleDrawer>
+    <ButtonRole ref="buttonRoleRef"></ButtonRole>
   </PageContainer>
 </template>
 

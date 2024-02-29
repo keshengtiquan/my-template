@@ -56,3 +56,12 @@ export const deletePlanDetailApi = (data: object) => {
 export const addListPlanDetailApi = (data: object) => {
   return http.post<AxiosResults<any>>('/issued/addList', {data})
 }
+
+/**
+ * 获取总体计划列表
+ * @param params 
+ * @returns 
+ */
+export const getMasterPlanApi = (params: object) => {
+  return http.get<AxiosResults<any>>('/issued/getMasterPlan', {params})
+}

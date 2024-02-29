@@ -115,3 +115,20 @@ export const setFocusApi = (data: {id: string, isFocusList: boolean}) => {
 export const batchDeleteApi = (data: object) => {
   return http.post<AxiosResults<any>>('/list/batchDelete', {data})
 }
+
+/**
+ * 获取三量对比清单
+ * @param params 
+ * @returns 
+ */
+export const getListCompareApi = (params: object) => {
+  return http.get<AxiosResults<any>>('/list/listCompare', {params})
+}
+
+/**
+ * 更新图纸量
+ * @param data
+ */
+export const updateListCompareApi = (data: object) => {
+  return http.post<AxiosResults<any>>('/list/update/listCompare', {data})
+}

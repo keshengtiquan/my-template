@@ -98,13 +98,14 @@ const init = () => {
   //   console.log(item)
   //   settingColumns.value.push(obj)
   // })
-  settingColumns.value = processColumns(props.initColumns)
+  const tem = props.initColumns.filter(item => !item.hidden)
+  settingColumns.value = processColumns(tem)
 }
 
 const processColumns = (columns: any[]) => {
   const result: any[] = [];
   columns.forEach((item, index) => {
-    const obj: any = { title: item.title, key: index, hide: item.hide || false };
+    const obj: any = { title: item.title, key: index, hide: item.hide || false, fixed: item.fixed};
     if(item.dataIndex){
       obj.dataIndex = item.dataIndex
     }

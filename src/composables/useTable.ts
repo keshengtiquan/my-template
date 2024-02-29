@@ -37,7 +37,6 @@ export const useTable = <T = any>(request: Function, initParams?: Record<string,
         params = initParams
       }
     }
-    console.log(initParams)
     const res = await request(params)
     if(hasPagination){
       tableData.value = res.data.results

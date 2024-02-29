@@ -3,7 +3,7 @@ import {reactive, ref} from "vue";
 import {ModalType} from "@/enums";
 import {message} from "ant-design-vue";
 import {useTreeSelect} from "@/composables/useTreeSelect.ts";
-import {getMenuDataApi, getMenuListApi} from "@/api/menu";
+import {getMenuListApi} from "@/api/menu";
 import {createRoleApi} from "@/api/role";
 import {useEdit} from "@/pages/setting/role/component/useEdit.ts";
 import {extractChildrenIdList} from "@/utils";

@@ -7,7 +7,7 @@ import { onBeforeUnmount, onMounted, ref} from "vue";
 import {Area, Progress, Column} from '@antv/g2plot';
 import {getIntroduceApi} from "@/api/analyse";
 import {Introduce} from "@/api/analyse/types.ts";
-
+import {convertOutpuValue} from '@/utils'
 const monthlyChart = ref()
 const yearChart = ref()
 const progressChart = ref()
@@ -118,7 +118,7 @@ onBeforeUnmount(() => {
 <template>
   <a-row :gutter="24">
     <a-col v-bind="{ ...topColResponsiveProps }">
-      <IntroduceCard title="日产值" :indicatorSpecification="`${dayjs(new Date()).format('YYYY-MM-DD')}日产值`">
+      <IntroduceCard title="日产值(万元)" :indicatorSpecification="`${dayjs(new Date()).format('YYYY-MM-DD')}日产值`">
         <template #top>
           <span style="color: var(--text-color)">¥{{ introduceData?.dailyIntroduceData?.dailyOutputValue }}</span>
         </template>
@@ -133,14 +133,14 @@ onBeforeUnmount(() => {
           </Trend>
         </div>
         <template #bottom>
-          <Field label="日产值" :value="`￥${introduceData.dailyIntroduceData.dailyOutputValue}`"></Field>
+          <Field label="日产值" :value="`￥${convertOutpuValue(introduceData.dailyIntroduceData.dailyOutputValue)}`"></Field>
         </template>
       </IntroduceCard>
     </a-col>
     <a-col v-bind="{ ...topColResponsiveProps }">
-      <IntroduceCard title="本月产值" :indicator-specification="`${dayjs(new Date()).format('YYYY-MM')}月产值`">
+      <IntroduceCard title="本月产值(万元)" :indicator-specification="`${dayjs(new Date()).format('YYYY-MM')}月产值`">
         <template #top>
-          <span style="color: var(--text-color)">¥ {{introduceData.monthIntroduceData.data.completionOutputValue}}</span>
+          <span style="color: var(--text-color)">¥ {{convertOutpuValue(introduceData.monthIntroduceData.data.completionOutputValue)}}</span>
         </template>
         <div ref="monthlyChart"></div>
         <template #bottom>
@@ -149,9 +149,9 @@ onBeforeUnmount(() => {
       </IntroduceCard>
     </a-col>
     <a-col v-bind="{ ...topColResponsiveProps }">
-      <IntroduceCard title="年度产值" :indicator-specification="`${dayjs(new Date()).format('YYYY')}年产值`">
+      <IntroduceCard title="年度产值(万元)" :indicator-specification="`${dayjs(new Date()).format('YYYY')}年产值`">
         <template #top>
-          <span style="color: var(--text-color)">¥ {{introduceData.yearIntroduceData.data.completionOutputValue}}</span>
+          <span style="color: var(--text-color)">¥ {{convertOutpuValue(introduceData.yearIntroduceData.data.completionOutputValue)}}</span>
         </template>
         <div ref="yearChart"></div>
         <template #bottom>

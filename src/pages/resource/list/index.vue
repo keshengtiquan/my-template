@@ -11,6 +11,7 @@ import {message, Modal} from "ant-design-vue";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 import {getSectionalApi} from "@/api/division";
 import ExportButton from '@/components/exportButton/index.vue'
+import { useAccess } from '@/composables/useAccess'; 
 
 const columns = [
   {title: '序号', dataIndex: 'serialNumber', width: 50, align: 'center'},
@@ -32,6 +33,7 @@ const open = ref(false)
 const listTableRef = ref()
 const segmentData = ref<any[]>([])
 const activeKey = ref('');
+const {hasAccess} = useAccess()
 
 /**
  * 创建
@@ -129,22 +131,22 @@ export default {
                @search="(params) => getTableData({...params, ...{sectionalEntry: activeKey}})" :columns="columns">
       <template #toolLeft>
         <a-space>
-          <a-button type="primary" @click="createList">新建清单</a-button>
-          <a-button type="primary" :disabled="!(selectedRowKeys.length > 0)" danger @click="batchDelete">批量删除</a-button>
-          <a-button @click="() => open = true">导入清单</a-button>
-          <ExportButton :request="exportListApi" :init-params="{'sectionalEntry': activeKey}" file-name="项目清单"></ExportButton>
+          <a-button v-if="hasAccess(['sys:list:add'])" type="primary" @click="createList">新建清单</a-button>
+          <a-button v-if="hasAccess(['sys:list:batchDelete'])" type="primary" :disabled="!(selectedRowKeys.length > 0)" danger @click="batchDelete">批量删除</a-button>
+          <a-button v-if="hasAccess(['sys:list:upload'])" @click="() => open = true">导入数据</a-button>
+          <ExportButton v-if="hasAccess(['sys:list:export'])" :request="exportListApi" :init-params="{'sectionalEntry': activeKey}" file-name="项目清单"></ExportButton>
         </a-space>
       </template>
       <template #bodyCell=" { column,record }">
         <template v-if="column.dataIndex === 'actions'">
           <a-space :size="20">
-            <TooltipIcon title="编辑">
+            <TooltipIcon v-if="hasAccess(['sys:list:edit'])" title="编辑">
               <EditOutlined class="text-blue" @click="editList(record.id)"/>
             </TooltipIcon>
-            <TooltipIcon :title="`${record.isFocusList ?  '取消关注' : '关注清单'}`">
+            <TooltipIcon v-if="hasAccess(['sys:list:focus'])" :title="`${record.isFocusList ?  '取消关注' : '关注清单'}`">
               <AimOutlined class="text-blue" @click="focusList(record)"/>
             </TooltipIcon>
-            <TooltipIcon title="删除">
+            <TooltipIcon v-if="hasAccess(['sys:list:delete'])" title="删除">
               <DeleteOutlined class="text-red" @click="deleteList(record)"/>
             </TooltipIcon>
           </a-space>

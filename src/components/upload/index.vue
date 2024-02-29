@@ -9,7 +9,7 @@
         </div>
         <div class="inner support">
           {{ `拖拽文件${isMultiple ? '或文件夹' : ''}上传，支持的文件类型：` }}<span
-            v-for="item in props.uploadType">{{ item }}</span>
+            v-for="(item, index) in props.uploadType" :key="index">{{ item }}</span>
         </div>
         <div class="inner">
           每个文件允许的最大尺寸：{{ props.limit }}M

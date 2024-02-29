@@ -10,7 +10,7 @@ const appStore = useAppStore()
 const { layoutSetting } = storeToRefs(appStore)
 const router = useRouter()
 const loginModel = reactive({
-  userName: 'test',
+  userName: 'xiandt',
   password: '123456',
 })
 const formRef = shallowRef()
@@ -43,11 +43,10 @@ const submit = async () => {
               <img src="/logo.svg">
             </span>
             <span class="ant-pro-form-login-title">
-              Ant Design
+              进度管理系统
             </span>
           </div>
           <div class="ant-pro-form-login-desc">
-            Ant Design 是西湖区最具影响力的 Web 设计规范
           </div>
         </div>
         <div class="ant-pro-form-login-main" w-335px>

@@ -2,7 +2,7 @@ import { ConfigEnv, UserConfigExport, loadEnv } from "vite";
 import vue from "@vitejs/plugin-vue";
 import Components from 'unplugin-vue-components/vite';
 import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers';
-import path from "path";
+import * as path from "path";
 // import UnoCSS from "unocss/vite";
 import Unocss from 'unocss/vite'
 

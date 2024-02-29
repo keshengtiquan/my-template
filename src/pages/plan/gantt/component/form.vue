@@ -26,7 +26,7 @@ const formStateComputed = computed({
 const durationChange = (value: number) => {
   emits('durationChange', value)
 }
-const startDateChange = (date: string, dateString: string) => {
+const startDateChange = (date: string, _dateString: string) => {
   emits('startDateChange', date)
 }
 const validate = async () => {

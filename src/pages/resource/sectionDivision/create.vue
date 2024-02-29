@@ -13,6 +13,7 @@ import {useRoute} from "vue-router";
 import TooltipIcon from "@/components/tooltip-icon/index.vue";
 import {message, Modal} from "ant-design-vue";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
+import { useAccess } from '@/composables/useAccess';
 
 const columns = [
   {title: '序号', dataIndex: 'serialNumber', width: 50, align: 'center'},
@@ -26,6 +27,7 @@ const columns = [
   {title: '操作', dataIndex: 'actions', width: 100, align: 'center', fixed: 'right'},
 ]
 const setupModalRef = ref()
+const {hasAccess} = useAccess()
 const sectionDivisionTableRef = ref()
 const route = useRoute()
 const workPlaceName = ref<any[]>([])
@@ -79,12 +81,12 @@ onMounted(async () => {
                :pagination="pagination"
                @search="(params) => getTableData(params)" :data-source="tableData">
       <template #toolLeft>
-        <a-button type="primary" @click="showSetupModal">新增</a-button>
+        <a-button v-if="hasAccess(['sys:sectionDivision:add'])" type="primary" @click="showSetupModal">新增</a-button>
       </template>
       <template #bodyCell="{ column,record }">
         <template v-if="column.dataIndex === 'actions'">
           <a-space :size="20">
-            <TooltipIcon title="删除">
+            <TooltipIcon v-if="hasAccess(['sys:sectionDivision:delete'])" title="删除">
               <DeleteOutlined class="text-red" @click="deleteList(record)"/>
             </TooltipIcon>
           </a-space>

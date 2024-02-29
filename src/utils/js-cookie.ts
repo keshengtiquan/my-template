@@ -1,4 +1,4 @@
-import jsCookie from "js-cookie";
+import * as jsCookie from "js-cookie";
 
 export const setCookie = (key: string, value: string, time?: number) => {
   jsCookie.set(key, value, { expires: time ? time : 1 });

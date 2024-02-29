@@ -32,8 +32,9 @@ const getOptionData = _.debounce(async (value: string) => {
   optionDate.value = []
   const {data} = await props.request(params)
   loading.value = false
+  console.log(data)
   if(data){
-    optionDate.value = data.results
+    optionDate.value = data.results || data
   }
 }, 1000)
 onMounted(() => {

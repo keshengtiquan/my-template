@@ -9,9 +9,8 @@ import {useTable} from "@/composables/useTable.ts";
 import {message, Modal} from "ant-design-vue";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 import {useRouter} from "vue-router";
-import {downloadExcel, exportExcel} from "@/utils/excelExport.ts";
-import * as dayjs from "dayjs";
 import ExportButton from '@/components/exportButton/index.vue'
+import {useAccess} from '@/composables/useAccess.ts'
 
 const router = useRouter()
 const columns = ref([
@@ -26,7 +25,7 @@ const columns = ref([
   {title: '更新时间', dataIndex: 'updateTime', width: 180},
   {title: '操作', dataIndex: 'actions', width: 100, align: 'center', fixed: 'right'},
 ])
-
+const {hasAccess} = useAccess()
 const createWorkPlace = () => {
   router.push('/resource/workplace/create')
 }
@@ -70,18 +69,18 @@ const deleteList = (data: any) => {
                @refresh="() => getTableData()" @search="(params) => getTableData(params)">
       <template #toolLeft>
         <a-space>
-          <a-button type="primary" @click="createWorkPlace">添加工点</a-button>
-          <a-button @click="() => open = true">导入工点</a-button>
-          <ExportButton :request="exportWorkPlaceApi" file-name="工点列表"></ExportButton>
+          <a-button v-if="hasAccess(['sys:workplace:add'])" type="primary" @click="createWorkPlace">添加工点</a-button>
+          <a-button v-if="hasAccess(['sys:workplace:upload'])" @click="() => open = true">导入工点</a-button>
+          <ExportButton v-if="hasAccess(['sys:workplace:export'])" :request="exportWorkPlaceApi" file-name="工点列表"></ExportButton>
         </a-space>
       </template>
       <template #bodyCell="{ column,record }">
         <template v-if="column.dataIndex === 'actions'">
           <a-space :size="20">
-            <TooltipIcon title="编辑">
+            <TooltipIcon v-if="hasAccess(['sys:workplace:edit'])" title="编辑">
               <EditOutlined class="text-blue" @click="updateWorkPlace(record.id)"/>
             </TooltipIcon>
-            <TooltipIcon title="删除">
+            <TooltipIcon v-if="hasAccess(['sys:workplace:delete'])" title="删除">
               <DeleteOutlined class="text-red" @click="deleteList(record)"/>
             </TooltipIcon>
           </a-space>

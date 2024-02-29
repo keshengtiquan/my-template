@@ -74,3 +74,11 @@ export const updateUserApi = (data: object) => {
 export const deleteUserApi = (id: number) => {
   return http.post<AxiosResults<any>>('/user/delete', {data: {id}})
 }
+
+/**
+ * 获取用户的权限列表
+ * @returns 
+ */
+export const getUserPermissions = () => {
+  return http.get<AxiosResults<any>>('/auth/permissions')
+}

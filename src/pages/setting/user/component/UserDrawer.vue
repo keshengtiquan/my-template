@@ -3,12 +3,9 @@ import {reactive, ref} from "vue";
 import {ModalType} from "@/enums";
 import {createUserApi} from "@/api/user";
 import {message} from "ant-design-vue";
-import {getMenuDataApi} from "@/api/menu";
 import TreeSelect from "@/components/tree-select/index.vue";
 import {getDeptListApi} from "@/api/dept";
-import {getPackageListApi} from "@/api/package";
 import Select from "@/components/select/index.vue";
-import {multiply} from "lodash";
 import {getRoleListApi} from "@/api/role";
 import {useEdit} from "@/pages/setting/user/component/useEdit.ts";
 

@@ -8,10 +8,15 @@ import "uno.css";
 import 'animate.css';
 import * as antIcons from '@ant-design/icons-vue'
 import '@/router/router-guard'
+// import * as directives from '@/directives'
 const app = createApp(App)
 for (const [key, component] of Object.entries(antIcons)) {
   app.component(key, component)
 }
+// Object.keys(directives).forEach(key => {
+//   console.log(key)
+//   app.directive(key, (directives as { [key: string]: Directive })[key]);
+// });
 
 app.use(router)
 app.use(store)

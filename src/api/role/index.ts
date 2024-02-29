@@ -30,7 +30,7 @@ export const forbiddenRoleApi = (data: object) => {
  * 根据ID获取角色
  * @param id
  */
-export const getRoleByIdAPi = (id: number) => {
+export const getRoleByIdAPi = (id: string) => {
   return http.get<AxiosResults<Role>>('/role/get/', {params: {id}})
 }
 
@@ -46,6 +46,6 @@ export const updateRoleApi = (data: object) => {
  * 删除角色
  * @param id
  */
-export const deleteRoleApi = (id: number) => {
+export const deleteRoleApi = (id: string) => {
   return http.post<AxiosResults<any>>('/role/delete/', {data: {id}})
 }

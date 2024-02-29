@@ -12,10 +12,10 @@ import {message, Modal} from "ant-design-vue";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 
 const columns = [
-  {title: 'id', dataIndex: 'id', width: 200,align: 'center', resizable: true},
-  {title: '菜单名称', dataIndex: 'title',width: 100, resizable: true},
-  {title: '路由地址', dataIndex: 'path',width: 220, resizable: true},
-  {title: '图标', dataIndex: 'icon',width: 100, resizable: true},
+  // {title: 'id', dataIndex: 'id', width: 200,align: 'center', resizable: true},
+  {title: '菜单名称', dataIndex: 'title',width: 150, resizable: true},
+  {title: '路由地址', dataIndex: 'path',width: 200, resizable: true},
+  {title: '图标', dataIndex: 'icon',width: 100, resizable: true, align: 'center'},
   {title: '状态', dataIndex: 'status',width: 100, resizable: true},
   {title: '权限标识', dataIndex: 'permission',width: 100, resizable: true},
   {title: '排序', dataIndex: 'menuSort',width: 100, resizable: true},
@@ -71,7 +71,7 @@ const deleteMenu = (data: any) => {
 </script>
 <template>
   <PageContainer>
-    <ProTable :columns="columns" :scroll="{ x: 1500 }" rowKey="id" ref="menuTableRef" :loading="loading" @refresh="() => getTableData()" :pagination="false" :data-source="tableData">
+    <ProTable :columns="columns" :scroll="{ x: 2000 }" rowKey="id" ref="menuTableRef" :loading="loading" @refresh="() => getTableData()" :pagination="false" :data-source="tableData">
       <template #toolLeft>
         <span class="font-600 font-size-16px">菜单表格</span>
       </template>

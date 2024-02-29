@@ -45,11 +45,11 @@ export const generateRoutes = (data: any[]) => {
         activeMenu: item.activeMenu
       }
     }
-    if(item.children && item.children.length > 0){
+    if (item.children && item.children.length > 0) {
       obj.children = generateRoutes(item.children)
-    }else if(item.isIframe){
+    } else if (item.isIframe) {
       obj.component = modules['../pages/common/iframe.vue']
-    }else if(item.component){
+    } else if (item.component) {
       obj.component = modules[`../pages${item.component}.vue`]
     }
     return obj
@@ -130,11 +130,11 @@ export const formatByte = (bytes: number) => {
 export const throttle = (fn: Function, wait: number) => {
   let timer: any = null
   return () => {
-    if(timer) return
-    timer = setTimeout(()=> {
+    if (timer) return
+    timer = setTimeout(() => {
       fn()
       timer = null
-    },wait)
+    }, wait)
   }
 }
 
@@ -228,4 +228,16 @@ export const getStartDateAndEndDate = (date: Date) => {
     weekStartDate,
     weekEndDate,
   }
+}
+
+export const deleteUniqueFromArray = (arr: any[], uniqueFiled: string, uniqueValue: string) => {
+  if (!Array.isArray(arr)) {
+    return []
+  }
+  const index = arr.findIndex((item) => item[uniqueFiled] === uniqueValue)
+  return arr.splice(index, 1)
+}
+
+export const convertOutpuValue = (value: number | string) => {
+  return +(+value / 10000).toFixed(2)
 }

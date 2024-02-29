@@ -7,6 +7,7 @@ import TooltipIcon from "@/components/tooltip-icon/index.vue";
 import {useRouter} from "vue-router";
 import UpdateSectionDivision from "@/pages/resource/sectionDivision/component/updateSectionDivision.vue";
 import {ref} from "vue";
+import { useAccess } from '@/composables/useAccess';
 
 const columns = [
   {title: '工区/作业队', dataIndex: 'deptName',},
@@ -26,6 +27,7 @@ const create = (record: any) => {
   router.push({path: '/resource/sectionDivision/create', query: {id: record.id}})
 }
 const updateSectionDivisionModalRef = ref()
+const {hasAccess} = useAccess()
 
 </script>
 <template>
@@ -35,7 +37,7 @@ const updateSectionDivisionModalRef = ref()
       <template #bodyCell="{ column,record }">
         <template v-if="column.dataIndex === 'actions'">
           <a-space :size="20">
-            <TooltipIcon title="编辑">
+            <TooltipIcon v-if="hasAccess(['sys:sectionDivision:edit'])" title="编辑">
               <EditOutlined class="text-blue" @click="updateSectionDivisionModalRef.showModal(record)"/>
             </TooltipIcon>
           </a-space>
