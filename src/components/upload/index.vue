@@ -86,8 +86,7 @@ import axios from "axios";
 import {message} from "ant-design-vue";
 import {downloadTemplateApi} from "@/api/excel";
 import {downloadExcel, exportExcel} from "@/utils/excelExport.ts";
-// import * as _dayjs from "dayjs";
-const dayjs = require('dayjs');
+import dayjs from "dayjs";
 const resultVisible = ref(false)
 const resultDetailVisible = ref(false)
 const columns = [

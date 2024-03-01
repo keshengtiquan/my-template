@@ -13,6 +13,7 @@ import {animationNameList} from "@/layout/types.ts";
 
 const appStore = useAppStore()
 const {layoutSetting} = storeToRefs(appStore)
+console.log('layoutSetting', layoutSetting.value);
 
 const {
   headerHeight

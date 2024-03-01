@@ -1,6 +1,6 @@
 import {LayoutSetting} from "@/layout/types.ts";
 export default {
-  title: 'Antdv Pro',
+  title: '进度管理系统',
   theme: "inverted",
   logo: '/logo.svg',
   collapsed: false,
@@ -16,12 +16,12 @@ export default {
   menuHeader: true,
   footer: false,
   colorWeak: false,
-  multiTab: true,
+  multiTab: false,
   multiTabFixed: false,
   keepAlive: true,
   accordionMode: true,
-  leftCollapsed: false,
+  leftCollapsed: true,
   headerHeight: 48,
-  copyright: 'Antdv Pro Team 2023',
+  copyright: '进度管理系统',
   animationName: 'slide-fadein-right',
 } as LayoutSetting
