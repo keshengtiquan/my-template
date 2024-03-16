@@ -1,0 +1,131 @@
+<script setup lang="ts">
+import PageContainer from '@/components/page-container/index.vue'
+import ProTable from '@/components/pro-table/index.vue'
+import { useTable } from "@/composables/useTable.ts";
+import { deleteMenuApi, forbiddenMenuApi, getMenuListApi } from "@/api/setting/menu";
+import MenuModal from "@/pages/setting/menu/component/MenuModal.vue";
+import { ref } from "vue";
+import { ModalType } from "@/enums";
+import TooltioIcon from '@/components/tooltip-icon/index.vue'
+import { message, Modal } from "ant-design-vue";
+
+const columns = [
+  { title: '编号', dataIndex: 'id', width: 80, align: 'center', resizable: true, fixed: 'left' },
+  { title: '菜单名称', dataIndex: 'title', width: 100, align: 'center', resizable: true },
+  { title: '路由地址', dataIndex: 'path', width: 150, align: 'center', resizable: true },
+  { title: '组件地址', dataIndex: 'component', width: 250, align: 'center', resizable: true },
+  { title: '图标', dataIndex: 'icon', width: 100, resizable: true, align: 'center' },
+  { title: '状态', dataIndex: 'status', width: 100, align: 'center', resizable: true },
+  { title: '权限标识', dataIndex: 'permission', width: 120, align: 'center', resizable: true },
+  {
+    title: '模块', dataIndex: 'module', hidden: true,
+    // search: true, valueType: 'radio', valueEnum: [
+    //   { value: 'company', label: '公司菜单', },
+    //   { value: 'project', label: '项目菜单', },
+    // ]
+  },
+  { title: '排序', dataIndex: 'menuSort', width: 80, align: 'center', resizable: true },
+  { title: '创建人', dataIndex: 'createBy', width: 100, align: 'center', resizable: true },
+  { title: '创建时间', dataIndex: 'createTime', width: 180, align: 'center', resizable: true },
+  { title: '更新人', dataIndex: 'updateBy', width: 100, align: 'center', resizable: true },
+  { title: '更新时间', dataIndex: 'updateTime', width: 180, align: 'center', resizable: true },
+  { title: '操作', dataIndex: 'actions', width: 150, align: 'center', fixed: 'right' },
+]
+const menuModalRef = ref()
+const menuTableRef = ref()
+const menuModule = ref<string>('company');
+const { loading, getTableData, tableData } = useTable(getMenuListApi, { module: menuModule.value }, false)
+getTableData()
+
+/**
+ * 菜单模块更改事件
+ */
+const menuModuleChange = async () => {
+  await getTableData({ module: menuModule.value })
+}
+/**
+ * 禁用菜单
+ * @param checked 是否禁用 true| false
+ * @param id 菜单id
+ */
+const onStatusChange = async (checked: boolean, id: number) => {
+  const res = await forbiddenMenuApi({ id, status: checked ? '0' : '1' })
+  if (res.code === 200) {
+    message.success(res.message)
+  }
+}
+/**
+ * 删除菜单
+ * @param data record
+ */
+const deleteMenu = (data: any) => {
+  Modal.confirm({
+    title: `是否删除【${data.title}】`,
+    content: '删除后不可恢复！',
+    onOk() {
+      deleteMenuApi({ id: data.id }).then(res => {
+        if (res.code === 200) {
+          getTableData(menuTableRef.value.onReload())
+          message.success(res.message)
+        }
+      })
+    },
+    onCancel() {
+      console.log('Cancel');
+    },
+    class: 'test',
+  });
+}
+
+</script>
+<template>
+  <PageContainer>
+    <div class="bg-[var(--bg-color)] p-x-20px p-y-24px mb-8px">
+      <a-radio-group v-model:value="menuModule" button-style="solid" @change="menuModuleChange">
+        <a-radio-button value="company">
+          <component is="DesktopOutlined" />
+          公司级菜单
+        </a-radio-button>
+        <a-radio-button value="project">
+          <component is="GoldOutlined" />
+          项目级菜单
+        </a-radio-button>
+      </a-radio-group>
+    </div>
+    <ProTable :columns="columns" bordered :scroll="{ x: 2000 }" rowKey="id" ref="menuTableRef" :loading="loading"
+      @refresh="() => getTableData()" :pagination="false" :data-source="tableData">
+      <template #toolLeft>
+        <span class="font-600 font-size-16px">菜单表格</span>
+      </template>
+      <template #toolRight>
+        <a-button type="primary" @click="menuModalRef.openModal(ModalType.ADD, undefined, 0)">新增</a-button>
+      </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.dataIndex === 'icon'">
+          <Component v-if="record.icon" :is="record.icon" />
+        </template>
+        <template v-else-if="column.dataIndex === 'status'">
+          <a-switch checked-children="启用" un-checked-children="禁用" checkedValue="0" v-model:checked="record.status"
+            @change="(checked: boolean) => onStatusChange(checked, record.id)" />
+        </template>
+        <template v-else-if="column.dataIndex === 'actions'">
+          <a-space :size="10">
+            <TooltioIcon title="编辑">
+              <EditOutlined class="text-blue" @click="menuModalRef.openModal(ModalType.Edit, record.id)" />
+            </TooltioIcon>
+            <TooltioIcon title="添加下级">
+              <PlusOutlined class="text-blue" @click="menuModalRef.openModal(ModalType.ADD, undefined, record.id)" />
+            </TooltioIcon>
+            <TooltioIcon title="删除">
+              <DeleteOutlined class="text-red" @click="deleteMenu(record)" />
+            </TooltioIcon>
+          </a-space>
+        </template>
+      </template>
+    </ProTable>
+    <MenuModal ref="menuModalRef" :module="menuModule" @submit="() => getTableData({module: menuModule})">
+    </MenuModal>
+  </PageContainer>
+</template>
+<style scoped></style>
+@/api/setting/menu
