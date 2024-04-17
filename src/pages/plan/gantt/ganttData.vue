@@ -71,23 +71,23 @@ onMounted(async () => {
   <pro-table :defaultExpandedRowKeys="expandedRowKeys" :columns="columns" rowKey="id" ref="tableRef"
     @refresh="() => getTableData()" :loading="loading" :data-source="tableData" :pagination="false">
     <template #toolLeft>
-      <a-button v-if="hasAccess(['sys:gantt:add'])" type="primary" @click="createDataRef.showModal()">新建</a-button>
+      <a-button type="primary" @click="createDataRef.showModal()">新建</a-button>
     </template>
     <template #bodyCell="{ column, record }">
       <template v-if="column.dataIndex === 'actions'">
         <a-space>
           <TooltipIcon title="编辑"
-            v-if="!(record.children && record.children.length != 0) && hasAccess(['sys:gantt:edit'])">
+            v-if="!(record.children && record.children.length != 0)">
             <EditOutlined class="text-blue" @click="updateDataRef.showModal(record.id)" />
           </TooltipIcon>
           <TooltipIcon title="关联清单" v-if="!(record.children && record.children.length != 0)">
             <RetweetOutlined class="text-blue" @click="relevanceList(record)" />
           </TooltipIcon>
-          <TooltipIcon v-if="hasAccess(['sys:gantt:addSub'])" title="添加下级">
+          <TooltipIcon  title="添加下级">
             <PlusOutlined class="text-blue" @click="createDataRef.showModal(record.id)" />
           </TooltipIcon>
           <TooltipIcon title="删除"
-            v-if="!(record.children && record.children.length != 0) && hasAccess(['sys:gantt:delete'])">
+            v-if="!(record.children && record.children.length != 0) ">
             <DeleteOutlined class="text-red" @click="deleteDate(record)" />
           </TooltipIcon>
         </a-space>

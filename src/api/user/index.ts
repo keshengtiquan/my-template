@@ -20,7 +20,7 @@ export interface UserInfo {
 }
 
 export const loginApi = (data: {userName: string, password: string}) => {
-  return http.post<AxiosResults<{token: string}>, {userName: string, password: string}>('/auth/login', {data})
+  return http.post<AxiosResults<any>, {userName: string, password: string}>('/dc/auth/login', {data})
 }
 
 export const getUserInfoApi = () => {

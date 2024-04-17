@@ -4,8 +4,8 @@ import {AxiosResults} from "@/api/types.ts";
 /**
  * 获取侧边栏菜单数据
  */
-export const getMenuDataApi = () => {
-  return http.get<AxiosResults<any>>('/menu/getMenu')
+export const getMenuDataApi = (params: object) => {
+  return http.get<AxiosResults<any>>('/dc/menu/getMenu', {params})
 }
 /**
  * 获取菜单列表数据

@@ -27,8 +27,15 @@ export default (configEnv: ConfigEnv): UserConfigExport => {
       port: Number(VITE_PORT),
       open: false,
       proxy: {
-        '/api': {
+        '/api/dc': {
           target: 'http://127.0.0.1:3000',
+          ws: true,
+          /** 是否允许跨域 */
+          changeOrigin: true,
+          rewrite: (path) => path.replace('/api/dc', ''),
+        },
+        '/api': {
+          target: 'http://127.0.0.1:3001',
           ws: true,
           /** 是否允许跨域 */
           changeOrigin: true,

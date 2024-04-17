@@ -13,9 +13,8 @@ router.beforeEach(async (to, _, next) => {
     ? `${to.meta.title} - ${import.meta.env.VITE_APP_NAME}`
     : `${import.meta.env.VITE_APP_NAME}`
   if (token) {
-    if (!userStore.userInfo && !allowList.includes(to.path) && !to.path.startsWith('/redirect') || userStore.menuData.length === 0) {
+    if (userStore.menuData.length === 0) {
       try {
-        await userStore.getUserInfo()
         // 获取路由菜单的信息
         const currentRoute = await userStore.generateDynamicRoutes()
         router.addRoute(currentRoute)

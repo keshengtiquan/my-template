@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import {  LockOutlined,  UserOutlined } from '@ant-design/icons-vue'
-import {useAppStore} from "@/store";
+import {useAppStore, useUserStore} from "@/store";
 import {storeToRefs} from "pinia";
 import {useRouter} from "vue-router";
 import {reactive, shallowRef} from "vue";
 import {loginApi} from "@/api/user";
 
 const appStore = useAppStore()
+const userStore = useUserStore()
 const { layoutSetting } = storeToRefs(appStore)
 const router = useRouter()
 const loginModel = reactive({
-  userName: 'xiandt',
+  userName: 'superAdmin',
   password: '123456',
 })
 const formRef = shallowRef()
@@ -21,8 +22,11 @@ const submit = async () => {
   try {
     await formRef.value?.validate()
     const {data} = await loginApi(loginModel)
+    console.log(data);
+    
     if(data.token){
       localStorage.setItem('token', data.token)
+      userStore.setUserInfo(data.userInfo)
       await router.push('/')
     }
   }
